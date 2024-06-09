@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Script_Check_StoreProcedure_Result.sql" />
+    <None Remove="Script_Scaffolding_StoreProcedure.sql" />
+    <None Remove="Script_Scaffolding_StoreProcedure_Result.sql" />
+    <None Remove="Script_Scaffolding_StoreProcedure_WithDbDecoration.sql" />
+    <None Remove="Script_Scaffolding_Table.sql" />
+    <None Remove="Script_Scaffolding_Table_WithDbDecoration.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Script_Check_StoreProcedure_Result.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Script_Scaffolding_StoreProcedure_Result.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Script_Scaffolding_StoreProcedure.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Script_Scaffolding_StoreProcedure_WithDbDecoration.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Script_Scaffolding_Table.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Script_Scaffolding_Table_WithDbDecoration.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+  </ItemGroup>
+
+</Project>
