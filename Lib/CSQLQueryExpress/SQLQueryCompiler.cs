@@ -6,8 +6,16 @@ using System.Text;
 
 namespace CSQLQueryExpress
 {
+    /// <summary>
+    /// Used to compile a <see cref="ISQLQuery"/> instance in a <see cref="SQLQueryCompiled"/>.
+    /// </summary>
     public static class SQLQueryCompiler
     {
+        /// <summary>
+        /// Compile a <see cref="ISQLQuery"/> instance in a <see cref="SQLQueryCompiled"/>.
+        /// </summary>
+        /// <param name="query">SQL query expression built with <see cref="SQLQuery"/>,</param>
+        /// <returns>A compiled expression <see cref="SQLQueryCompiled"/>.</returns>
         public static SQLQueryCompiled Compile(ISQLQuery query)
         {
             var cteList = query.Where(f => f.FragmentType == SQLQueryFragmentType.SelectCte).ToList();
@@ -81,12 +89,20 @@ namespace CSQLQueryExpress
 
     public static class CSQLQueryExpressExtensions
     {
+        /// <summary>
+        /// Compile a <see cref="ISQLQuery"/> instance in a <see cref="SQLQueryCompiled"/>.
+        /// </summary>
+        /// <param name="query">SQL query expression built with <see cref="SQLQuery"/>,</param>
+        /// <returns>A compiled expression <see cref="SQLQueryCompiled"/>.</returns>
         public static SQLQueryCompiled Compile(this ISQLQuery query)
         {
             return SQLQueryCompiler.Compile(query);
         }
     }
 
+    /// <summary>
+    /// A compiled expression of <see cref="ISQLQuery"/> instance.
+    /// </summary>
     public sealed class SQLQueryCompiled
     {
         internal SQLQueryCompiled(string statement, IList<SQLQueryParameter> parameters)
@@ -95,8 +111,14 @@ namespace CSQLQueryExpress
             Parameters = parameters;
         }
 
+        /// <summary>
+        /// The TSQL statement.
+        /// </summary>
         public string Statement { get; }
 
+        /// <summary>
+        /// The list of parameters.
+        /// </summary>
         public IList<SQLQueryParameter> Parameters { get; }
     }
 }
