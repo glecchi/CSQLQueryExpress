@@ -2,7 +2,9 @@
 
 namespace SQLQueryBuilder.Scaffolding
 {
-
+    /// <summary>
+    /// Class used to generate a data model from the database schema.
+    /// </summary>
     public sealed class SQLDataModelCodeGenerator
     {
         private readonly SQLDataModelCodeGeneratorParameters _parameters;
@@ -14,6 +16,10 @@ namespace SQLQueryBuilder.Scaffolding
             _parameters = parameters;
         }
 
+        /// <summary>
+        /// Generate data model classes.
+        /// </summary>
+        /// <returns>The <see cref="SQLDataModelCodeGeneratorResult"/> of the data model classes generation procedure.</returns>
         public SQLDataModelCodeGeneratorResult GenerateDataModel()
         {
             var result = new SQLDataModelCodeGeneratorResult();
