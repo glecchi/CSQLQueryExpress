@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E207420A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueryExecution.Dal", "QueryExecution.Dal\QueryExecution.Dal.csproj", "{AC0F8C84-4AC7-4294-9DE2-593D6625019D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLQueryBuilder.Scaffolding", "SQLQueryBuilder.Scaffolding\SQLQueryBuilder.Scaffolding.csproj", "{60C584BA-59C9-4098-8E03-E17A7AA80EB6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLQueryBuilder.Scaffolding", "Lib\SQLQueryBuilder.Scaffolding\SQLQueryBuilder.Scaffolding.csproj", "{60C584BA-59C9-4098-8E03-E17A7AA80EB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
