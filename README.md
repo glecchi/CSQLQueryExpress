@@ -47,10 +47,9 @@ class Program
           .Select(u => u.All());
 
         var tSqlQuery = query.Compile();
-        var statement = tSqlQuery.Statement;
-        var parameters = tSqlQuery.Parameters
-             .ToDictionary(p => p.Name, p => p.Value);
 
+        var statement = tSqlQuery.Statement;
+        var parameters = tSqlQuery.Parameters.ToDictionary(p => p.Name, p => p.Value);
 
         using (var connection = new SqlConnection("YourConnectionString"))
         {
