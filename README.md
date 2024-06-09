@@ -1,7 +1,7 @@
 # SQLQueryBuilder
 
 **SQLQueryBuilder** is a C# library designed to compile TSQL code, providing developers with the utmost flexibility to write expressions in C# that closely resemble TSQL syntax.  
-This library bridges the gap between C# and TSQL, enabling integration of TSQL commands directly within a C# environment.  
+
 Note that while SQLQueryBuilder handles the compilation of TSQL code, the execution is delegated to any ORM such as Dapper.
 
 In addition to compiling TSQL code, SQLQueryBuilder offers a scaffolding tool and a test client for writing and executing queries.
@@ -17,14 +17,6 @@ In addition to compiling TSQL code, SQLQueryBuilder offers a scaffolding tool an
 - **Documentation:** Examples to help you get started quickly and make the most of SQLQueryBuilder's capabilities.
 - **Database Scaffolding Tool:** Automatically generate database schema and compile the corresponding data model in C#, simplifying database integration and development.
 - **Test Client:** A dedicated test client for writing and executing queries using Dapper, facilitating quick and easy query testing and validation.
-
-## Usage Scenarios
-
-- **Database Query Generation:** Dynamically generate complex TSQL queries from within your C# applications, and execute them using an ORM such as Dapper.
-- **Data Migration and Transformation:** Simplify data migration and transformation tasks by leveraging familiar TSQL commands in your C# code.
-- **Report Generation:** Create detailed reports by combining the power of TSQL and C# to extract, manipulate, and present data.
-- **Database Scaffolding:** Automatically generate and compile database schemas into C# models, speeding up development workflows.
-- **Query Testing:** Write and execute TSQL queries using the provided test client to ensure correctness and performance.
 
 ## Getting Started
 
@@ -55,10 +47,14 @@ class Program
           .Select(u => u.All());
 
         var tSqlQuery = query.Compile();
+        var statement = tSqlQuery.Statement;
+        var parameters = tSqlQuery.Parameters
+             .ToDictionary(p => p.Name, p => p.Value);
+
 
         using (var connection = new SqlConnection("YourConnectionString"))
         {
-            var result = connection.Query<dbo.Users>(tSqlQuery.Statement, tSqlQuery.Parameters);
+            var result = connection.Query<dbo.Users>(statement, parameters);
             foreach (var user in result)
             {
                 Console.WriteLine(user);
@@ -74,6 +70,6 @@ Within the solution, you will find:
 - **ScaffoldingDatabaseTool:** This tool is designed for database scaffolding and data model compilation in C#.
   You need to configure the connection string in the "App.config" file of the project. Once the connection string is configured, simply run the tool, and the data model will be set up in the "QueryExecution.Dal" project, which is also      present in the solution.
 - **QueryExecution.Dal:** This project already contains a precompiled data model based on Microsoft's NorthwindPubs sample database. 
-- **Test Client:** The test client includes example queries for this data model and is configured to connect to the NorthwindPubs database on a localdb MSSQLServer instance. To execute the test queries, you need to create the NorthwindPubs database on your localdb MSSQLServer instance.  
+- **Test Client:** The test client includes example queries for this data model and is configured to connect to the NorthwindPubs database on a localdb MSSQLServer instance. To execute the test queries, you need to create the NorthwindPubs database on your localdb MSSQLServer instance. 
   The scripts for creating the NorthwindPubs database can be found here:  
   https://github.com/Microsoft/sql-server-samples/tree/master/samples/databases/northwind-pubs.
