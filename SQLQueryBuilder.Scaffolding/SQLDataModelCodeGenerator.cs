@@ -1,4 +1,6 @@
-﻿namespace SQLQueryBuilder.Scaffolding
+﻿using System;
+
+namespace SQLQueryBuilder.Scaffolding
 {
 
     public sealed class SQLDataModelCodeGenerator
@@ -12,22 +14,49 @@
             _parameters = parameters;
         }
 
-        public void GenerateDataModel()
+        public SQLDataModelCodeGeneratorResult GenerateDataModel()
         {
+            var result = new SQLDataModelCodeGeneratorResult();
+
             if (_parameters.EntityTypes.HasFlag(SQLDataModelCodeGeneratorEntityType.Table))
             {
-                new SQLTablesDataModelCodeGenerator(_parameters).GenerateDataModel();
+                try
+                {
+                    new SQLTablesDataModelCodeGenerator(_parameters).GenerateDataModel(result);
+                }
+                catch (Exception ex)
+                {
+                    result.AddError(SQLDataModelCodeGeneratorEntityType.Table, "CodeGenerator", ex);
+                }
             }
 
             if (_parameters.EntityTypes.HasFlag(SQLDataModelCodeGeneratorEntityType.View))
             {
-                new SQLViewsDataModelCodeGenerator(_parameters).GenerateDataModel();
+                try
+                {
+                    new SQLViewsDataModelCodeGenerator(_parameters).GenerateDataModel(result);
+                }
+                catch (Exception ex)
+                {
+                    result.AddError(SQLDataModelCodeGeneratorEntityType.View, "CodeGenerator", ex);
+                }
+                
             }
 
             if (_parameters.EntityTypes.HasFlag(SQLDataModelCodeGeneratorEntityType.StoredProcedure))
             {
-                new SQLStoredProceduresDataModelCodeGenerator(_parameters).GenerateDataModel();
+                try
+                {
+                    new SQLStoredProceduresDataModelCodeGenerator(_parameters).GenerateDataModel(result);
+                }
+                catch (Exception ex)
+                {
+                    result.AddError(SQLDataModelCodeGeneratorEntityType.StoredProcedure, "CodeGenerator", ex);
+                }
             }
+
+            return result;
         }
     }
+
 }
