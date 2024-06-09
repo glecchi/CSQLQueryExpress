@@ -6,7 +6,7 @@ Note that while SQLQueryBuilder handles the compilation of TSQL code, the execut
 
 In addition to compiling TSQL code, SQLQueryBuilder offers a scaffolding tool and a test client for writing and executing queries.
 
-## Please note that this library is in Beta and intended exclusively for use in test environments.
+## Please note that this library is in Beta and intended exclusively for use in non-production environments.
 
 ## Key Features
 
