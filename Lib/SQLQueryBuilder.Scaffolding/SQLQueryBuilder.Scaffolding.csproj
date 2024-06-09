@@ -7,29 +7,45 @@
   <ItemGroup>
     <None Remove="Script_Check_StoreProcedure_Result.sql" />
     <None Remove="Script_Scaffolding_StoreProcedure.sql" />
+    <None Remove="Script_Scaffolding_StoreProcedure_AsSchemaNestedClass.sql" />
     <None Remove="Script_Scaffolding_StoreProcedure_Result.sql" />
     <None Remove="Script_Scaffolding_StoreProcedure_WithDbDecoration.sql" />
+    <None Remove="Script_Scaffolding_StoreProcedure_WithDbDecoration_AsSchemaNestedClass.sql" />
     <None Remove="Script_Scaffolding_Table.sql" />
+    <None Remove="Script_Scaffolding_Table_AsSchemaNestedClass.sql" />
     <None Remove="Script_Scaffolding_Table_WithDbDecoration.sql" />
+    <None Remove="Script_Scaffolding_Table_WithDbDecoration_AsSchemaNestedClass.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Script_Check_StoreProcedure_Result.sql">
+    <EmbeddedResource Include="Scripts\Script_Check_StoreProcedure_Result.sql">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Script_Scaffolding_StoreProcedure_Result.sql">
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_StoreProcedure_AsSchemaNestedClass.sql">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Script_Scaffolding_StoreProcedure.sql">
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_StoreProcedure_Result.sql">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Script_Scaffolding_StoreProcedure_WithDbDecoration.sql">
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_StoreProcedure.sql">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Script_Scaffolding_Table.sql">
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_StoreProcedure_WithDbDecoration_AsSchemaNestedClass.sql">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Script_Scaffolding_Table_WithDbDecoration.sql">
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_StoreProcedure_WithDbDecoration.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_Table_AsSchemaNestedClass.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_Table.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_Table_WithDbDecoration_AsSchemaNestedClass.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_Table_WithDbDecoration.sql">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

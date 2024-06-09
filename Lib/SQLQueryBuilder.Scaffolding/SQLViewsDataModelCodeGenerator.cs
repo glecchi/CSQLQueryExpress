@@ -94,7 +94,10 @@ namespace SQLQueryBuilder.Scaffolding
 
         string GetFileCs(string databaseFolderPath, View view)
         {
-            var schemaFolderPath = Path.Combine(databaseFolderPath, view.Schema);
+            var schemaFolderPath = _parameters.GenerateSchemaFolder 
+                ? Path.Combine(databaseFolderPath, view.Schema)
+                : databaseFolderPath;
+
             if (!Directory.Exists(schemaFolderPath))
             {
                 Directory.CreateDirectory(schemaFolderPath);
@@ -120,11 +123,17 @@ namespace SQLQueryBuilder.Scaffolding
 
         string GetScaffoldingScript()
         {
-            var scaffoldingScript = !_parameters.DecorateWithDatabaseAttribute ? "Script_Scaffolding_Table.sql" : "Script_Scaffolding_Table_WithDbDecoration.sql";
+            var scaffoldingScript = !_parameters.DecorateWithDatabaseAttribute 
+                ? !_parameters.GenerateSchemaNestedClasses
+                    ? "Script_Scaffolding_Table.sql" 
+                    : "Script_Scaffolding_Table_AsSchemaNestedClass.sql"
+                : !_parameters.GenerateSchemaNestedClasses
+                    ? "Script_Scaffolding_Table_WithDbDecoration.sql"
+                    : "Script_Scaffolding_Table_WithDbDecoration_AsSchemaNestedClass.sql";
 
             var info = Assembly.GetExecutingAssembly().GetName();
             var name = info.Name;
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{name}.{scaffoldingScript}"))
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{name}.Scripts.{scaffoldingScript}"))
             {
                 using (var streamReader = new StreamReader(stream, Encoding.UTF8))
                 {

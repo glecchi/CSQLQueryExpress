@@ -16,4 +16,8 @@
     <ProjectReference Include="..\QueryExecution.Dapper.CommandFactory\QueryExecution.Dapper.CommandFactory.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Queries\Your_Database_Name\" />
+  </ItemGroup>
+
 </Project>
