@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Lib\SQLQueryBuilder\SQLQueryBuilder.csproj" />
+    <ProjectReference Include="..\Lib\CSQLQueryExpress\CSQLQueryExpress.csproj" />
   </ItemGroup>
 
 </Project>

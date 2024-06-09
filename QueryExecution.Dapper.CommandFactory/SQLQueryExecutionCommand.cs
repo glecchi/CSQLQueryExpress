@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Reflection.PortableExecutable;
-using SQLQueryBuilder;
+using CSQLQueryExpress;
 
 namespace QueryExecution.Dapper.CommandFactory
 {
