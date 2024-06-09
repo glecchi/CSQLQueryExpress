@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using SQLQueryBuilder;
+using CSQLQueryExpress;
 
 namespace QueryExecution.Dapper.CommandFactory
 {

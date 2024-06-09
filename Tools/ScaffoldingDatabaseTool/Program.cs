@@ -1,4 +1,4 @@
-﻿using SQLQueryBuilder.Scaffolding;
+﻿using CSQLQueryExpress.Scaffolding;
 using System.Configuration;
 
 var connectionString = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;

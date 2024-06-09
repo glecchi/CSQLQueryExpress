@@ -1,10 +1,10 @@
-﻿using SQLQueryBuilder.Fragments;
-using SQLQueryBuilder;
-using SQLQueryBuilder.Extensions;
+﻿using CSQLQueryExpress.Fragments;
+using CSQLQueryExpress;
+using CSQLQueryExpress.Extensions;
 using QueryExecution.Dal.NorthwindPubs;
 using QueryExecution.Dapper.CommandFactory.Commands;
 using QueryExecution.Dapper.CommandFactory;
-using SQLQueryBuilder.Statements;
+using CSQLQueryExpress.Statements;
 
 namespace QueryExecution.TestClient.Queries.NorthwindPubs
 {

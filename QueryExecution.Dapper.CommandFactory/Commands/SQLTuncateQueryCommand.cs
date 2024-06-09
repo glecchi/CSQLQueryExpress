@@ -1,5 +1,5 @@
-﻿using SQLQueryBuilder;
-using SQLQueryBuilder.Fragments;
+﻿using CSQLQueryExpress;
+using CSQLQueryExpress.Fragments;
 
 namespace QueryExecution.Dapper.CommandFactory.Commands
 {

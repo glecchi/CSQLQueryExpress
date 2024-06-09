@@ -1,10 +1,10 @@
-# SQLQueryBuilder
+# CSQLQueryExpress
 
-**SQLQueryBuilder** is a C# library designed to compile TSQL code, providing developers with the utmost flexibility to write expressions in C# that closely resemble TSQL syntax.  
+**CSQLQueryExpress** is a C# library designed to compile TSQL code, providing developers with the utmost flexibility to write expressions in C# that closely resemble TSQL syntax.  
 
-Note that while SQLQueryBuilder handles the compilation of TSQL code, the execution is delegated to any ORM such as Dapper.
+Note that while CSQLQueryExpress handles the compilation of TSQL code, the execution is delegated to any ORM such as Dapper.
 
-In addition to compiling TSQL code, SQLQueryBuilder offers a scaffolding tool and a test client for writing and executing queries.
+In addition to compiling TSQL code, CSQLQueryExpress offers a scaffolding tool and a test client for writing and executing queries.
 
 ### ***Please note that this library is in Beta and intended exclusively for use in non-production environments.***
 
@@ -13,8 +13,8 @@ In addition to compiling TSQL code, SQLQueryBuilder offers a scaffolding tool an
 - **TSQL Syntax Familiarity:** Write C# code that mirrors TSQL syntax, making it easier for developers familiar with TSQL.
 - **Dynamic Code Compilation:** Compile TSQL expressions dynamically within your C# applications, enhancing flexibility and reducing the need for pre-defined static queries.
 - **Comprehensive TSQL Support:** Support for a wide range of TSQL commands and expressions, ensuring compatibility with various database operations and scenarios.
-- **Seamless Integration:** Easily integrate SQLQueryBuilder into your existing C# projects with minimal configuration, enabling rapid development and deployment.
-- **Documentation:** Examples to help you get started quickly and make the most of SQLQueryBuilder's capabilities.
+- **Seamless Integration:** Easily integrate CSQLQueryExpress into your existing C# projects with minimal configuration, enabling rapid development and deployment.
+- **Documentation:** Examples to help you get started quickly and make the most of CSQLQueryExpress's capabilities.
 - **Database Scaffolding Tool:** Automatically generate database schema and compile the corresponding data model in C#, simplifying database integration and development.
 - **Test Client:** A dedicated test client for writing and executing queries using Dapper, facilitating quick and easy query testing and validation.
 
@@ -22,16 +22,16 @@ In addition to compiling TSQL code, SQLQueryBuilder offers a scaffolding tool an
 
 ### Compile and execute your queries
 
-1. **Write TSQL Expressions:** Use SQLQueryBuilder's intuitive syntax to write TSQL expressions directly in your C# code.
+1. **Write TSQL Expressions:** Use CSQLQueryExpress's intuitive syntax to write TSQL expressions directly in your C# code.
 2. **Compile:** Compile your TSQL code dynamically.
 3. **Execute with an ORM:** Use an ORM like Dapper to execute the compiled TSQL code.
 
 #### Example
 
-Here's a simple example to demonstrate how to use SQLQueryBuilder with Dapper:
+Here's a simple example to demonstrate how to use CSQLQueryExpress with Dapper:
 
 ```csharp
-using SQLQueryBuilder;
+using CSQLQueryExpress;
 using Dapper;
 using System.Data.SqlClient;
 
@@ -107,12 +107,12 @@ Set your database connection string in app.config file of QueryExecution.TestCli
 ```csharp
 using QueryExecution.Dapper.CommandFactory;
 using QueryExecution.Dapper.CommandFactory.Commands;
-using SQLQueryBuilder;
-using SQLQueryBuilder.Extensions;
-using SQLQueryBuilder.Fragments;
+using CSQLQueryExpress;
+using CSQLQueryExpress.Extensions;
+using CSQLQueryExpress.Fragments;
 using QueryExecution.Dal.NorthwindPubs;
-using SQLQueryBuilder.Statements;
-using SQLQueryBuilder.Schema;
+using CSQLQueryExpress.Statements;
+using CSQLQueryExpress.Schema;
 
 namespace QueryExecution.TestClient.Queries.NorthwindPubs
 {
