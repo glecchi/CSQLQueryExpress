@@ -31,7 +31,7 @@ if (result.Errors.Count > 0)
 
         foreach (var error in entity.Value)
         {
-            Console.WriteLine($"    {error.EntityName}: {error.Error.Message}");
+            Console.WriteLine($"    {error.EntityName} => {error.Error.Message}");
         }
     }
 }
