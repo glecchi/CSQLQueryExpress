@@ -205,6 +205,7 @@ namespace SQLQueryBuilder.Scaffolding
                 .Replace("{ProcedureName}", procedure.Name)
                 .Replace("{Namespace}", nameSpace)
                 .Replace("{ClassName}", className)
+                .Replace("{NotNullableParams}", _parameters.StoreProceduresNotNullableParameters ? "1" : "0")
                 .Replace("{SQLStoredProcedureInterface}", sqlStoredProcedureInterface);
         }
 

@@ -2,6 +2,7 @@
 DECLARE @ProcedureName sysname = '{ProcedureName}'
 DECLARE @Namespace VARCHAR(MAX) = '{Namespace}'
 DECLARE @ClassName VARCHAR(MAX) = '{ClassName}'
+DECLARE @NotNullableParams BIT = {NotNullableParams}
 DECLARE @SQLStoredProcedureInterface VARCHAR(MAX) = '{SQLStoredProcedureInterface}'
 DECLARE @Result VARCHAR(MAX) = '
 using System;
@@ -60,7 +61,7 @@ FROM
             ELSE 'UNKNOWN_' + typ.name
         END ParameterType,
         CASE 
-            WHEN pr.is_nullable = 1 AND typ.NAME IN ('bigint', 'bit', 'date', 'datetime', 'datetime2', 'datetimeoffset', 'decimal', 'float', 'int', 'money', 'numeric', 'real', 'smalldatetime', 'smallint', 'smallmoney', 'time', 'tinyint', 'uniqueidentifier') 
+            WHEN @NotNullableParams = 0 AND pr.is_nullable = 1 AND typ.NAME IN ('bigint', 'bit', 'date', 'datetime', 'datetime2', 'datetimeoffset', 'decimal', 'float', 'int', 'money', 'numeric', 'real', 'smalldatetime', 'smallint', 'smallmoney', 'time', 'tinyint', 'uniqueidentifier') 
             THEN '?' 
             ELSE '' 
         END NullableSign,

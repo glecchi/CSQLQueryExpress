@@ -165,5 +165,10 @@ namespace SQLQueryBuilder.Scaffolding
                 _storedProcedureResultSuffix = value;
             }
         }
+
+        /// <summary>
+        /// True generates stored procedure data model without nullable parameters. Otherwise False. (Default True)
+        /// </summary>
+        public bool StoreProceduresNotNullableParameters { get; set; } = true;
     }
 }
