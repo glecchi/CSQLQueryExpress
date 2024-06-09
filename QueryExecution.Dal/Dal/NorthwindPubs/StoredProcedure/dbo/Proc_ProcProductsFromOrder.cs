@@ -13,7 +13,7 @@ namespace QueryExecution.Dal.NorthwindPubs
 	    public class Proc_ProcProductsFromOrder : ISQLStoredProcedure<Proc_ProcProductsFromOrder_Result>
 	    {
             [Parameter("OrderID")]
-		    public int? OrderID { get; set; }
+		    public int OrderID { get; set; }
 
 	    }
     }
