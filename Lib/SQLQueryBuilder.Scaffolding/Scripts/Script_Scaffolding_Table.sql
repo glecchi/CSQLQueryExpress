@@ -1,8 +1,9 @@
 DECLARE @TableSchema sysname = '{TableSchema}'
 DECLARE @TableName sysname = '{TableName}'
-DECLARE @Namespace sysname = '{Namespace}'
-DECLARE @ClassName sysname = '{ClassName}'
-DECLARE @Result varchar(max) = '
+DECLARE @Namespace VARCHAR(MAX) = '{Namespace}'
+DECLARE @ClassName VARCHAR(MAX) = '{ClassName}'
+DECLARE @Error VARCHAR(MAX)
+DECLARE @Result VARCHAR(MAX) = '
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,76 +16,77 @@ namespace ' + @Namespace + '
 	public class ' + @ClassName + ' : ISQLQueryEntity
 	{'
 
-select @Result = @Result + DbGenComputedAttr + DbGenIdentityAttr + ReqAttr + '
+SELECT @Result = @Result + DbGenComputedAttr + DbGenIdentityAttr + ReqAttr + '
 		[Column("'+ ColumnName + '")]
-		public ' + ColumnType + NullableSign + ' ' + case when ColumnName = @TableName then concat(ColumnName, cast(1 as varchar(1))) else ColumnName end + ' { get; set; }
+		public ' + ColumnType + NullableSign + ' ' + CASE WHEN ColumnName = @TableName THEN CONCAT(ColumnName, CAST(1 AS VARCHAR(1))) ELSE ColumnName END + ' { get; set; }
 '
-from
+FROM
 (
-    select 
-        replace(col.name, ' ', '_') ColumnName,
+    SELECT 
+        REPLACE(col.name, ' ', '_') ColumnName,
         column_id ColumnId,
-        case typ.name 
-            when 'bigint' then 'long'
-            when 'binary' then 'byte[]'
-            when 'bit' then 'bool'
-            when 'char' then 'string'
-            when 'date' then 'DateTime'
-            when 'datetime' then 'DateTime'
-            when 'datetime2' then 'DateTime'
-            when 'datetimeoffset' then 'DateTimeOffset'
-            when 'decimal' then 'decimal'
-            when 'float' then 'double'
-            when 'image' then 'byte[]'
-            when 'int' then 'int'
-            when 'money' then 'decimal'
-            when 'nchar' then 'string'
-            when 'ntext' then 'string'
-            when 'numeric' then 'decimal'
-            when 'nvarchar' then 'string'
-            when 'real' then 'float'
-            when 'smalldatetime' then 'DateTime'
-            when 'smallint' then 'short'
-            when 'smallmoney' then 'decimal'
-            when 'text' then 'string'
-            when 'time' then 'TimeSpan'
-            when 'timestamp' then 'long'
-            when 'tinyint' then 'byte'
-            when 'uniqueidentifier' then 'Guid'
-            when 'varbinary' then 'byte[]'
-            when 'varchar' then 'string'
-			when 'xml' then 'string'
-            else 'UNKNOWN_' + typ.name
-        end ColumnType,
-        case 
-            when col.is_nullable = 1 and typ.name in ('bigint', 'bit', 'date', 'datetime', 'datetime2', 'datetimeoffset', 'decimal', 'float', 'int', 'money', 'numeric', 'real', 'smalldatetime', 'smallint', 'smallmoney', 'time', 'tinyint', 'uniqueidentifier') 
-            then '?' 
-            else '' 
-        end NullableSign,
-		case 
-            when col.is_nullable = 0 and typ.name NOT in ('bigint', 'bit', 'date', 'datetime', 'datetime2', 'datetimeoffset', 'decimal', 'float', 'int', 'money', 'numeric', 'real', 'smalldatetime', 'smallint', 'smallmoney', 'time', 'tinyint', 'uniqueidentifier') 
-            then '
+        CASE typ.name 
+            WHEN 'bigint' THEN 'long'
+            WHEN 'binary' THEN 'byte[]'
+            WHEN 'bit' THEN 'bool'
+            WHEN 'char' THEN 'string'
+            WHEN 'date' THEN 'DateTime'
+            WHEN 'datetime' THEN 'DateTime'
+            WHEN 'datetime2' THEN 'DateTime'
+            WHEN 'datetimeoffset' THEN 'DateTimeOffset'
+            WHEN 'decimal' THEN 'decimal'
+            WHEN 'float' THEN 'double'
+            WHEN 'image' THEN 'byte[]'
+            WHEN 'int' THEN 'int'
+            WHEN 'money' THEN 'decimal'
+            WHEN 'nchar' THEN 'string'
+            WHEN 'ntext' THEN 'string'
+            WHEN 'numeric' THEN 'decimal'
+            WHEN 'nvarchar' THEN 'string'
+            WHEN 'real' THEN 'float'
+            WHEN 'smalldatetime' THEN 'DateTime'
+            WHEN 'smallint' THEN 'short'
+            WHEN 'smallmoney' THEN 'decimal'
+            WHEN 'text' THEN 'string'
+            WHEN 'time' THEN 'TimeSpan'
+            WHEN 'timestamp' THEN 'long'
+            WHEN 'tinyint' THEN 'byte'
+            WHEN 'uniqueidentifier' THEN 'Guid'
+            WHEN 'varbinary' THEN 'byte[]'
+            WHEN 'varchar' THEN 'string'
+			WHEN 'xml' THEN 'string'
+            WHEN 'sysname' THEN 'string'
+            ELSE 'UNKNOWN_' + typ.name
+        END ColumnType,
+        CASE 
+            WHEN col.is_nullable = 1 AND typ.name IN ('bigint', 'bit', 'date', 'datetime', 'datetime2', 'datetimeoffset', 'decimal', 'float', 'int', 'money', 'numeric', 'real', 'smalldatetime', 'smallint', 'smallmoney', 'time', 'tinyint', 'uniqueidentifier') 
+            THEN '?' 
+            ELSE '' 
+        END NullableSign,
+		CASE 
+            WHEN col.is_nullable = 0 AND typ.name NOT IN ('bigint', 'bit', 'date', 'datetime', 'datetime2', 'datetimeoffset', 'decimal', 'float', 'int', 'money', 'numeric', 'real', 'smalldatetime', 'smallint', 'smallmoney', 'time', 'tinyint', 'uniqueidentifier') 
+            THEN '
 		[Required]' 
-            else '' 
-        end ReqAttr,
-        case when col.is_identity = 1
-            then'
+            ELSE '' 
+        END ReqAttr,
+        CASE WHEN col.is_identity = 1
+            THEN'
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]'
-            else ''
+            ELSE ''
         END DbGenIdentityAttr,
-        case when col.is_computed = 1
-            then'
+        CASE WHEN col.is_computed = 1
+            THEN'
 		[DatabaseGenerated(DatabaseGeneratedOption.Computed)]'
-            else ''
+            ELSE ''
         END DbGenComputedAttr
-    from sys.columns col
-        join sys.types typ on
+    FROM sys.columns col
+        JOIN sys.types typ ON
             col.system_type_id = typ.system_type_id AND col.user_type_id = typ.user_type_id
-    where object_id = object_id(@TableSchema + '.' + @TableName) 
+    WHERE object_id = OBJECT_ID(@TableSchema + '.' + @TableName) 
 ) t
-order by ColumnId
+ORDER BY ColumnId
 
-set @Result = @Result  + '
+SET @Result = @Result  + '
 	}
 }'
 
