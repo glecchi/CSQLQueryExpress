@@ -15,6 +15,7 @@
     <IncludeSymbols>True</IncludeSymbols>
     <Company>$(Authors)</Company>
     <Authors>jED</Authors>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
