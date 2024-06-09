@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Reflection;
@@ -15,7 +16,7 @@ namespace SQLQueryBuilder.Scaffolding
             _parameters = parameters;
         }
 
-        public void GenerateDataModel()
+        public void GenerateDataModel(SQLDataModelCodeGeneratorResult result)
         {
             var procedureScaffoldingScript = GetProcedureScaffoldingScript();
             var checkResultScript = GetCheckResultScript();
@@ -58,60 +59,82 @@ namespace SQLQueryBuilder.Scaffolding
                 {
                     bool hasResult;
 
-                    using (var cmd = connection.CreateCommand())
+                    try
                     {
-                        cmd.CommandText = GetCheckResultCommand(procedure, checkResultScript);
+                        using (var cmd = connection.CreateCommand())
+                        {
+                            cmd.CommandText = GetCheckResultCommand(procedure, checkResultScript);
 
-                        var count = (int)cmd.ExecuteScalar();
+                            var count = (int)cmd.ExecuteScalar();
 
-                        hasResult = count > 0;
+                            hasResult = count > 0;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        result.AddError(SQLDataModelCodeGeneratorEntityType.StoredProcedure, procedure.Name, ex);
+                        continue;
                     }
 
                     var procedureFileCs = GetProcedureFileCs(workingFolder.FullName, procedure);
-                    if (_parameters.OverwriteExistingDataModelClasses || !File.Exists(procedureFileCs))
-                    {
-                        if (File.Exists(procedureFileCs))
+                    try
+                    {                        
+                        if (_parameters.OverwriteExistingDataModelClasses || !File.Exists(procedureFileCs))
                         {
-                            File.Delete(procedureFileCs);
-                        }
-
-                        using (var cmd = connection.CreateCommand())
-                        {
-                            cmd.CommandText = GetProcedureCommand(procedure, procedureScaffoldingScript, hasResult);
-
-                            var result = cmd.ExecuteScalar();
-                            if (result is string dto)
+                            if (File.Exists(procedureFileCs))
                             {
-                                File.WriteAllText(procedureFileCs, dto);
-                            }
-                        }
-                    }
-
-                    if (hasResult)
-                    {
-                        var procedureResultFileCs = GetProcedureResultFileCs(workingFolder.FullName, procedure);
-                        if (_parameters.OverwriteExistingDataModelClasses || !File.Exists(procedureResultFileCs))
-                        {
-                            if (File.Exists(procedureResultFileCs))
-                            {
-                                File.Delete(procedureResultFileCs);
+                                File.Delete(procedureFileCs);
                             }
 
                             using (var cmd = connection.CreateCommand())
                             {
-                                cmd.CommandText = GetProcedureResultCommand(procedure, resultScaffoldingScript);
+                                cmd.CommandText = GetProcedureCommand(procedure, procedureScaffoldingScript, hasResult);
 
-                                var result = cmd.ExecuteScalar();
-                                if (result is string dto)
+                                var cmdResult = cmd.ExecuteScalar();
+                                if (cmdResult is string dto)
                                 {
-                                    File.WriteAllText(procedureResultFileCs, dto);
-                                }
-                                else
-                                {
-                                    File.Delete(procedureFileCs);
+                                    File.WriteAllText(procedureFileCs, dto);
                                 }
                             }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        result.AddError(SQLDataModelCodeGeneratorEntityType.StoredProcedure, procedure.Name, ex);
+                    }
+
+                    try
+                    {
+                        if (hasResult)
+                        {
+                            var procedureResultFileCs = GetProcedureResultFileCs(workingFolder.FullName, procedure);
+                            if (_parameters.OverwriteExistingDataModelClasses || !File.Exists(procedureResultFileCs))
+                            {
+                                if (File.Exists(procedureResultFileCs))
+                                {
+                                    File.Delete(procedureResultFileCs);
+                                }
+
+                                using (var cmd = connection.CreateCommand())
+                                {
+                                    cmd.CommandText = GetProcedureResultCommand(procedure, resultScaffoldingScript);
+
+                                    var cmdResult = cmd.ExecuteScalar();
+                                    if (cmdResult is string dto)
+                                    {
+                                        File.WriteAllText(procedureResultFileCs, dto);
+                                    }
+                                    else
+                                    {
+                                        File.Delete(procedureFileCs);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        result.AddError(SQLDataModelCodeGeneratorEntityType.StoredProcedure, procedure.Name, ex);
                     }
                 }
             }
