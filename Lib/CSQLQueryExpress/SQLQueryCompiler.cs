@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using System.Xml.Linq;
-using CSQLQueryExpress.Fragments;
 
 namespace CSQLQueryExpress
 {
@@ -76,7 +75,7 @@ namespace CSQLQueryExpress
 
             var translatedQuery = translatedQueryBuilder.ToString();
 
-            return new SQLQueryCompiled { Statement = translatedQuery, Parameters = parameterBuilder.Parameters.Select(p => p.Value).ToList() };
+            return new SQLQueryCompiled(translatedQuery, new ReadOnlyCollection<SQLQueryParameter>(parameterBuilder.Parameters.Select(p => p.Value).ToList()));
         }
     }
 
@@ -88,10 +87,16 @@ namespace CSQLQueryExpress
         }
     }
 
-    public class SQLQueryCompiled
+    public sealed class SQLQueryCompiled
     {
-        public string Statement { get; set; }
+        internal SQLQueryCompiled(string statement, IList<SQLQueryParameter> parameters)
+        {
+            Statement = statement;
+            Parameters = parameters;
+        }
 
-        public IList<SQLQueryParameter> Parameters { get; set; }
+        public string Statement { get; }
+
+        public IList<SQLQueryParameter> Parameters { get; }
     }
 }

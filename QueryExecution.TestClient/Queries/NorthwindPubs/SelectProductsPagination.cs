@@ -3,7 +3,6 @@ using QueryExecution.Dapper.CommandFactory;
 using QueryExecution.Dapper.CommandFactory.Commands;
 using CSQLQueryExpress;
 using CSQLQueryExpress.Fragments;
-using CSQLQueryExpress.Extensions;
 
 namespace QueryExecution.TestClient.Queries.NorthwindPubs
 {

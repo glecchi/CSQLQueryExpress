@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace CSQLQueryExpress
+﻿namespace CSQLQueryExpress
 {
     public interface ISQLQueryFragment
     {

@@ -2,7 +2,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace CSQLQueryExpress.Extensions
+namespace CSQLQueryExpress
 {
     public static class SQLQueryPaginationExtensions
     {

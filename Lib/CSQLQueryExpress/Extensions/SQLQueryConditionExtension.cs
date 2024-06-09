@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CSQLQueryExpress.Extensions
+namespace CSQLQueryExpress
 {
     public static class SQLQueryConditionExtension
     {

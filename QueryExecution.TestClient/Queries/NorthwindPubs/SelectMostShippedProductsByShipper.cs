@@ -1,10 +1,8 @@
 ﻿using QueryExecution.Dapper.CommandFactory;
 using QueryExecution.Dapper.CommandFactory.Commands;
 using CSQLQueryExpress;
-using CSQLQueryExpress.Extensions;
 using CSQLQueryExpress.Fragments;
 using QueryExecution.Dal.NorthwindPubs;
-using CSQLQueryExpress.Statements;
 using CSQLQueryExpress.Schema;
 
 namespace QueryExecution.TestClient.Queries.NorthwindPubs

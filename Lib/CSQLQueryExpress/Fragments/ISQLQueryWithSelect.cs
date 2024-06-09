@@ -8,7 +8,6 @@ namespace CSQLQueryExpress.Fragments
         SQLQuerySelect SelectAll();
     }
 
-
     internal interface ISQLQueryWithSelect<T> : ISQLQueryWithSelect
     {
         SQLQuerySelect<TS> Select<TS>(
