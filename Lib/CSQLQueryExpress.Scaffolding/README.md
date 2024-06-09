@@ -4,7 +4,7 @@
 
 ### ***Please note that this library is in Beta and intended exclusively for use in non-production environments.***
 
-#### Example
+### Example
 
 Here's a simple example to demonstrate how to use CSQLQueryExpress.Scaffolding:
 
