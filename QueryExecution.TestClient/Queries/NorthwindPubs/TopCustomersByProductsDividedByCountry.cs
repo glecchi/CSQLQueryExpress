@@ -2,15 +2,7 @@
 using QueryExecution.Dapper.CommandFactory;
 using QueryExecution.Dapper.CommandFactory.Commands;
 using CSQLQueryExpress;
-using CSQLQueryExpress.Extensions;
 using CSQLQueryExpress.Fragments;
-using CSQLQueryExpress.Statements;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QueryExecution.TestClient.Queries.NorthwindPubs
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Data.SqlTypes;
-
-namespace CSQLQueryExpress.Extensions
+﻿namespace CSQLQueryExpress
 {
     public static class SQLQuerySelectionExtension
     {

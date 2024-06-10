@@ -7,8 +7,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using CSQLQueryExpress.Extensions;
-using CSQLQueryExpress.Statements;
 
 namespace CSQLQueryExpress
 {
