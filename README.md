@@ -108,7 +108,6 @@ Set your database connection string in app.config file of QueryExecution.TestCli
 using QueryExecution.Dapper.CommandFactory;
 using QueryExecution.Dapper.CommandFactory.Commands;
 using CSQLQueryExpress;
-using CSQLQueryExpress.Extensions;
 using CSQLQueryExpress.Fragments;
 using QueryExecution.Dal.NorthwindPubs;
 using CSQLQueryExpress.Statements;
