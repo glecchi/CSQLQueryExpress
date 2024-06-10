@@ -2,7 +2,7 @@
 
 **CSQLQueryExpress.Scaffolding** is a C# library designed to compile the data model for CSQLQueryExpress from the database schema.
 
-### ***Please note that this library is in Beta and intended exclusively for use in non-production environments.***
+### ***Please note that this library is intended exclusively for use in non-production environments.***
 
 ### Example
 
