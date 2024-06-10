@@ -1,6 +1,6 @@
 ﻿using Dapper;
-using SQLQueryBuilder;
-using SQLQueryBuilder.Fragments;
+using CSQLQueryExpress;
+using CSQLQueryExpress.Fragments;
 using System.Collections;
 using System.Data;
 using System.Data.SqlClient;

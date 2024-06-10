@@ -1,9 +1,9 @@
 ﻿using QueryExecution.Dal.NorthwindPubs;
 using QueryExecution.Dapper.CommandFactory;
 using QueryExecution.Dapper.CommandFactory.Commands;
-using SQLQueryBuilder;
-using SQLQueryBuilder.Extensions;
-using SQLQueryBuilder.Fragments;
+using CSQLQueryExpress;
+using CSQLQueryExpress.Extensions;
+using CSQLQueryExpress.Fragments;
 using System;
 using System.Collections.Generic;
 using System.Linq;

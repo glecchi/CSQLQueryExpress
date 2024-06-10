@@ -1,0 +1,79 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+	<Title>CSQLQueryExpress.Scaffolding</Title>
+    <Version>1.0.0-beta</Version>
+    <Description>A simple c# library to compile data model from database schema.</Description>
+    <PackageProjectUrl></PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/glecchi/CSQLQueryExpress</RepositoryUrl>
+    <PackageTags>csharp,sql-server-database,query-builder,stored-procedures,tsql,sql-query-builder,subquery,database-scaffolding,compiled-query,cte-table</PackageTags>
+    <PackageReleaseNotes>Please note that this library is in Beta and intended exclusively for use in non-production environments.</PackageReleaseNotes>
+    <PackageLicenseFile>License.txt</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <IncludeSymbols>True</IncludeSymbols>
+  </PropertyGroup>
+
+    <ItemGroup>
+	    <None Include="..\..\License.txt">
+		    <Pack>True</Pack>
+		    <PackagePath>\</PackagePath>
+	    </None>
+	    <None Include="..\..\README.md">
+		    <Pack>True</Pack>
+		    <PackagePath>\</PackagePath>
+	    </None>
+    </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Script_Check_StoreProcedure_Result.sql" />
+    <None Remove="Script_Scaffolding_StoreProcedure.sql" />
+    <None Remove="Script_Scaffolding_StoreProcedure_AsSchemaNestedClass.sql" />
+    <None Remove="Script_Scaffolding_StoreProcedure_Result.sql" />
+    <None Remove="Script_Scaffolding_StoreProcedure_WithDbDecoration.sql" />
+    <None Remove="Script_Scaffolding_StoreProcedure_WithDbDecoration_AsSchemaNestedClass.sql" />
+    <None Remove="Script_Scaffolding_Table.sql" />
+    <None Remove="Script_Scaffolding_Table_AsSchemaNestedClass.sql" />
+    <None Remove="Script_Scaffolding_Table_WithDbDecoration.sql" />
+    <None Remove="Script_Scaffolding_Table_WithDbDecoration_AsSchemaNestedClass.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\Script_Check_StoreProcedure_Result.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_StoreProcedure_AsSchemaNestedClass.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_StoreProcedure_Result.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_StoreProcedure.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_StoreProcedure_WithDbDecoration_AsSchemaNestedClass.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_StoreProcedure_WithDbDecoration.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_Table_AsSchemaNestedClass.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_Table.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_Table_WithDbDecoration_AsSchemaNestedClass.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\Script_Scaffolding_Table_WithDbDecoration.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+  </ItemGroup>
+
+</Project>

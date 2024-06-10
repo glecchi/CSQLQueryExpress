@@ -1,5 +1,5 @@
-﻿using SQLQueryBuilder.Fragments;
-using SQLQueryBuilder;
+﻿using CSQLQueryExpress.Fragments;
+using CSQLQueryExpress;
 using System;
 using System.Collections.Generic;
 using System.Linq;
