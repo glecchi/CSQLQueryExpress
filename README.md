@@ -41,7 +41,7 @@ class Program
 {
     static void Main()
     {
-        var query = new SQLQuery()
+        SQLQuerySelect<dbo.Users> query = new SQLQuery()
           .From<dbo.Users>()
           .Where(u => u.Age > 30)
           .Select(u => u.All());
@@ -53,6 +53,8 @@ class Program
 
         using (var connection = new SqlConnection("YourConnectionString"))
         {
+            connection.Open();
+
             var result = connection.Query<dbo.Users>(statement, parameters);
             foreach (var user in result)
             {
