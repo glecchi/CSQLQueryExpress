@@ -1,6 +1,6 @@
 # CSQLQueryExpress
 
-**CSQLQueryExpress** is a C# library designed to compile TSQL code, providing developers with the utmost flexibility to write expressions in C# that closely resemble TSQL syntax.  
+**CSQLQueryExpress** is a C# [NuGet Library](https://www.nuget.org/packages/CSQLQueryExpress) designed to compile TSQL code, providing developers with the utmost flexibility to write expressions in C# that closely resemble TSQL syntax.  
 
 Note that while CSQLQueryExpress handles the compilation of TSQL code, the execution is delegated to any ORM such as Dapper.
 
