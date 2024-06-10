@@ -3,7 +3,10 @@ using CSQLQueryExpress.Fragments;
 
 namespace CSQLQueryExpress
 {
-    public class SQLQuery
+    /// <summary>
+    /// Used to create a SQL query expression.
+    /// </summary>
+    public sealed class SQLQuery
     {
         private readonly IList<ISQLQueryFragment> _fragments = new List<ISQLQueryFragment>();
 
