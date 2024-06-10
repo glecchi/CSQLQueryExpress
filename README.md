@@ -58,7 +58,7 @@ class Program
 
         using (var connection = new SqlConnection("YourConnectionString"))
         {
-            var result = connection.Query(tSqlQuery.Statement, tSqlQuery.Parameters);
+            var result = connection.Query<dbo.Users>(tSqlQuery.Statement, tSqlQuery.Parameters);
             foreach (var user in result)
             {
                 Console.WriteLine(user);
