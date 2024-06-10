@@ -6,7 +6,7 @@ Note that while CSQLQueryExpress handles the compilation of TSQL code, the execu
 
 ### ***Please note that this library is intended exclusively for use in non-production environments.***
 
-### Example
+## Example
 
 Here's a simple example to demonstrate how to use CSQLQueryExpress with Dapper:
 
@@ -14,15 +14,18 @@ Here's a simple example to demonstrate how to use CSQLQueryExpress with Dapper:
 using CSQLQueryExpress;
 using Dapper;
 using System.Data.SqlClient;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 class Program
 {
     static void Main()
     {
-        SQLQuerySelect<dbo.Users> query = new SQLQuery()
-          .From<dbo.Users>()
-          .Where(u => u.Age > 30)
-          .Select(u => u.All());
+        SQLQuerySelect<dbo.Users> query = 
+            new SQLQuery()
+                .From<dbo.Users>()
+                .Where(u => u.Age > 30)
+                .Select(u => u.All());
 
         var tSqlQuery = query.Compile();
 
@@ -36,12 +39,35 @@ class Program
             var result = connection.Query<dbo.Users>(statement, parameters);
             foreach (var user in result)
             {
-                Console.WriteLine(user);
+                Console.WriteLine($"{user.UserID} - {user.FirstName} - {user.LastName} - {user.Age}");
             }
         }
     }
 }
+
+[Table("Users", Schema = "dbo")]
+public class Users : ISQLQueryEntity
+{
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Column("EmployeeID")]
+    public int UserID { get; set; }
+    
+    [Required]
+    [Column("FirstName")]
+    public string FirstName { get; set; }
+    
+    [Required]
+    [Column("LastName")]
+    public string LastName { get; set; }
+    	
+    [Column("Age")]
+    public int Age { get; set; }
+}
 ```
+
+## CSQLQueryExpress.Scaffolding
+
+**CSQLQueryExpress.Scaffolding** is a C# [NuGet library](https://www.nuget.org/packages/CSQLQueryExpress.Scaffolding) designed to compile the data model for CSQLQueryExpress from the database schema.
 
 ## Note
 
