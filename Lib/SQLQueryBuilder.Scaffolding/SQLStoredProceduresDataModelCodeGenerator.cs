@@ -93,6 +93,11 @@ namespace SQLQueryBuilder.Scaffolding
                                 var cmdResult = cmd.ExecuteScalar();
                                 if (cmdResult is string dto)
                                 {
+                                    if (dto.HasUnknownTypes(out IList<string> unknownTypes))
+                                    {
+                                        throw new Exception($"Unknown types: {string.Join(", ", unknownTypes)}");
+                                    }
+
                                     File.WriteAllText(procedureFileCs, dto);
                                 }
                             }
@@ -122,6 +127,11 @@ namespace SQLQueryBuilder.Scaffolding
                                     var cmdResult = cmd.ExecuteScalar();
                                     if (cmdResult is string dto)
                                     {
+                                        if (dto.HasUnknownTypes(out IList<string> unknownTypes))
+                                        {
+                                            throw new Exception($"Unknown types: {string.Join(", ", unknownTypes)}");
+                                        }
+
                                         File.WriteAllText(procedureResultFileCs, dto);
                                     }
                                     else

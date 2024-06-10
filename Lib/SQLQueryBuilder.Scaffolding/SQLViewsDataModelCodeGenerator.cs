@@ -74,6 +74,11 @@ namespace SQLQueryBuilder.Scaffolding
 
                             var dto = (string)cmd.ExecuteScalar();
 
+                            if (dto.HasUnknownTypes(out IList<string> unknownTypes))
+                            {
+                                throw new Exception($"Unknown types: {string.Join(", ", unknownTypes)}");
+                            }
+
                             File.WriteAllText(fileCs, dto);
                         }
                     }
