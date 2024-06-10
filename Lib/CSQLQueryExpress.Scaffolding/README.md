@@ -4,7 +4,7 @@
 
 ### ***Please note that this library is intended exclusively for use in non-production environments.***
 
-### Example
+### **Example**
 
 Here's a simple example to demonstrate how to use CSQLQueryExpress.Scaffolding:
 
@@ -12,19 +12,19 @@ Here's a simple example to demonstrate how to use CSQLQueryExpress.Scaffolding:
 using CSQLQueryExpress.Scaffolding;
 using System.Configuration;
 
-var connectionString = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
-var outputFolder = ConfigurationManager.AppSettings["OutputFolder"];
-var overwriteExistingDataModelClasses = bool.Parse(ConfigurationManager.AppSettings["OverwriteExistingDataModelClasses"]);
-var dataModelClassNamespace = ConfigurationManager.AppSettings["DataModelClassNamespace"];
-var decorateWithDatabaseAttribute = bool.Parse(ConfigurationManager.AppSettings["DecorateWithDatabaseAttribute"]);
+var connectionString = @"Data Source=...;Initial Catalog=...;Integrated Security=SSPI;";
+var outputFolder = @"C:\Temp\...";
+var overwriteExistingDataModelClasses = true;
+var dataModelClassNamespace = ...;
+var decorateWithDatabaseAttribute = false;
 
 var scaffoldingParameters = new SQLDataModelCodeGeneratorParameters(
-        connectionString,
-        outputFolder,
-        dataModelClassNamespace,
-        SQLDataModelCodeGeneratorEntityType.Table | SQLDataModelCodeGeneratorEntityType.View | SQLDataModelCodeGeneratorEntityType.StoredProcedure,
-        overwriteExistingDataModelClasses, 
-        decorateWithDatabaseAttribute);
+    connectionString,
+    outputFolder,
+    dataModelClassNamespace,
+    SQLDataModelCodeGeneratorEntityType.Table | SQLDataModelCodeGeneratorEntityType.View | SQLDataModelCodeGeneratorEntityType.StoredProcedure,
+    overwriteExistingDataModelClasses, 
+    decorateWithDatabaseAttribute);
 
 var dataModelCodeGen = new SQLDataModelCodeGenerator(scaffoldingParameters);
 
