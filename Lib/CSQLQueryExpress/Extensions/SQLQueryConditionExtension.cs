@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace CSQLQueryExpress
 {
@@ -65,6 +67,21 @@ namespace CSQLQueryExpress
         }
 
         public static ICase<T> Case<T>(this T obj)
+        {
+            return default;
+        }
+
+        public static T IsNull<T>(this T obj, Expression<Func<T>> replacementValue) where T : struct
+        {
+            return default;
+        }
+
+        public static T? IsNull<T>(this T? obj, Expression<Func<T?>> replacementValue) where T : struct
+        {
+            return default;
+        }
+
+        public static string IsNull(this string obj, Expression<Func<string>> replacementValue)
         {
             return default;
         }
