@@ -6,7 +6,7 @@ Note that while CSQLQueryExpress handles the compilation of TSQL code, the execu
 
 In addition to compiling TSQL code, CSQLQueryExpress offers a scaffolding tool and a test client for writing and executing queries.
 
-### ***Please note that this library is in Beta and intended exclusively for use in non-production environments.***
+### ***Please note that this library is intended exclusively for use in non-production environments.***
 
 ## Key Features
 

@@ -4,7 +4,7 @@
 
 Note that while CSQLQueryExpress handles the compilation of TSQL code, the execution is delegated to any ORM such as Dapper.
 
-### ***Please note that this library is in Beta and intended exclusively for use in non-production environments.***
+### ***Please note that this library is intended exclusively for use in non-production environments.***
 
 ### Example
 
