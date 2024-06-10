@@ -6,6 +6,8 @@ Note that while SQLQueryBuilder handles the compilation of TSQL code, the execut
 
 In addition to compiling TSQL code, SQLQueryBuilder offers a scaffolding tool and a test client for writing and executing queries.
 
+## Please note that this library is in Beta and intended exclusively for use in test environments.
+
 ## Key Features
 
 - **TSQL Syntax Familiarity:** Write C# code that mirrors TSQL syntax, making it easier for developers familiar with TSQL.
@@ -72,5 +74,6 @@ Within the solution, you will find:
 - **ScaffoldingDatabaseTool:** This tool is designed for database scaffolding and data model compilation in C#.
   You need to configure the connection string in the "App.config" file of the project. Once the connection string is configured, simply run the tool, and the data model will be set up in the "QueryExecution.Dal" project, which is also      present in the solution.
 - **QueryExecution.Dal:** This project already contains a precompiled data model based on Microsoft's NorthwindPubs sample database. 
-- **Test Client:** The test client includes example queries for this data model and is configured to connect to the NorthwindPubs database on a localdb MSSQLServer instance. To execute the test queries, you need to create the NorthwindPubs database on your localdb MSSQLServer instance. The scripts for creating the NorthwindPubs database can be found [here](https://github.com/Microsoft/sql-server-samples/tree/master/samples/databases/northwind-pubs).
-
+- **Test Client:** The test client includes example queries for this data model and is configured to connect to the NorthwindPubs database on a localdb MSSQLServer instance. To execute the test queries, you need to create the NorthwindPubs database on your localdb MSSQLServer instance.  
+  The scripts for creating the NorthwindPubs database can be found here:  
+  https://github.com/Microsoft/sql-server-samples/tree/master/samples/databases/northwind-pubs.
