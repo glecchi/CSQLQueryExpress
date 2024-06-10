@@ -16,7 +16,6 @@
     <Company>$(Authors)</Company>
     <Authors>jED</Authors>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <ApplicationIcon>CSQLQueryExpress.ico</ApplicationIcon>
   </PropertyGroup>
 
     <ItemGroup>
@@ -37,10 +36,6 @@
     <None Remove="Script_Scaffolding_Table_AsSchemaNestedClass.sql" />
     <None Remove="Script_Scaffolding_Table_WithDbDecoration.sql" />
     <None Remove="Script_Scaffolding_Table_WithDbDecoration_AsSchemaNestedClass.sql" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="CSQLQueryExpress.ico" />
   </ItemGroup>
 
   <ItemGroup>
