@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 using System.Data;
 using System.Linq;
 using System.Text;
-using CSQLQueryExpress.Extensions;
+using CSQLQueryExpress;
 
 namespace CSQLQueryExpress.Tests.UnitTests
 {

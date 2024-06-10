@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace CSQLQueryExpress.Extensions
+namespace CSQLQueryExpress
 {
     public static class SQLQueryConversionExtensions
     {

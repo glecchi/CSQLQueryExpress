@@ -1,8 +1,4 @@
-﻿using System;
-using System.Data;
-using System.Data.SqlTypes;
-
-namespace CSQLQueryExpress.Extensions
+﻿namespace CSQLQueryExpress
 {
     public static class SQLQueryOperationExtensions
     {

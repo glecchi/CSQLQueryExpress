@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CSQLQueryExpress.Statements
+﻿namespace CSQLQueryExpress
 {
     public static class Count
     {

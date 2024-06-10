@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CSQLQueryExpress.Extensions
+﻿namespace CSQLQueryExpress
 {
     public static class SQLQueryAssignmentExtensions
     {
