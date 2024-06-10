@@ -79,9 +79,11 @@ namespace SQLQueryBuilder.Scaffolding
                         {
                             cmd.CommandText = GetProcedureCommand(procedure, procedureScaffoldingScript, hasResult);
 
-                            var dto = (string)cmd.ExecuteScalar();
-
-                            File.WriteAllText(procedureFileCs, dto);
+                            var result = cmd.ExecuteScalar();
+                            if (result is string dto)
+                            {
+                                File.WriteAllText(procedureFileCs, dto);
+                            }
                         }
                     }
 
@@ -99,9 +101,15 @@ namespace SQLQueryBuilder.Scaffolding
                             {
                                 cmd.CommandText = GetProcedureResultCommand(procedure, resultScaffoldingScript);
 
-                                var dto = (string)cmd.ExecuteScalar();
-
-                                File.WriteAllText(procedureResultFileCs, dto);
+                                var result = cmd.ExecuteScalar();
+                                if (result is string dto)
+                                {
+                                    File.WriteAllText(procedureResultFileCs, dto);
+                                }
+                                else
+                                {
+                                    File.Delete(procedureFileCs);
+                                }
                             }
                         }
                     }
@@ -143,7 +151,7 @@ namespace SQLQueryBuilder.Scaffolding
         }
 
         string GetCheckResultCommand(Procedure procedure, string checkScript)
-        {            
+        {
             return checkScript
                 .Replace("{ProcedureSchema}", procedure.Schema)
                 .Replace("{ProcedureName}", procedure.Name);
