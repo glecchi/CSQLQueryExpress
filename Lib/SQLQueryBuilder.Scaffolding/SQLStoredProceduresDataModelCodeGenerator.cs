@@ -149,7 +149,10 @@ namespace SQLQueryBuilder.Scaffolding
 
         string GetProcedureFileCs(string databaseFolderPath, Procedure procedure)
         {
-            var schemaFolderPath = Path.Combine(databaseFolderPath, procedure.Schema);
+            var schemaFolderPath = _parameters.GenerateSchemaFolder
+                ? Path.Combine(databaseFolderPath, procedure.Schema)
+                : databaseFolderPath;
+
             if (!Directory.Exists(schemaFolderPath))
             {
                 Directory.CreateDirectory(schemaFolderPath);
@@ -210,11 +213,17 @@ namespace SQLQueryBuilder.Scaffolding
 
         string GetProcedureScaffoldingScript()
         {
-            var scaffoldingScript = !_parameters.DecorateWithDatabaseAttribute ? "Script_Scaffolding_StoreProcedure.sql" : "Script_Scaffolding_StoreProcedure_WithDbDecoration.sql";
+            var scaffoldingScript = !_parameters.DecorateWithDatabaseAttribute
+                ? !_parameters.GenerateSchemaNestedClasses
+                    ? "Script_Scaffolding_StoreProcedure.sql"
+                    : "Script_Scaffolding_StoreProcedure_AsSchemaNestedClass.sql"
+                : !_parameters.GenerateSchemaNestedClasses
+                    ? "Script_Scaffolding_StoreProcedure_WithDbDecoration.sql"
+                    : "Script_Scaffolding_StoreProcedure_WithDbDecoration_AsSchemaNestedClass.sql";
 
             var info = Assembly.GetExecutingAssembly().GetName();
             var name = info.Name;
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{name}.{scaffoldingScript}"))
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{name}.Scripts.{scaffoldingScript}"))
             {
                 using (var streamReader = new StreamReader(stream, Encoding.UTF8))
                 {
@@ -229,7 +238,7 @@ namespace SQLQueryBuilder.Scaffolding
 
             var info = Assembly.GetExecutingAssembly().GetName();
             var name = info.Name;
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{name}.{scaffoldingScript}"))
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{name}.Scripts.{scaffoldingScript}"))
             {
                 using (var streamReader = new StreamReader(stream, Encoding.UTF8))
                 {
@@ -244,7 +253,7 @@ namespace SQLQueryBuilder.Scaffolding
 
             var info = Assembly.GetExecutingAssembly().GetName();
             var name = info.Name;
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{name}.{scaffoldingScript}"))
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{name}.Scripts.{scaffoldingScript}"))
             {
                 using (var streamReader = new StreamReader(stream, Encoding.UTF8))
                 {

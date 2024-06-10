@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace SQLQueryBuilder.Scaffolding
 {
+    /// <summary>
+    /// The result of the data model class generation procedure.
+    /// </summary>
     public sealed class SQLDataModelCodeGeneratorResult
     {
         internal SQLDataModelCodeGeneratorResult()
@@ -10,6 +13,9 @@ namespace SQLQueryBuilder.Scaffolding
             Errors = new Dictionary<SQLDataModelCodeGeneratorEntityType, IList<SQLDataModelCodeGeneratorError>>();
         }
 
+        /// <summary>
+        /// True if all data model classes were generated correctly. Otherwise False.
+        /// </summary>
         public bool Successfully 
         { 
             get 
@@ -18,6 +24,9 @@ namespace SQLQueryBuilder.Scaffolding
             } 
         }
 
+        /// <summary>
+        /// The errors collection of procedure.
+        /// </summary>
         public IDictionary<SQLDataModelCodeGeneratorEntityType, IList<SQLDataModelCodeGeneratorError>> Errors { get; }
 
         internal void AddError(SQLDataModelCodeGeneratorEntityType entityType, string entityName, Exception error)
