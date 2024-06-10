@@ -20,19 +20,4 @@ namespace QueryExecution.TestClient.Queries.NorthwindPubs
             return executeProcedure;
         }
     }
-
-    internal class ExecuteDuplicateOrder : SQLStoredProcedureCommand
-    {
-        public ExecuteDuplicateOrder(ISQLQueryCommandFactory commandFactory) : base(commandFactory)
-        {
-        }
-
-        protected override SQLQueryStoredProcedure GetExecuteProcedure()
-        {
-            var procedure = new SQLQuery()
-                .StoredProcedure(new dbo.Proc_DuplicateOrder { OrderID = 10294 });
-
-            return procedure; ;
-        }
-    }
 }

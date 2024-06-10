@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Reflection;
@@ -15,7 +16,7 @@ namespace SQLQueryBuilder.Scaffolding
             _parameters = parameters;
         }
 
-        public void GenerateDataModel()
+        public void GenerateDataModel(SQLDataModelCodeGeneratorResult result)
         {
             var scaffoldingScript = GetScaffoldingScript();
 
@@ -54,24 +55,31 @@ namespace SQLQueryBuilder.Scaffolding
 
                 foreach (var view in views)
                 {
-                    var fileCs = GetFileCs(workingFolder.FullName, view);
-                    if (!_parameters.OverwriteExistingDataModelClasses && File.Exists(fileCs))
+                    try
                     {
-                        continue;
+                        var fileCs = GetFileCs(workingFolder.FullName, view);
+                        if (!_parameters.OverwriteExistingDataModelClasses && File.Exists(fileCs))
+                        {
+                            continue;
+                        }
+
+                        if (File.Exists(fileCs))
+                        {
+                            File.Delete(fileCs);
+                        }
+
+                        using (var cmd = connection.CreateCommand())
+                        {
+                            cmd.CommandText = GetCommand(view, scaffoldingScript);
+
+                            var dto = (string)cmd.ExecuteScalar();
+
+                            File.WriteAllText(fileCs, dto);
+                        }
                     }
-
-                    if (File.Exists(fileCs))
+                    catch (Exception ex)
                     {
-                        File.Delete(fileCs);
-                    }
-
-                    using (var cmd = connection.CreateCommand())
-                    {
-                        cmd.CommandText = GetCommand(view, scaffoldingScript);
-
-                        var dto = (string)cmd.ExecuteScalar();
-
-                        File.WriteAllText(fileCs, dto);
+                        result.AddError(SQLDataModelCodeGeneratorEntityType.View, view.Name, ex);
                     }
                 }
             }

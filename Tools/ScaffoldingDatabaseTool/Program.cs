@@ -17,5 +17,24 @@ var scaffoldingParameters = new SQLDataModelCodeGeneratorParameters(
 
 var dataModelCodeGen = new SQLDataModelCodeGenerator(scaffoldingParameters);
 
-dataModelCodeGen.GenerateDataModel();
+var result = dataModelCodeGen.GenerateDataModel();
+
+Console.WriteLine($"Result: {(result.Successfully ? "Successfully" : "With errors")}");
+
+if (result.Errors.Count > 0)
+{
+    Console.WriteLine("Errors:");
+    
+    foreach (var entity in result.Errors)
+    {
+        Console.WriteLine($"EntityType: {entity.Key}");
+
+        foreach (var error in entity.Value)
+        {
+            Console.WriteLine($"    {error.EntityName}: {error.Error.Message}");
+        }
+    }
+}
+
+Console.ReadLine();
 
