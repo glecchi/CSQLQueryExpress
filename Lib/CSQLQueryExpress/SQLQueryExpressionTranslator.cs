@@ -859,10 +859,21 @@ namespace CSQLQueryExpress
         {
             if (node.Method.Name == nameof(SQLQueryConditionExtension.IsNull))
             {
-                _queryBuilder.Append("(");
-                this.Visit(node.Arguments[0]);
-                _queryBuilder.Append(" IS NULL");
-                _queryBuilder.Append(")");
+                if (node.Arguments.Count == 1)
+                {
+                    _queryBuilder.Append("(");
+                    this.Visit(node.Arguments[0]);
+                    _queryBuilder.Append(" IS NULL");
+                    _queryBuilder.Append(")");
+                }
+                else
+                {
+                    _queryBuilder.Append("ISNULL(");
+                    this.Visit(node.Arguments[0]);
+                    _queryBuilder.Append(", ");
+                    this.Visit(node.Arguments[1]);
+                    _queryBuilder.Append(")");
+                }
 
                 return node;
             }
