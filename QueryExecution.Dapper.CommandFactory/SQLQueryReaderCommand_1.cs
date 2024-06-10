@@ -2,7 +2,6 @@
 using SQLQueryBuilder;
 using SQLQueryBuilder.Fragments;
 using System.Collections;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -38,93 +37,93 @@ namespace QueryExecution.Dapper.CommandFactory
         {
             queryCompiled = query.Compile();
 
-            return new SqlReaderCommand<T>(_connectionString, queryCompiled);
+            return new SQLQueryReaderCommand<T>(_connectionString, queryCompiled);
         }
 
         public IEnumerable<T> GetReader<T>(SQLQueryUnion<T> query, out SQLQueryCompiled queryCompiled)
         {
             queryCompiled = query.Compile();
 
-            return new SqlReaderCommand<T>(_connectionString, queryCompiled);
+            return new SQLQueryReaderCommand<T>(_connectionString, queryCompiled);
         }
 
         public IEnumerable<T> GetReader<T>(SQLQueryForXml<T> query, out SQLQueryCompiled queryCompiled)
         {
             queryCompiled = query.Compile();
 
-            return new SqlReaderCommand<T>(_connectionString, queryCompiled);
+            return new SQLQueryReaderCommand<T>(_connectionString, queryCompiled);
         }
 
         public IEnumerable<T> GetReader<T>(SQLQueryOutput<T> query, out SQLQueryCompiled queryCompiled)
         {
             queryCompiled = query.Compile();
 
-            return new SqlReaderCommand<T>(_connectionString, queryCompiled);
+            return new SQLQueryReaderCommand<T>(_connectionString, queryCompiled);
         }
 
         public IEnumerable<T> GetReader<T>(SQLQueryStoredProcedure<T> procedure, out SQLQueryCompiled queryCompiled)
         {
             queryCompiled = procedure.Compile();
 
-            return new SqlReaderCommand<T>(_connectionString, queryCompiled);
+            return new SQLQueryReaderCommand<T>(_connectionString, queryCompiled);
         }
 
         public int GetResult<T>(SQLQueryInto<T> query, out SQLQueryCompiled queryCompiled)
         {
             queryCompiled = query.Compile();
 
-            return new SqlExecuteCommand(_connectionString, queryCompiled).Execute();
+            return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
         }
 
         public int GetResult<T>(SQLQueryInsert<T> query, out SQLQueryCompiled queryCompiled) where T : ISQLQueryEntity
         {
             queryCompiled = query.Compile();
 
-            return new SqlExecuteCommand(_connectionString, queryCompiled).Execute();
+            return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
         }
 
         public int GetResult<T>(SQLQueryUpdate<T> query, out SQLQueryCompiled queryCompiled) where T : ISQLQueryEntity
         {
             queryCompiled = query.Compile();
 
-            return new SqlExecuteCommand(_connectionString, queryCompiled).Execute();
+            return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
         }
 
         public int GetResult<T>(SQLQueryDelete<T> query, out SQLQueryCompiled queryCompiled) where T : ISQLQueryEntity
         {
             queryCompiled = query.Compile();
 
-            return new SqlExecuteCommand(_connectionString, queryCompiled).Execute();
+            return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
         }
 
         public int GetResult<T>(SQLQueryTruncate<T> query, out SQLQueryCompiled queryCompiled) where T : ISQLQueryEntity
         {
             queryCompiled = query.Compile();
 
-            return new SqlExecuteCommand(_connectionString, queryCompiled).Execute();
+            return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
         }
 
         public int GetResult<T>(SQLQueryDrop<T> query, out SQLQueryCompiled queryCompiled) where T : ISQLQueryEntity
         {
             queryCompiled = query.Compile();
 
-            return new SqlExecuteCommand(_connectionString, queryCompiled).Execute();
+            return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
         }
 
         public int GetResult(SQLQueryStoredProcedure procedure, out SQLQueryCompiled queryCompiled)
         {
             queryCompiled = procedure.Compile();
 
-            return new SqlExecuteCommand(_connectionString, queryCompiled).Execute();
+            return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
         }
     }
 
-    internal class SqlExecuteCommand
+    internal class SqlQueryExecuteCommand
     {
         private readonly SQLQueryCompiled _queryCompiled;
         private readonly string _connectionString;
 
-        public SqlExecuteCommand(string connectionString, SQLQueryCompiled queryCompiled)
+        public SqlQueryExecuteCommand(string connectionString, SQLQueryCompiled queryCompiled)
         {
             _queryCompiled = queryCompiled;
             _connectionString = connectionString;
@@ -184,12 +183,12 @@ namespace QueryExecution.Dapper.CommandFactory
         }
     }
 
-    internal class SqlReaderCommand<T> : IEnumerable<T>
+    internal class SQLQueryReaderCommand<T> : IEnumerable<T>
     {
         private readonly SQLQueryCompiled _queryCompiled;
         private readonly string _connectionString;
 
-        public SqlReaderCommand(string connectionString, SQLQueryCompiled queryCompiled)
+        public SQLQueryReaderCommand(string connectionString, SQLQueryCompiled queryCompiled)
         {
             _queryCompiled = queryCompiled;
             _connectionString = connectionString;
