@@ -506,7 +506,7 @@ namespace CSQLQueryExpress
             }
             else if (node.Method.Name == nameof(string.TrimEnd))
             {
-                _queryBuilder.Append("LTRIM(");
+                _queryBuilder.Append("RTRIM(");
                 Visit(node.Object);
                 _queryBuilder.Append(")");
 
@@ -1100,14 +1100,14 @@ namespace CSQLQueryExpress
                         if (IsCSharpGeneratedClass(containerTypeName, "DisplayClass") ||
                             IsCSharpGeneratedClass(containerTypeName, "AnonymousType"))
                         {
-                            var diplayClassMember = memberExp.Member;
-                            if (diplayClassMember is FieldInfo fieldDisplayClassMember)
+                            var displayClassMember = memberExp.Member;
+                            if (displayClassMember is FieldInfo fieldDisplayClassMember)
                             {
                                 container = fieldDisplayClassMember.GetValue(container);
                             }
-                            else if (diplayClassMember is PropertyInfo DisplayClassMember)
+                            else if (displayClassMember is PropertyInfo propertyDisplayClassMember)
                             {
-                                container = DisplayClassMember.GetValue(container, null);
+                                container = propertyDisplayClassMember.GetValue(container, null);
                             }
                         }
 
