@@ -27,10 +27,9 @@ namespace CSQLQueryExpress.Fragments
 
         public IEnumerator<ISQLQueryFragment> GetEnumerator()
         {
-            var idx = _queries.Length - 1;
-            foreach (var sel in _queries)
+            foreach (var qry in _queries)
             {
-                foreach (var fragment in sel)
+                foreach (var fragment in qry)
                 {
                     yield return fragment;
                 }
