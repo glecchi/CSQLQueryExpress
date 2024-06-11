@@ -73,7 +73,8 @@ namespace CSQLQueryExpress
                     continue;
                 }    
 
-                if (translatedQueryBuilder.Length > 0)
+                if (translatedQueryBuilder.Length > 0 &&
+                    fragment.FragmentType != SQLQueryFragmentType.Batch)
                 {
                     translatedQueryBuilder.Append(Environment.NewLine);
                 }

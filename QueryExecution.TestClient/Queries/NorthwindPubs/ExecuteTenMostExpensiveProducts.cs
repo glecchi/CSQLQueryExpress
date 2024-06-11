@@ -6,6 +6,7 @@ using CSQLQueryExpress.Fragments;
 
 namespace QueryExecution.TestClient.Queries.NorthwindPubs
 {
+    [SQLQueryCommand(8)]
     internal class ExecuteTenMostExpensiveProducts : SQLStoredProcedureCommand<Proc_Ten_Most_Expensive_Products_Result>
     {
         public ExecuteTenMostExpensiveProducts(ISQLQueryCommandFactory commandFactory) : base(commandFactory)

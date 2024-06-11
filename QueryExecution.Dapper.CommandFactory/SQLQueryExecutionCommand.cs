@@ -21,7 +21,7 @@ namespace QueryExecution.Dapper.CommandFactory
 
             yield return "-----------------------------------------------------------------------------------------------------------------";
 
-            yield return "Statement SQL eseguito:";
+            yield return "Statement SQL:";
 
             yield return string.Empty;
 
@@ -41,7 +41,7 @@ namespace QueryExecution.Dapper.CommandFactory
 
             yield return "-----------------------------------------------------------------------------------------------------------------";
 
-            yield return $"Risultato => {result}";
+            yield return $"Result => {result}";
 
             yield return "-----------------------------------------------------------------------------------------------------------------";
         }

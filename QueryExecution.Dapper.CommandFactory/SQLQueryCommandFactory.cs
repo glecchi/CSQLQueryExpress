@@ -22,6 +22,7 @@ namespace QueryExecution.Dapper.CommandFactory
         int GetResult<T>(SQLQueryTruncate<T> query, out SQLQueryCompiled queryCompiled) where T : ISQLQueryEntity;
         int GetResult<T>(SQLQueryUpdate<T> query, out SQLQueryCompiled queryCompiled) where T : ISQLQueryEntity;
         int GetResult(SQLQueryStoredProcedure procedure, out SQLQueryCompiled queryCompiled);
+        int GetResult<T>(SQLQueryBatch<T> query, out SQLQueryCompiled queryCompiled) where T : ISQLQueryEntity;
     }
 
     public class SQLQueryCommandFactory : ISQLQueryCommandFactory
@@ -113,6 +114,13 @@ namespace QueryExecution.Dapper.CommandFactory
         public int GetResult(SQLQueryStoredProcedure procedure, out SQLQueryCompiled queryCompiled)
         {
             queryCompiled = procedure.Compile();
+
+            return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
+        }
+
+        public int GetResult<T>(SQLQueryBatch<T> query, out SQLQueryCompiled queryCompiled) where T : ISQLQueryEntity
+        {
+            queryCompiled = query.Compile();
 
             return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
         }

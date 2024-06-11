@@ -24,6 +24,7 @@
         Page, 
         Order,
         ForXml,
-        StoredProcedure
+        StoredProcedure,
+        Batch
     }
 }

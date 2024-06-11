@@ -1,6 +1,6 @@
 # CSQLQueryExpress.Scaffolding
 
-**CSQLQueryExpress.Scaffolding** is a C# library designed to compile the data model for CSQLQueryExpress from the database schema.
+**CSQLQueryExpress.Scaffolding** is a C# library designed to compile the data model for [CSQLQueryExpress](https://www.nuget.org/packages/CSQLQueryExpress) from the database schema.
 
 ### ***Please note that this library is intended exclusively for use in non-production environments.***
 

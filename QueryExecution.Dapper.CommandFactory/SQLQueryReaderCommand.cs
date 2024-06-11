@@ -20,7 +20,7 @@ namespace QueryExecution.Dapper.CommandFactory
 
             yield return "-----------------------------------------------------------------------------------------------------------------";
 
-            yield return "Statement SQL eseguito:";
+            yield return "Statement SQL:";
 
             yield return string.Empty;
 
@@ -42,10 +42,10 @@ namespace QueryExecution.Dapper.CommandFactory
 
             yield return string.Empty;
 
-            yield return "Premere ENTER per proseguire..";
+            yield return "Press ENTER to continue..";
             yield return "BREAK";
 
-            yield return "Risultato:";
+            yield return "Result:";
             yield return string.Empty;
 
             foreach (var row in reader)

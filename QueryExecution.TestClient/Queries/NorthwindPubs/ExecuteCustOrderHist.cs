@@ -6,6 +6,7 @@ using CSQLQueryExpress.Fragments;
 
 namespace QueryExecution.TestClient.Queries.NorthwindPubs
 {
+    [SQLQueryCommand(8)]
     internal class ExecuteCustOrderHist : SQLStoredProcedureCommand<Proc_CustOrderHist_Result>
     {
         public ExecuteCustOrderHist(ISQLQueryCommandFactory commandFactory) : base(commandFactory)

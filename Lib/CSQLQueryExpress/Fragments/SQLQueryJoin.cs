@@ -34,7 +34,7 @@ namespace CSQLQueryExpress.Fragments
             _type = type;
             _select = select;
 
-            if (select != null && select.IsHierachicalSelectFromCte())
+            if (select != null && select.IsHierarchicalSelectFromCte())
             {
                 throw new NotSupportedException("Hierachical select queries from WITH TABLE is not supported");
             }

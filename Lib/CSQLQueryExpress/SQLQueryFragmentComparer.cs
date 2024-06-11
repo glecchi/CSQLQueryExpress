@@ -49,6 +49,7 @@ namespace CSQLQueryExpress
             order.Add(SQLQueryFragmentType.FromUnion, GetDefaultOrder());
             order.Add(SQLQueryFragmentType.ForXml, GetDefaultOrder());
             order.Add(SQLQueryFragmentType.StoredProcedure, GetProcedureOrder());
+            order.Add(SQLQueryFragmentType.Batch, GetBatchOrder());
         }
 
         static IDictionary<SQLQueryFragmentType, int> GetInsertOrder()
@@ -138,6 +139,16 @@ namespace CSQLQueryExpress
             var fragmentsOrder = new Dictionary<SQLQueryFragmentType, int>
             {
                 { SQLQueryFragmentType.StoredProcedure, 0 }
+            };
+
+            return fragmentsOrder;
+        }
+
+        static IDictionary<SQLQueryFragmentType, int> GetBatchOrder()
+        {
+            var fragmentsOrder = new Dictionary<SQLQueryFragmentType, int>
+            {
+                { SQLQueryFragmentType.Batch, 0 }
             };
 
             return fragmentsOrder;

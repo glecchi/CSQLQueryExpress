@@ -9,7 +9,7 @@ namespace CSQLQueryExpress
 {
     internal static class SQLQueryUtils
     {
-        public static bool IsHierachicalSelectFromCte(this SQLQuerySelect select)
+        public static bool IsHierarchicalSelectFromCte(this SQLQuerySelect select)
         {
             foreach (var fragment in select)
             {
@@ -19,7 +19,7 @@ namespace CSQLQueryExpress
                     var hSelect = ((ISQLQueryFragmentFromSelect)fragment).FromSelect;
                     if (hSelect.FragmentType == SQLQueryFragmentType.Select)
                     {
-                        return IsHierachicalSelectFromCte(hSelect);
+                        return IsHierarchicalSelectFromCte(hSelect);
                     }
                     else if (hSelect.FragmentType == SQLQueryFragmentType.SelectCte) 
                     {
@@ -73,9 +73,13 @@ namespace CSQLQueryExpress
             }
         }
 
+        private static Dictionary<Type, IList<PropertyInfo>> _readableProperties = new Dictionary<Type, IList<PropertyInfo>>();
+
         public static IList<PropertyInfo> GetReadableProperties(this Type type)
         {
-            return type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+            if (!_readableProperties.TryGetValue(type, out IList<PropertyInfo> properties))
+            {
+                properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
                  .Where(p =>
                      p.CanRead &&
                      (
@@ -100,41 +104,59 @@ namespace CSQLQueryExpress
 
                      ))
                  .ToList();
+
+                _readableProperties.Add(type, properties);
+            }
+
+            return properties;
         }
+
+        private static Dictionary<Type, IList<PropertyInfo>> _allColumnsProperties = new Dictionary<Type, IList<PropertyInfo>>();
 
         public static IList<PropertyInfo> GetAllColumnsProperties(this Type type)
         {
-            return type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                 .Where(p =>
-                     p.CanWrite &&
-                     p.CanRead &&
-                     (
-                         p.PropertyType.IsValueType ||
-                         p.PropertyType == typeof(string) ||
+            if (!_allColumnsProperties.TryGetValue(type, out IList<PropertyInfo> properties))
+            {
+                properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Where(p =>
+                    p.CanWrite &&
+                    p.CanRead &&
+                    (
+                        p.PropertyType.IsValueType ||
+                        p.PropertyType == typeof(string) ||
 
-                             p.PropertyType.IsGenericType &&
-                             p.PropertyType.IsAssignableFrom(typeof(Nullable<>)) &&
-                             (p.PropertyType.GetGenericTypeDefinition().IsValueType || p.PropertyType.GetGenericTypeDefinition() == typeof(string))
-                          ||
+                            p.PropertyType.IsGenericType &&
+                            p.PropertyType.IsAssignableFrom(typeof(Nullable<>)) &&
+                            (p.PropertyType.GetGenericTypeDefinition().IsValueType || p.PropertyType.GetGenericTypeDefinition() == typeof(string))
+                         ||
 
-                             p.PropertyType.IsArray &&
-                             (
-                                 p.PropertyType.GetElementType().IsValueType ||
-                                 p.PropertyType.GetElementType() == typeof(string) ||
+                            p.PropertyType.IsArray &&
+                            (
+                                p.PropertyType.GetElementType().IsValueType ||
+                                p.PropertyType.GetElementType() == typeof(string) ||
 
-                                     p.PropertyType.GetElementType().IsGenericType &&
-                                     p.PropertyType.GetElementType().IsAssignableFrom(typeof(Nullable<>)) &&
-                                     (p.PropertyType.GetElementType().GetGenericTypeDefinition().IsValueType || p.PropertyType.GetElementType().GetGenericTypeDefinition() == typeof(string))
+                                    p.PropertyType.GetElementType().IsGenericType &&
+                                    p.PropertyType.GetElementType().IsAssignableFrom(typeof(Nullable<>)) &&
+                                    (p.PropertyType.GetElementType().GetGenericTypeDefinition().IsValueType || p.PropertyType.GetElementType().GetGenericTypeDefinition() == typeof(string))
 
-                             )
+                            )
 
-                     ))
-                 .ToList();
+                    ))
+                .ToList();
+
+                _allColumnsProperties.Add(type, properties);
+            }
+
+            return properties;
         }
+
+        private static Dictionary<Type, IList<PropertyInfo>> _writableColumnsProperties = new Dictionary<Type, IList<PropertyInfo>>();
 
         public static IList<PropertyInfo> GetWritableColumnsProperties(this Type type)
         {
-            return type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+            if (!_writableColumnsProperties.TryGetValue(type, out IList<PropertyInfo> properties))
+            {
+                properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
                  .Where(p =>
                      p.CanWrite &&
                      p.CanRead &&
@@ -161,6 +183,11 @@ namespace CSQLQueryExpress
 
                      ))
                  .ToList();
+
+                _writableColumnsProperties.Add(type, properties);   
+            }
+
+            return properties;
         }
     }
 }

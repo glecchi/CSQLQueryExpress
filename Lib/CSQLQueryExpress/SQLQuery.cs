@@ -50,6 +50,21 @@ namespace CSQLQueryExpress
             return new SQLQueryUnion<T>(_fragments, true, firstSelect, secondSelect, otherSelect);
         }
 
+        public SQLQueryBatch<T> Batch<T>(params SQLQueryInsert<T>[] insert) where T : ISQLQueryEntity
+        {
+            return new SQLQueryBatch<T>(_fragments, insert);
+        }
+
+        public SQLQueryBatch<T> Batch<T>(params SQLQueryUpdate<T>[] update) where T : ISQLQueryEntity
+        {
+            return new SQLQueryBatch<T>(_fragments, update);
+        }
+
+        public SQLQueryBatch<T> Batch<T>(params SQLQueryDelete<T>[] delete) where T : ISQLQueryEntity
+        {
+            return new SQLQueryBatch<T>(_fragments, delete);
+        }
+
         public SQLQueryTruncate<T> Truncate<T>() where T : ISQLQueryEntity
         {
             return new SQLQueryTruncate<T>(_fragments);

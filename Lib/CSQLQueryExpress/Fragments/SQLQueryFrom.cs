@@ -18,7 +18,7 @@ namespace CSQLQueryExpress.Fragments
         {
             _fragments = fragments;
 
-            if (select != null && select.IsHierachicalSelectFromCte())
+            if (select != null && select.IsHierarchicalSelectFromCte())
             {
                 throw new NotSupportedException("Hierachical select queries from WITH TABLE is not supported");
             }
