@@ -154,6 +154,8 @@ namespace CSQLQueryExpress.Fragments
                 }
             }
 
+            selectBase.Append(" ");
+
             return selectBase.ToString();
         }
 

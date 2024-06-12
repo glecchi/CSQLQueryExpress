@@ -10,10 +10,12 @@ namespace CSQLQueryExpress.Tests
     [TestFixture]
     public class UnitTestBase
     {
+        protected string ConnectionString;
+
         [SetUp]
         public void Initialize()
         {
-            
+            ConnectionString = ConfigurationManager.ConnectionStrings["NorthwindPubs"].ConnectionString;
         }
     }
 }

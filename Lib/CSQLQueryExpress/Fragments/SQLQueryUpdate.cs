@@ -99,7 +99,7 @@ namespace CSQLQueryExpress.Fragments
 
                 if (_updateProperties == null)
                 {
-                    updateBuilder.Append($"{Environment.NewLine}SET {string.Join(", ", _update.Select(u => expressionTranslator.GetColumnWithoutTableAlias(expressionTranslator.Translate(u))))} ");
+                    updateBuilder.Append($"{Environment.NewLine}SET {string.Join(", ", _update.Select(u => expressionTranslator.GetColumnsWithoutTableAlias(expressionTranslator.Translate(u))))} ");
                 }
                 else
                 {

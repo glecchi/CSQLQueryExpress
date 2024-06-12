@@ -22,8 +22,6 @@ namespace CSQLQueryExpress
 
         string GetTableName(Type tableType);
 
-        string GetColumnWithoutTableAlias(string column);
-
         string GetColumnsWithoutTableAlias(string columns);
     }
 
@@ -69,19 +67,12 @@ namespace CSQLQueryExpress
             return tableName.TableName;
         }
 
-        private readonly Regex _matchColumnOnly = new Regex(@"_.*\.(.*)");
-
-        public string GetColumnWithoutTableAlias(string column)
+        private readonly Regex _matchColumnOnly = new Regex(@"(_t[0-9]*\.*)");
+        
+        public string GetColumnsWithoutTableAlias(string column)
         {
-            return _matchColumnOnly.Match(column).Groups[1].Value;
-        }
-
-        private readonly Regex _matchTableAliasOnly = new Regex(@"(_.*\.)(.*)");
-
-        public string GetColumnsWithoutTableAlias(string columns)
-        {
-            var tableAlias = _matchTableAliasOnly.Match(columns).Groups[1].Value;
-            return columns.Replace(tableAlias, string.Empty);
+            var tableAlias = _matchColumnOnly.Match(column).Groups[0].Value;
+            return column.Replace(tableAlias, string.Empty);
         }
 
         protected override Expression VisitBinary(BinaryExpression node)
@@ -1046,7 +1037,7 @@ namespace CSQLQueryExpress
                 return node;
             }
             else if (node.Expression != null && node.Expression.NodeType == ExpressionType.Constant)
-            {
+            {                
                 object container = ((ConstantExpression)node.Expression).Value;
                 var member = node.Member;
                 if (member is FieldInfo field)
@@ -1177,8 +1168,13 @@ namespace CSQLQueryExpress
             {
                 _queryBuilder.Append($"'{lockOwner}'");
             }
-            else if (node.Value is IList listValues)
+            else if (node.Value is byte[])
             {
+                string parameterName = _parametersBuilder.AddParameter(node.Value);
+                _queryBuilder.Append(parameterName);
+            }
+            else if (node.Value is IList listValues)
+            {                
                 var parameters = new List<string>();
                 foreach (var v in listValues)
                 {

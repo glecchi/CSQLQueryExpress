@@ -103,7 +103,7 @@ namespace CSQLQueryExpress.Fragments
             }
             else
             {
-                insertBuilder.Append($"{Environment.NewLine}({string.Join(", ", _select.Select.Select(u => expressionTranslator.GetColumnWithoutTableAlias(expressionTranslator.Translate(u))))}) ");
+                insertBuilder.Append($"{Environment.NewLine}({string.Join(", ", _select.Select.Select(u => expressionTranslator.GetColumnsWithoutTableAlias(expressionTranslator.Translate(u))))}) ");
             }
 
             return insertBuilder.ToString();
