@@ -26,7 +26,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             var query = new SQLQuery()
                .From<dbo.Categories>()
-               .Update(p => p.Picture.Set(image.Compress()));
+               .Update(p => p.Picture.Set(image));
 
             var compiledQuery = query.Compile();
 
