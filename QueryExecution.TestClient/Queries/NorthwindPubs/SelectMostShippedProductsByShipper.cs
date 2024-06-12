@@ -26,7 +26,7 @@ namespace QueryExecution.TestClient.Queries.NorthwindPubs
                     (sh, ord, ordDet, prod) => prod.ProductName)
                 .Select<ShippedProductsByShipper>(
                     (sh, ord, ordDet, prod, res) => sh.CompanyName,
-                    (sh, ord, ordDet, prod, res) => prod.ProductName.IsNull(() => "UNKNOWN").As(res.ProductName),
+                    (sh, ord, ordDet, prod, res) => prod.ProductName.IsNull("UNKNOWN").As(res.ProductName),
                     (sh, ord, ordDet, prod, res) => Count.All().As(res.ProductCount),
                     (sh, ord, ordDet, prod, res) => Row.Number().Over(n => n.PartitionBy(() => sh.CompanyName).OrderBy(() => Count.All().Desc())).As(res.RowNumber))
                 .ToCteTable();

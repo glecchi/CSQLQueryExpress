@@ -71,17 +71,22 @@ namespace CSQLQueryExpress
             return default;
         }
 
-        public static T IsNull<T>(this T obj, Expression<Func<T>> replacementValue) where T : struct
+        public static T IsNull<T>(this T obj, T replacementValue) where T : struct
         {
             return default;
         }
 
-        public static T? IsNull<T>(this T? obj, Expression<Func<T?>> replacementValue) where T : struct
+        public static T? IsNull<T>(this T? obj, T? replacementValue) where T : struct
         {
             return default;
         }
 
-        public static string IsNull(this string obj, Expression<Func<string>> replacementValue)
+        public static T IsNull<T>(this T? obj, T replacementValue) where T : struct
+        {
+            return default;
+        }
+
+        public static string IsNull(this string obj, string replacementValue)
         {
             return default;
         }

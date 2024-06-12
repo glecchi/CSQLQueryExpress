@@ -70,7 +70,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
         {
             var query = new SQLQuery()
                  .From<dbo.Products>()
-                 .Select(p => p.ProductID.IsNull(() => 0));
+                 .Select(p => p.ProductID.IsNull(0));
 
             var compiledQuery = query.Compile();
 
