@@ -21,7 +21,7 @@ namespace CSQLQueryExpress
             var cteList = query.Where(f => f.FragmentType == SQLQueryFragmentType.SelectCte).ToList();
             if (cteList.Count > 1 && cteList.Select(t => t.GetType().GenericTypeArguments[0]).Distinct().Count() != cteList.Count)
             {
-                throw new NotSupportedException("Multiple declaration of 'WITH TABLE AS..' for the same Entity is not supported");
+                throw new NotSupportedException("Multiple declaration of CTE TABLEs for the same Entity is not supported");
             }
 
             var parameterBuilder = new SQLQueryExpressionParametersBuilder();
@@ -74,7 +74,8 @@ namespace CSQLQueryExpress
                 }    
 
                 if (translatedQueryBuilder.Length > 0 &&
-                    fragment.FragmentType != SQLQueryFragmentType.Batch)
+                    fragment.FragmentType != SQLQueryFragmentType.Batch &&
+                    fragment.FragmentType != SQLQueryFragmentType.MultipleResultSets)
                 {
                     translatedQueryBuilder.Append(Environment.NewLine);
                 }

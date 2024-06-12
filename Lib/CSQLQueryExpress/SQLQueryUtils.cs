@@ -9,9 +9,9 @@ namespace CSQLQueryExpress
 {
     internal static class SQLQueryUtils
     {
-        public static bool IsHierarchicalSelectFromCte(this SQLQuerySelect select)
+        public static bool IsHierarchicalSelectFromCte(this ISQLQuery query)
         {
-            foreach (var fragment in select)
+            foreach (var fragment in query)
             {
                 if (fragment.FragmentType == SQLQueryFragmentType.FromBySelect ||
                     fragment.FragmentType == SQLQueryFragmentType.JoinBySelect)

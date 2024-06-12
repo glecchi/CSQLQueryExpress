@@ -66,7 +66,7 @@ namespace CSQLQueryExpress.Fragments
         {
             if (_useCte)
             {
-                throw new NotSupportedException("SELECT INTO in WITH TABLE declaration is not supported");
+                throw new NotSupportedException("SELECT INTO in WITH CTE declaration is not supported");
             }
 
             return new SQLQueryInto<TI>(_fragments);
@@ -201,7 +201,7 @@ namespace CSQLQueryExpress.Fragments
         {
             if (_useCte)
             {
-                throw new NotSupportedException("SELECT INTO in WITH TABLE declaration is not supported");
+                throw new NotSupportedException("SELECT INTO in CTE TABLE declaration is not supported");
             }
 
             if (!typeof(ISQLQueryEntity).IsAssignableFrom(typeof(T)))
@@ -216,7 +216,7 @@ namespace CSQLQueryExpress.Fragments
         {
             if (_fragments.Any(f => f.FragmentType == SQLQueryFragmentType.SelectCte))
             {
-                throw new NotSupportedException("WITH TABLE declaration FROM WITH TABLE is not supported");
+                throw new NotSupportedException("CTE TABLE declaration FROM CTE TABLE is not supported");
             }
 
             _useCte = true;

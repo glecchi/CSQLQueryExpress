@@ -25,6 +25,7 @@
         Order,
         ForXml,
         StoredProcedure,
-        Batch
+        Batch,
+        MultipleResultSets
     }
 }
