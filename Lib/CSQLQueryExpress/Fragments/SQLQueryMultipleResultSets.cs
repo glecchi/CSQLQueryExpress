@@ -48,7 +48,7 @@ namespace CSQLQueryExpress.Fragments
 
         public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
         {
-            return $";{Environment.NewLine} ";
+            return $"; {Environment.NewLine}";
         }
 
         IEnumerator IEnumerable.GetEnumerator()

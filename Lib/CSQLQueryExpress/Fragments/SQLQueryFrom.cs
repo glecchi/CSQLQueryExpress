@@ -162,11 +162,11 @@ namespace CSQLQueryExpress.Fragments
                 {
                     if (_select.FragmentType == SQLQueryFragmentType.SelectCte)
                     {
-                        fromBuilder.Append($"FROM {expressionTranslator.GetTableAlias(typeof(T))} ");
+                        fromBuilder.Append($"FROM {expressionTranslator.GetTableAlias(typeof(T))}");
                     }
                     else
                     {
-                        fromBuilder.Append($"FROM {Environment.NewLine}({Environment.NewLine}{string.Join($"{Environment.NewLine} ", _select.Select(s => s.Translate(expressionTranslator)))}{Environment.NewLine}) AS {expressionTranslator.GetTableAlias(typeof(T))} ");
+                        fromBuilder.Append($"FROM {Environment.NewLine}({Environment.NewLine}{string.Join($"{Environment.NewLine} ", _select.Select(s => s.Translate(expressionTranslator)))}{Environment.NewLine}) AS {expressionTranslator.GetTableAlias(typeof(T))}");
                     }
                 }
             }
@@ -174,11 +174,11 @@ namespace CSQLQueryExpress.Fragments
             {
                 if (_fragments.Any(f => f.FragmentType == SQLQueryFragmentType.Select || f.FragmentType == SQLQueryFragmentType.SelectCte))
                 {
-                    fromBuilder.Append($"FROM {expressionTranslator.Translate(Expression.Constant(typeof(T)))} ");
+                    fromBuilder.Append($"FROM {expressionTranslator.Translate(Expression.Constant(typeof(T)))}");
                 }
                 else
                 {
-                    fromBuilder.Append($"FROM {expressionTranslator.GetTableName(typeof(T))} ");
+                    fromBuilder.Append($"FROM {expressionTranslator.GetTableName(typeof(T))}");
                 }
             }
 

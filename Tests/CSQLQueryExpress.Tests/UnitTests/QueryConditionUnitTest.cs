@@ -76,7 +76,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"SELECT ISNULL(_t0.[ProductID], @p0) FROM [dbo].[Products] AS _t0 "));
+                Is.EqualTo(@"SELECT ISNULL(_t0.[ProductID], @p0) FROM [dbo].[Products] AS _t0"));
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"SELECT CASE WHEN (_t0.[ProductID] IS NOT NULL) THEN _t0.[ProductID] ELSE @p0 END FROM [dbo].[Products] AS _t0 "));
+                Is.EqualTo(@"SELECT CASE WHEN (_t0.[ProductID] IS NOT NULL) THEN _t0.[ProductID] ELSE @p0 END FROM [dbo].[Products] AS _t0"));
         }
 
         [Test]
@@ -104,7 +104,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(5));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"SELECT CASE WHEN (_t0.[CategoryID] = @p0) THEN @p1 WHEN (_t0.[CategoryID] = @p2) THEN @p3 ELSE @p4 END FROM [dbo].[Products] AS _t0 "));
+                Is.EqualTo(@"SELECT CASE WHEN (_t0.[CategoryID] = @p0) THEN @p1 WHEN (_t0.[CategoryID] = @p2) THEN @p3 ELSE @p4 END FROM [dbo].[Products] AS _t0"));
         }
     }
 }

@@ -76,16 +76,16 @@ namespace CSQLQueryExpress.Fragments
             {
                 if (_select.FragmentType == SQLQueryFragmentType.SelectCte)
                 {
-                    joinBuilder.Append($" {expressionTranslator.GetTableAlias(_type)} ON {expressionTranslator.Translate(_join)} ");
+                    joinBuilder.Append($" {expressionTranslator.GetTableAlias(_type)} ON {expressionTranslator.Translate(_join)}");
                 }
                 else
                 {
-                    joinBuilder.Append($" {Environment.NewLine}({Environment.NewLine}{string.Join($"{Environment.NewLine} ", _select.Select(s => s.Translate(expressionTranslator)))}{Environment.NewLine}) AS {expressionTranslator.GetTableAlias(_type)} ON {expressionTranslator.Translate(_join)} ");
+                    joinBuilder.Append($" {Environment.NewLine}({Environment.NewLine}{string.Join($"{Environment.NewLine} ", _select.Select(s => s.Translate(expressionTranslator)))}{Environment.NewLine}) AS {expressionTranslator.GetTableAlias(_type)} ON {expressionTranslator.Translate(_join)}");
                 }
             }
             else
             {
-                joinBuilder.Append($" {expressionTranslator.Translate(Expression.Constant(_type))} ON {expressionTranslator.Translate(_join)} ");
+                joinBuilder.Append($" {expressionTranslator.Translate(Expression.Constant(_type))} ON {expressionTranslator.Translate(_join)}");
             }
 
             return joinBuilder.ToString();

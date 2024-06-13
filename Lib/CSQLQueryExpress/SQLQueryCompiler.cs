@@ -77,7 +77,7 @@ namespace CSQLQueryExpress
                     fragment.FragmentType != SQLQueryFragmentType.Batch &&
                     fragment.FragmentType != SQLQueryFragmentType.MultipleResultSets)
                 {
-                    translatedQueryBuilder.Append(Environment.NewLine);
+                    translatedQueryBuilder.Append($" {Environment.NewLine}");
                 }
                                 
                 translatedQueryBuilder.Append(translatedFragment);

@@ -56,11 +56,11 @@ namespace CSQLQueryExpress.Fragments
 
             if (!_inLine)
             {
-                deleteBuilder.Append($"DELETE {(_top.HasValue ? $"TOP({_top}) " : string.Empty)}{expressionTranslator.GetTableAlias(typeof(T))} ");
+                deleteBuilder.Append($"DELETE {(_top.HasValue ? $"TOP({_top}) " : string.Empty)}{expressionTranslator.GetTableAlias(typeof(T))}");
             }
             else
             {
-                deleteBuilder.Append($"DELETE {(_top.HasValue ? $"TOP({_top}) " : string.Empty)} ");
+                deleteBuilder.Append($"DELETE {(_top.HasValue ? $"TOP({_top}) " : string.Empty)}");
             }
 
             return deleteBuilder.ToString();

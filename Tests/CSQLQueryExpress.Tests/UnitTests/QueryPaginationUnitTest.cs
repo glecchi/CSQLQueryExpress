@@ -32,7 +32,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"SELECT ROW_NUMBER() OVER(PARTITION BY _t0.[ProductID] ORDER BY _t0.[OrderID] ASC) FROM [dbo].[Order Details] AS _t0 "));
+                Is.EqualTo(@"SELECT ROW_NUMBER() OVER(PARTITION BY _t0.[ProductID] ORDER BY _t0.[OrderID] ASC) FROM [dbo].[Order Details] AS _t0"));
         }
     }
 }

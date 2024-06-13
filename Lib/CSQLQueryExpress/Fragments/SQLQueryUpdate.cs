@@ -81,7 +81,7 @@ namespace CSQLQueryExpress.Fragments
 
                 if (_updateProperties == null)
                 {
-                    updateBuilder.Append($"{Environment.NewLine}SET {string.Join(", ", _update.Select(u => expressionTranslator.Translate(u)))} ");
+                    updateBuilder.Append($"{Environment.NewLine}SET {string.Join(", ", _update.Select(u => expressionTranslator.Translate(u)))}");
                 }
                 else
                 {
@@ -90,7 +90,7 @@ namespace CSQLQueryExpress.Fragments
                     var properties = _updateProperties
                         .ToDictionary(p => p.Key.ToUpper(), p => p.Value);
 
-                    updateBuilder.Append($"{Environment.NewLine}SET {string.Join(", ", tableColumns.Where(c => properties.ContainsKey(c.ToUpper())).Select(c => $"{expressionTranslator.GetTableAlias(typeof(T))}.[{c}] = {expressionTranslator.MakeParameter(properties[c.ToUpper()])}"))} ");
+                    updateBuilder.Append($"{Environment.NewLine}SET {string.Join(", ", tableColumns.Where(c => properties.ContainsKey(c.ToUpper())).Select(c => $"{expressionTranslator.GetTableAlias(typeof(T))}.[{c}] = {expressionTranslator.MakeParameter(properties[c.ToUpper()])}"))}");
                 }
             }
             else
@@ -99,7 +99,7 @@ namespace CSQLQueryExpress.Fragments
 
                 if (_updateProperties == null)
                 {
-                    updateBuilder.Append($"{Environment.NewLine}SET {string.Join(", ", _update.Select(u => expressionTranslator.GetColumnsWithoutTableAlias(expressionTranslator.Translate(u))))} ");
+                    updateBuilder.Append($"{Environment.NewLine}SET {string.Join(", ", _update.Select(u => expressionTranslator.GetColumnsWithoutTableAlias(expressionTranslator.Translate(u))))}");
                 }
                 else
                 {
@@ -108,7 +108,7 @@ namespace CSQLQueryExpress.Fragments
                     var properties = _updateProperties
                         .ToDictionary(p => p.Key.ToUpper(), p => p.Value);
 
-                    updateBuilder.Append($"{Environment.NewLine}SET {string.Join(", ", tableColumns.Where(c => properties.ContainsKey(c.ToUpper())).Select(c => $"[{c}] = {expressionTranslator.MakeParameter(properties[c.ToUpper()])}"))} ");
+                    updateBuilder.Append($"{Environment.NewLine}SET {string.Join(", ", tableColumns.Where(c => properties.ContainsKey(c.ToUpper())).Select(c => $"[{c}] = {expressionTranslator.MakeParameter(properties[c.ToUpper()])}"))}");
                 }
             }
 

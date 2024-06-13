@@ -46,7 +46,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"SELECT COUNT(_t0.[OrderID]) FROM [dbo].[Orders] AS _t0 "));
+                Is.EqualTo(@"SELECT COUNT(_t0.[OrderID]) FROM [dbo].[Orders] AS _t0"));
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"SELECT COUNT(DISTINCT _t0.[OrderID]) FROM [dbo].[Order Details] AS _t0 "));
+                Is.EqualTo(@"SELECT COUNT(DISTINCT _t0.[OrderID]) FROM [dbo].[Order Details] AS _t0"));
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"SELECT MAX(_t0.[Quantity]) FROM [dbo].[Order Details] AS _t0 "));
+                Is.EqualTo(@"SELECT MAX(_t0.[Quantity]) FROM [dbo].[Order Details] AS _t0"));
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"SELECT MIN(_t0.[Quantity]) FROM [dbo].[Order Details] AS _t0 "));
+                Is.EqualTo(@"SELECT MIN(_t0.[Quantity]) FROM [dbo].[Order Details] AS _t0"));
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"SELECT MAX(LEN(_t0.[ProductName])) FROM [dbo].[Products] AS _t0 "));
+                Is.EqualTo(@"SELECT MAX(LEN(_t0.[ProductName])) FROM [dbo].[Products] AS _t0"));
         }
 
         [Test]
@@ -116,7 +116,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"SELECT LEFT(_t0.[ProductName], @p0) FROM [dbo].[Products] AS _t0 "));
+                Is.EqualTo(@"SELECT LEFT(_t0.[ProductName], @p0) FROM [dbo].[Products] AS _t0"));
         }
 
         [Test]
@@ -130,7 +130,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"SELECT RIGHT(_t0.[ProductName], @p0) FROM [dbo].[Products] AS _t0 "));
+                Is.EqualTo(@"SELECT RIGHT(_t0.[ProductName], @p0) FROM [dbo].[Products] AS _t0"));
         }
     }
 }

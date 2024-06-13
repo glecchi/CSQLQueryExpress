@@ -36,7 +36,7 @@ namespace CSQLQueryExpress.Fragments
 
         public override string Translate(ISQLQueryExpressionTranslator expressionTranslator)
         {
-            return $"OUTPUT {Environment.NewLine}{string.Join($"{Environment.NewLine}, ", _output.Select(u => expressionTranslator.Translate(u)))} ";
+            return $"OUTPUT {Environment.NewLine}{string.Join($"{Environment.NewLine}, ", _output.Select(u => expressionTranslator.Translate(u)))}";
         }
 
         public override IEnumerator<ISQLQueryFragment> GetEnumerator()

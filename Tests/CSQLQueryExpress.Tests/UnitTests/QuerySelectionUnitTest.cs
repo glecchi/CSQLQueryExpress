@@ -16,7 +16,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty), Is.EqualTo(
-                @"SELECT _t0.* FROM [dbo].[Products] AS _t0 "));
+                @"SELECT _t0.* FROM [dbo].[Products] AS _t0"));
         }
 
         [Test]
@@ -30,7 +30,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty), Is.EqualTo(
-                @"SELECT _t0.[ProductID] AS [ProductID] FROM [dbo].[Products] AS _t0 "));
+                @"SELECT _t0.[ProductID] AS [ProductID] FROM [dbo].[Products] AS _t0"));
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"DELETE  FROM [dbo].[Products] OUTPUT DELETED.[ProductID] "));
+                Is.EqualTo(@"DELETE  FROM [dbo].[Products] OUTPUT DELETED.[ProductID]"));
         }
     }
 }

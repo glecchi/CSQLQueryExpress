@@ -99,11 +99,11 @@ namespace CSQLQueryExpress.Fragments
                 var properties = _insertProperties
                     .ToDictionary(p => p.Key.ToUpper(), p => p.Value);
 
-                insertBuilder.Append($"{Environment.NewLine}({string.Join(", ", _tableColumns.Where(c => properties.ContainsKey(c.ToUpper())))}) ");
+                insertBuilder.Append($"{Environment.NewLine}({string.Join(", ", _tableColumns.Where(c => properties.ContainsKey(c.ToUpper())))})");
             }
             else
             {
-                insertBuilder.Append($"{Environment.NewLine}({string.Join(", ", _select.Select.Select(u => expressionTranslator.GetColumnsWithoutTableAlias(expressionTranslator.Translate(u))))}) ");
+                insertBuilder.Append($"{Environment.NewLine}({string.Join(", ", _select.Select.Select(u => expressionTranslator.GetColumnsWithoutTableAlias(expressionTranslator.Translate(u))))})");
             }
 
             return insertBuilder.ToString();

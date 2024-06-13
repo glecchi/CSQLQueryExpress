@@ -53,7 +53,7 @@ namespace CSQLQueryExpress.Fragments
 
         public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
         {
-            return $"FROM {Environment.NewLine}({Environment.NewLine}{string.Join($" {Environment.NewLine}", _union.Select(u => u.Translate(expressionTranslator)))}{Environment.NewLine}) AS {expressionTranslator.GetTableAlias(typeof(T))} ";
+            return $"FROM {Environment.NewLine}({Environment.NewLine}{string.Join($" {Environment.NewLine}", _union.Select(u => u.Translate(expressionTranslator)))}{Environment.NewLine}) AS {expressionTranslator.GetTableAlias(typeof(T))}";
         }
     }
 }

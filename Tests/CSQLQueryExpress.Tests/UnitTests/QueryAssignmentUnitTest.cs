@@ -16,7 +16,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"UPDATE [dbo].[Products] SET [ProductID] = @p0 "));
+                Is.EqualTo(@"UPDATE [dbo].[Products] SET [ProductID] = @p0"));
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"UPDATE [dbo].[Categories] SET [Picture] = @p0 "));
+                Is.EqualTo(@"UPDATE [dbo].[Categories] SET [Picture] = @p0"));
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"UPDATE [dbo].[Products] SET [ProductID] = ([ProductID] + @p0) "));
+                Is.EqualTo(@"UPDATE [dbo].[Products] SET [ProductID] = ([ProductID] + @p0)"));
         }
     }
 }
