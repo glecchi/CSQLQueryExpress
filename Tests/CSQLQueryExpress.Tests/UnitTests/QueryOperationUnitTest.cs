@@ -132,5 +132,146 @@ namespace CSQLQueryExpress.Tests.UnitTests
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT RIGHT(_t0.[ProductName], @p0) FROM [dbo].[Products] AS _t0"));
         }
+
+        [Test]
+        public void TestSubstringExpression()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Products>()
+                 .Select(c => c.ProductName.Substring(5));
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT LEFT(_t0.[ProductName], @p0) FROM [dbo].[Products] AS _t0"));
+        }
+
+        [Test]
+        public void TestSubstringOffsetExpression()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Products>()
+                 .Select(c => c.ProductName.Substring(5, 5));
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(2));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT SUBSTRING(_t0.[ProductName], @p0, @p1) FROM [dbo].[Products] AS _t0"));
+        }
+
+        [Test]
+        public void TestTrimStartExpression()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Products>()
+                 .Select(c => c.ProductName.TrimStart());
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT LTRIM(_t0.[ProductName]) FROM [dbo].[Products] AS _t0"));
+        }
+
+        [Test]
+        public void TestTrimEndExpression()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Products>()
+                 .Select(c => c.ProductName.TrimEnd());
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT RTRIM(_t0.[ProductName]) FROM [dbo].[Products] AS _t0"));
+        }
+
+        [Test]
+        public void TestTrimExpression()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Products>()
+                 .Select(c => c.ProductName.Trim());
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT TRIM(_t0.[ProductName]) FROM [dbo].[Products] AS _t0"));
+        }
+
+        [Test]
+        public void TestUpperExpression()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Products>()
+                 .Select(c => c.ProductName.ToUpper());
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT UPPER(_t0.[ProductName]) FROM [dbo].[Products] AS _t0"));
+        }
+
+        [Test]
+        public void TestLowerExpression()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Products>()
+                 .Select(c => c.ProductName.ToLower());
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT LOWER(_t0.[ProductName]) FROM [dbo].[Products] AS _t0"));
+        }
+
+        [Test]
+        public void TestReplaceExpression()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Products>()
+                 .Select(c => c.ProductName.Replace("A", "X"));
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(2));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT REPLACE(_t0.[ProductName], @p0, @p1) FROM [dbo].[Products] AS _t0"));
+        }
+
+        [Test]
+        public void TestIndexOfExpression()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Products>()
+                 .Select(c => c.ProductName.IndexOf("A"));
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT CHARINDEX(@p0, _t0.[ProductName]) FROM [dbo].[Products] AS _t0"));
+        }
+
+        [Test]
+        public void TestConcatExpression()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Products>()
+                 .InnerJoin<dbo.Categories>((p, c) => p.CategoryID == c.CategoryID)
+                 .Select((p, c) => string.Concat(c.CategoryName, " - ", p.ProductName));
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT CONCAT(_t0.[CategoryName], @p0, _t1.[ProductName]) FROM [dbo].[Products] AS _t1 INNER JOIN [dbo].[Categories] AS _t0 ON (_t1.[CategoryID] = _t0.[CategoryID])"));
+        }
     }
 }

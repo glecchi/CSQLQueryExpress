@@ -106,5 +106,53 @@ namespace CSQLQueryExpress.Tests.UnitTests
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT CASE WHEN (_t0.[CategoryID] = @p0) THEN @p1 WHEN (_t0.[CategoryID] = @p2) THEN @p3 ELSE @p4 END FROM [dbo].[Products] AS _t0"));
         }
+
+        [Test]
+        public void TestStartsWithExpression()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Products>()
+                 .Where(p => p.ProductName.StartsWith("A"))
+                 .Select(p => p.All());
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("A%"));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT _t0.* FROM [dbo].[Products] AS _t0 WHERE (_t0.[ProductName] LIKE @p0)"));
+        }
+
+        [Test]
+        public void TestEndsWithExpression()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Products>()
+                 .Where(p => p.ProductName.EndsWith("A"))
+                 .Select(p => p.All());
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("%A"));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT _t0.* FROM [dbo].[Products] AS _t0 WHERE (_t0.[ProductName] LIKE @p0)"));
+        }
+
+        [Test]
+        public void TestContainsExpression()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Products>()
+                 .Where(p => p.ProductName.Contains("A"))
+                 .Select(p => p.All());
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("%A%"));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT _t0.* FROM [dbo].[Products] AS _t0 WHERE (_t0.[ProductName] LIKE @p0)"));
+        }
     }
 }
