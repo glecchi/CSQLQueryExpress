@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSQLQueryExpress.Fragments;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -1222,8 +1223,14 @@ namespace CSQLQueryExpress
             {
                 _queryBuilder.Append(dbType.ToString().ToUpper());
             }
-            else if (node.Value is ISQLQuery sqlQuery)
+            else if (node.Value is SQLQuerySelect sqlQuery)
             {
+                if (sqlQuery.FragmentType == SQLQueryFragmentType.SelectCte ||
+                    sqlQuery.IsHierarchicalSelectFromCte())
+                {
+                    throw new NotSupportedException($"Queries with CTE TABLEs is not supported in InLine {nameof(SQLQuerySelect)}");
+                }
+
                 _queryBuilder.Append($"({SQLQueryCompiler.CompileStatement(sqlQuery, _parametersBuilder, _aliasBuilder)})");
             }
             else if (node.Value is AppLockMode lockMode)
