@@ -16,12 +16,7 @@ namespace CSQLQueryExpress
             return default;
         }
 
-        public static int Over(this int obj, Expression<Func<IRowNumberOver, object>> expression)
-        {
-            return default;
-        }
-
-        public static long Over(this long obj, Expression<Func<IRowNumberOver, object>> expression)
+        public static T Over<T>(this T obj, Expression<Func<IRowNumberOver, object>> expression) where T : struct
         {
             return default;
         }

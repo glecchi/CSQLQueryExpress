@@ -1,4 +1,6 @@
-﻿namespace CSQLQueryExpress
+﻿using CSQLQueryExpress.Fragments;
+
+namespace CSQLQueryExpress
 {
     public static class SQLQueryOperationExtensions
     {
@@ -7,7 +9,7 @@
             return default;
         }
 
-        public static T? Sum<T>(this T? obj) where T : struct
+        public static T Sum<T>(this T? obj) where T : struct
         {
             return default;
         }
@@ -17,7 +19,7 @@
             return default;
         }
 
-        public static T? Sign<T>(this T? obj) where T : struct
+        public static T Sign<T>(this T? obj) where T : struct
         {
             return default;
         }
@@ -57,7 +59,7 @@
             return default;
         }
 
-        public static T? Max<T>(this T? obj) where T : struct
+        public static T Max<T>(this T? obj) where T : struct
         {
             return default;
         }
@@ -67,7 +69,7 @@
             return default;
         }
 
-        public static T? Min<T>(this T? obj) where T : struct
+        public static T Min<T>(this T? obj) where T : struct
         {
             return default;
         }
@@ -87,19 +89,39 @@
             return default;
         }
 
-        //public static SQLQueryForXml<T> Path<T>(this SQLQueryForXml<T> obj)
-        //{
-        //    return default;
-        //}
+        public static T Avg<T>(this T obj) where T : struct
+        {
+            return default;
+        }
 
-        //public static SQLQueryForXml<T> Path<T>(this SQLQueryForXml<T> obj, string path)
-        //{
-        //    return default;
-        //}
+        public static T Avg<T>(this T? obj) where T : struct
+        {
+            return default;
+        }
 
-        //public static SQLQueryForXml<T> Root<T>(this SQLQueryForXml<T> obj, string root)
-        //{
-        //    return default;
-        //}
+        public static T AvgDistinct<T>(this T obj) where T : struct
+        {
+            return default;
+        }
+
+        public static T AvgDistinct<T>(this T? obj) where T : struct
+        {
+            return default;
+        }
+
+        public static ISQLQueryForXml Path(this ISQLQueryForXml obj)
+        {
+            return default;
+        }
+
+        public static ISQLQueryForXml Path(this ISQLQueryForXml obj, string path)
+        {
+            return default;
+        }
+
+        public static ISQLQueryForXml Root(this ISQLQueryForXml obj, string root)
+        {
+            return default;
+        }
     }
 }

@@ -1,0 +1,19 @@
+﻿WITH _t2 AS 
+( 
+SELECT 
+_t0.[CompanyName], 
+ISNULL(_t1.[ProductName], @p0) AS [ProductName], 
+COUNT(*) AS [ProductCount], 
+ROW_NUMBER() OVER(PARTITION BY _t0.[CompanyName] ORDER BY COUNT(*) DESC) AS [RowNumber] 
+FROM [dbo].[Shippers] AS _t0
+INNER JOIN [dbo].[Orders] AS _t3 ON (_t0.[ShipperID] = _t3.[ShipVia])
+INNER JOIN [dbo].[Order Details] AS _t4 ON (_t3.[OrderID] = _t4.[OrderID])
+INNER JOIN [dbo].[Products] AS _t1 ON (_t4.[ProductID] = _t1.[ProductID])
+GROUP BY _t0.[CompanyName], _t1.[ProductName]
+) 
+ 
+SELECT 
+_t2.* 
+FROM _t2 
+WHERE (_t2.[RowNumber] <= @p1) 
+ORDER BY _t2.[RowNumber] ASC, _t2.[CompanyName] ASC

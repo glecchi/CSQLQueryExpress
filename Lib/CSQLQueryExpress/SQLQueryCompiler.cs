@@ -17,6 +17,19 @@ namespace CSQLQueryExpress
         /// <param name="query">SQL query expression built with <see cref="SQLQuery"/>,</param>
         /// <returns>A compiled expression <see cref="SQLQueryCompiled"/>.</returns>
         public static SQLQueryCompiled Compile(ISQLQuery query)
+        {            
+            var parameterBuilder = new SQLQueryExpressionParametersBuilder();
+            var tableNameResolver = new SQLQueryExpressionTableNameResolver();
+            
+            var translatedQuery = CompileStatement(query, parameterBuilder, tableNameResolver);
+
+            return new SQLQueryCompiled(translatedQuery, new ReadOnlyCollection<SQLQueryParameter>(parameterBuilder.Parameters.Select(p => p.Value).ToList()));
+        }
+
+        internal static string CompileStatement(
+            ISQLQuery query, 
+            ISQLQueryExpressionParametersBuilder parameterBuilder,
+            ISQLQueryExpressionTableNameResolver tableNameResolver)
         {
             var cteList = query.Where(f => f.FragmentType == SQLQueryFragmentType.SelectCte).ToList();
             if (cteList.Count > 1 && cteList.Select(t => t.GetType().GenericTypeArguments[0]).Distinct().Count() != cteList.Count)
@@ -24,8 +37,6 @@ namespace CSQLQueryExpress
                 throw new NotSupportedException("Multiple declaration of CTE TABLEs for the same Entity is not supported");
             }
 
-            var parameterBuilder = new SQLQueryExpressionParametersBuilder();
-            var tableNameResolver = new SQLQueryExpressionTableNameResolver();
             var queryExpressionTranslator = new SQLQueryExpressionTranslator(parameterBuilder, tableNameResolver);
 
             var translatedQueryBuilder = new StringBuilder();
@@ -71,7 +82,7 @@ namespace CSQLQueryExpress
                 if (string.IsNullOrWhiteSpace(translatedFragment))
                 {
                     continue;
-                }    
+                }
 
                 if (translatedQueryBuilder.Length > 0 &&
                     fragment.FragmentType != SQLQueryFragmentType.Batch &&
@@ -79,13 +90,13 @@ namespace CSQLQueryExpress
                 {
                     translatedQueryBuilder.Append($" {Environment.NewLine}");
                 }
-                                
+
                 translatedQueryBuilder.Append(translatedFragment);
             }
 
             var translatedQuery = translatedQueryBuilder.ToString();
 
-            return new SQLQueryCompiled(translatedQuery, new ReadOnlyCollection<SQLQueryParameter>(parameterBuilder.Parameters.Select(p => p.Value).ToList()));
+            return translatedQuery;
         }
     }
 

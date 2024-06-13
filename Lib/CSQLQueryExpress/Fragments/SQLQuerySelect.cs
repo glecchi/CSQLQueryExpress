@@ -77,15 +77,15 @@ namespace CSQLQueryExpress.Fragments
             return new SQLQueryInsert<TI>(_fragments, this);
         }
 
-        //public SQLQueryForXml<TX> ForXml<TX>()
-        //{
-        //    return new SQLQueryForXml<TX>(_fragments);
-        //}
+        public SQLQueryForXml<TX> ForXml<TX>()
+        {
+            return new SQLQueryForXml<TX>(_fragments);
+        }
 
-        //public SQLQueryForXml<TX> ForXml<TX>(Expression<Func<SQLQueryForXml<TX>, object>> forXml)
-        //{
-        //    return new SQLQueryForXml<TX>(_fragments, forXml);
-        //}
+        public SQLQueryForXml<TX> ForXml<TX>(Expression<Func<ISQLQueryForXml, object>> forXml)
+        {
+            return new SQLQueryForXml<TX>(_fragments, forXml);
+        }
 
         public virtual string Translate(ISQLQueryExpressionTranslator expressionTranslator)
         {
@@ -228,15 +228,15 @@ namespace CSQLQueryExpress.Fragments
             return new SQLQueryInsert<TI>(_fragments, this);
         }
 
-        //public SQLQueryForXml<T> ForXml()
-        //{
-        //    return new SQLQueryForXml<T>(_fragments);
-        //}
+        public SQLQueryForXml<T> ForXml()
+        {
+            return new SQLQueryForXml<T>(_fragments);
+        }
 
-        //public SQLQueryForXml<T> ForXml(Expression<Func<SQLQueryForXml<T>, object>> forXml)
-        //{
-        //    return new SQLQueryForXml<T>(_fragments, forXml);
-        //}
+        public SQLQueryForXml<T> ForXml(Expression<Func<ISQLQueryForXml, object>> forXml)
+        {
+            return new SQLQueryForXml<T>(_fragments, forXml);
+        }
 
         public override string Translate(ISQLQueryExpressionTranslator expressionTranslator)
         {

@@ -1,0 +1,4 @@
+﻿SELECT DISTINCT 
+_t0.[CategoryID], 
+AVG(_t0.[UnitPrice]) OVER(PARTITION BY _t0.[CategoryID] ) 
+FROM [dbo].[Products] AS _t0

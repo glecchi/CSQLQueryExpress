@@ -39,107 +39,107 @@ namespace QueryExecution.Dapper.CommandFactory
         {
             queryCompiled = query.Compile();
 
-            return new SQLQueryReaderCommand<T>(_connectionString, queryCompiled);
+            return new SQLQueryCommandReader<T>(_connectionString, queryCompiled);
         }
 
         public IEnumerable<T> GetReader<T>(SQLQueryUnion<T> query, out SQLQueryCompiled queryCompiled)
         {
             queryCompiled = query.Compile();
 
-            return new SQLQueryReaderCommand<T>(_connectionString, queryCompiled);
+            return new SQLQueryCommandReader<T>(_connectionString, queryCompiled);
         }
 
         public IEnumerable<T> GetReader<T>(SQLQueryForXml<T> query, out SQLQueryCompiled queryCompiled)
         {
             queryCompiled = query.Compile();
 
-            return new SQLQueryReaderCommand<T>(_connectionString, queryCompiled);
+            return new SQLQueryCommandReader<T>(_connectionString, queryCompiled);
         }
 
         public IEnumerable<T> GetReader<T>(SQLQueryOutput<T> query, out SQLQueryCompiled queryCompiled)
         {
             queryCompiled = query.Compile();
 
-            return new SQLQueryReaderCommand<T>(_connectionString, queryCompiled);
+            return new SQLQueryCommandReader<T>(_connectionString, queryCompiled);
         }
 
         public IEnumerable<T> GetReader<T>(SQLQueryStoredProcedure<T> procedure, out SQLQueryCompiled queryCompiled)
         {
             queryCompiled = procedure.Compile();
 
-            return new SQLQueryReaderCommand<T>(_connectionString, queryCompiled);
+            return new SQLQueryCommandReader<T>(_connectionString, queryCompiled);
         }
 
         public IEnumerable GetReader(SQLQueryMultipleResultSets query, out SQLQueryCompiled queryCompiled)
         {
             queryCompiled = query.Compile();
 
-            return new SQLQueryMultipleResultSetsReaderCommand(_connectionString, queryCompiled);
+            return new SQLQueryMultipleResultSetsCommandReader(_connectionString, queryCompiled);
         }
 
         public int GetResult<T>(SQLQueryInto<T> query, out SQLQueryCompiled queryCompiled)
         {
             queryCompiled = query.Compile();
 
-            return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
+            return new SqlQueryCommandExecute(_connectionString, queryCompiled).Execute();
         }
 
         public int GetResult<T>(SQLQueryInsert<T> query, out SQLQueryCompiled queryCompiled) where T : ISQLQueryEntity
         {
             queryCompiled = query.Compile();
 
-            return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
+            return new SqlQueryCommandExecute(_connectionString, queryCompiled).Execute();
         }
 
         public int GetResult<T>(SQLQueryUpdate<T> query, out SQLQueryCompiled queryCompiled) where T : ISQLQueryEntity
         {
             queryCompiled = query.Compile();
 
-            return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
+            return new SqlQueryCommandExecute(_connectionString, queryCompiled).Execute();
         }
 
         public int GetResult<T>(SQLQueryDelete<T> query, out SQLQueryCompiled queryCompiled) where T : ISQLQueryEntity
         {
             queryCompiled = query.Compile();
 
-            return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
+            return new SqlQueryCommandExecute(_connectionString, queryCompiled).Execute();
         }
 
         public int GetResult<T>(SQLQueryTruncate<T> query, out SQLQueryCompiled queryCompiled) where T : ISQLQueryEntity
         {
             queryCompiled = query.Compile();
 
-            return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
+            return new SqlQueryCommandExecute(_connectionString, queryCompiled).Execute();
         }
 
         public int GetResult<T>(SQLQueryDrop<T> query, out SQLQueryCompiled queryCompiled) where T : ISQLQueryEntity
         {
             queryCompiled = query.Compile();
 
-            return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
+            return new SqlQueryCommandExecute(_connectionString, queryCompiled).Execute();
         }
 
         public int GetResult(SQLQueryStoredProcedure procedure, out SQLQueryCompiled queryCompiled)
         {
             queryCompiled = procedure.Compile();
 
-            return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
+            return new SqlQueryCommandExecute(_connectionString, queryCompiled).Execute();
         }
 
         public int GetResult<T>(SQLQueryBatch<T> query, out SQLQueryCompiled queryCompiled) where T : ISQLQueryEntity
         {
             queryCompiled = query.Compile();
 
-            return new SqlQueryExecuteCommand(_connectionString, queryCompiled).Execute();
+            return new SqlQueryCommandExecute(_connectionString, queryCompiled).Execute();
         }
     }
 
-    internal class SqlQueryExecuteCommand
+    public class SqlQueryCommandExecute
     {
         private readonly SQLQueryCompiled _queryCompiled;
         private readonly string _connectionString;
 
-        public SqlQueryExecuteCommand(string connectionString, SQLQueryCompiled queryCompiled)
+        public SqlQueryCommandExecute(string connectionString, SQLQueryCompiled queryCompiled)
         {
             _queryCompiled = queryCompiled;
             _connectionString = connectionString;
@@ -199,12 +199,84 @@ namespace QueryExecution.Dapper.CommandFactory
         }
     }
 
-    internal class SQLQueryReaderCommand<T> : IEnumerable<T>
+    public class SQLQueryCommandReader : IEnumerable<object>
     {
         private readonly SQLQueryCompiled _queryCompiled;
         private readonly string _connectionString;
 
-        public SQLQueryReaderCommand(string connectionString, SQLQueryCompiled queryCompiled)
+        public SQLQueryCommandReader(string connectionString, SQLQueryCompiled queryCompiled)
+        {
+            _queryCompiled = queryCompiled;
+            _connectionString = connectionString;
+        }
+
+        public IEnumerator<object> GetEnumerator()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                IList<object> result;
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        var parameters = new DynamicParameters();
+
+                        if (_queryCompiled.Parameters.Count > 0)
+                        {
+                            foreach (var pr in _queryCompiled.Parameters)
+                            {
+                                ParameterDirection direction = GetDirection(pr);
+                                parameters.Add(pr.Name, pr.Value, direction: direction);
+                            }
+                        }
+
+                        result = connection.Query(_queryCompiled.Statement, parameters, transaction).ToList();
+
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+
+                foreach (var item in result)
+                {
+                    yield return item;
+                }
+            }
+        }
+
+        private ParameterDirection GetDirection(SQLQueryParameter pr)
+        {
+            switch (pr.Direction)
+            {
+                case SQLQueryParameterValueDirection.Input:
+                    return ParameterDirection.Input;
+                case SQLQueryParameterValueDirection.Output:
+                    return ParameterDirection.Output;
+                case SQLQueryParameterValueDirection.Result:
+                    return ParameterDirection.ReturnValue;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(pr.Direction));
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
+
+    public class SQLQueryCommandReader<T> : IEnumerable<T>
+    {
+        private readonly SQLQueryCompiled _queryCompiled;
+        private readonly string _connectionString;
+
+        public SQLQueryCommandReader(string connectionString, SQLQueryCompiled queryCompiled)
         {
             _queryCompiled = queryCompiled;
             _connectionString = connectionString;
@@ -271,18 +343,18 @@ namespace QueryExecution.Dapper.CommandFactory
         }
     }
 
-    internal class SQLQueryMultipleResultSetsReaderCommand : IEnumerable
+    public class SQLQueryMultipleResultSetsCommandReader : IEnumerable<object>
     {
         private readonly SQLQueryCompiled _queryCompiled;
         private readonly string _connectionString;
 
-        public SQLQueryMultipleResultSetsReaderCommand(string connectionString, SQLQueryCompiled queryCompiled)
+        public SQLQueryMultipleResultSetsCommandReader(string connectionString, SQLQueryCompiled queryCompiled)
         {
             _queryCompiled = queryCompiled;
             _connectionString = connectionString;
         }
 
-        public IEnumerator GetEnumerator()
+        public IEnumerator<object> GetEnumerator()
         {
             var connectionStringBuilder = new SqlConnectionStringBuilder(_connectionString);
             connectionStringBuilder.MultipleActiveResultSets = true;
@@ -291,7 +363,7 @@ namespace QueryExecution.Dapper.CommandFactory
             {
                 connection.Open();
 
-                var results = new List<IEnumerable>();
+                var results = new List<IEnumerable<object>>();
                 using (var transaction = connection.BeginTransaction())
                 {
                     try

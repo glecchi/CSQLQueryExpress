@@ -1,0 +1,32 @@
+﻿SELECT 
+_t0.[CategoryID], 
+_t0.[CategoryName] 
+FROM [dbo].[Categories] AS _t0 
+WHERE (_t0.[CategoryID] IN (@p0, @p1, @p2)); 
+ 
+SELECT 
+_t1.[ProductID], 
+_t1.[ProductName] 
+FROM [dbo].[Products] AS _t1 
+WHERE (_t1.[CategoryID] = @p3) 
+ORDER BY ISNULL(_t1.[UnitPrice], @p4) ASC; 
+ 
+SELECT 
+_t1.[ProductID], 
+_t1.[ProductName] 
+FROM [dbo].[Products] AS _t1 
+WHERE (_t1.[CategoryID] = @p5) 
+ORDER BY ISNULL(_t1.[UnitPrice], @p6) ASC; 
+ 
+SELECT 
+_t1.[ProductID], 
+_t1.[ProductName] 
+FROM [dbo].[Products] AS _t1 
+WHERE (_t1.[CategoryID] = @p7) 
+ORDER BY ISNULL(_t1.[UnitPrice], @p8) ASC; 
+ 
+SELECT 
+_t2.[SupplierID], 
+_t2.[CompanyName], 
+_t2.[ContactName] 
+FROM [dbo].[Suppliers] AS _t2; 

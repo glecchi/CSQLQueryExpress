@@ -1,0 +1,5 @@
+﻿SELECT 
+_t0.[ProductID], 
+_t0.[ProductName] 
+FROM [dbo].[Products] AS _t0 
+FOR XML PATH ('ProductData'), root ('Root')

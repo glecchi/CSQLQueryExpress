@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace CSQLQueryExpress
 {
-    public interface ISQLQueryExpressionTableResolver
+    public interface ISQLQueryExpressionTableNameResolver
     {
         IDictionary<Type, QueryExpressionTableName> Alias { get; }
 
@@ -17,7 +17,7 @@ namespace CSQLQueryExpress
         string ResolveColumnName(Type objType, MemberInfo member);
     }
 
-    internal class SQLQueryExpressionTableNameResolver : ISQLQueryExpressionTableResolver
+    internal class SQLQueryExpressionTableNameResolver : ISQLQueryExpressionTableNameResolver
     {
         public IDictionary<Type, QueryExpressionTableName> Alias { get; } = new Dictionary<Type, QueryExpressionTableName>();
 

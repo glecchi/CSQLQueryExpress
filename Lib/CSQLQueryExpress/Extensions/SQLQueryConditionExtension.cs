@@ -90,5 +90,35 @@ namespace CSQLQueryExpress
         {
             return default;
         }
+
+        public static bool Exists<T>(this T obj, QueryInstance instance) where T : ISQLQueryEntity
+        {
+            return default;
+        }
+
+        public static bool NotExists<T>(this T obj, QueryInstance instance) where T : ISQLQueryEntity
+        {
+            return default;
+        }
+
+        public static bool Between<T>(this T obj, T min, T max) where T : struct
+        {
+            return default;
+        }
+
+        public static bool Between<T>(this T? obj, T min, T max) where T : struct
+        {
+            return default;
+        }
+
+        public static bool NotBetween<T>(this T obj, T min, T max) where T : struct
+        {
+            return default;
+        }
+
+        public static bool NotBetween<T>(this T? obj, T min, T max) where T : struct
+        {
+            return default;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using QueryExecution.Dal.NorthwindPubs;
+using QueryExecution.Dapper.CommandFactory;
 
 namespace CSQLQueryExpress.Tests.UnitTests
 {
@@ -153,6 +154,72 @@ namespace CSQLQueryExpress.Tests.UnitTests
             Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("%A%"));
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT _t0.* FROM [dbo].[Products] AS _t0 WHERE (_t0.[ProductName] LIKE @p0)"));
+        }
+
+        [Test]
+        public void TestExistsExpression()
+        {
+            var query1 = new SQLQuery()
+                .From<dbo.Products>()
+                .Select(p => p.ProductID);
+
+            var query = new SQLQuery()
+                .From<dbo.Products>()
+                .Where(p => p.Exists(query1.Instance()))
+                .Select(p => p.ProductName, p => p.UnitPrice);
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+               Is.EqualTo(@"SELECT _t0.[ProductName], _t0.[UnitPrice] FROM [dbo].[Products] AS _t0 WHERE EXISTS (SELECT _t0.[ProductID] FROM [dbo].[Products] AS _t0)"));
+        }
+
+        [Test]
+        public void TestNotExistsExpression()
+        {
+            var query1 = new SQLQuery()
+                .From<dbo.Products>()
+                .Select(p => p.ProductID);
+
+            var query = new SQLQuery()
+                .From<dbo.Products>()
+                .Where(p => p.NotExists(query1.Instance()))
+                .Select(p => p.ProductName, p => p.UnitPrice);
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+               Is.EqualTo(@"SELECT _t0.[ProductName], _t0.[UnitPrice] FROM [dbo].[Products] AS _t0 WHERE NOT EXISTS (SELECT _t0.[ProductID] FROM [dbo].[Products] AS _t0)"));
+        }
+
+        [Test]
+        public void TestBetweenExpression()
+        {
+            var query = new SQLQuery()
+                .From<dbo.Products>()
+                .Where(p => p.CategoryID.Between(1, 10))
+                .Select(p => p.ProductName, p => p.UnitPrice);
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(2));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+               Is.EqualTo(@"SELECT _t0.[ProductName], _t0.[UnitPrice] FROM [dbo].[Products] AS _t0 WHERE _t0.[CategoryID] BETWEEN @p0 AND @p1"));
+        }
+
+        [Test]
+        public void TestNotBetweenExpression()
+        {
+            var query = new SQLQuery()
+                .From<dbo.Products>()
+                .Where(p => p.CategoryID.NotBetween(1, 10))
+                .Select(p => p.ProductName, p => p.UnitPrice);
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(2));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+               Is.EqualTo(@"SELECT _t0.[ProductName], _t0.[UnitPrice] FROM [dbo].[Products] AS _t0 WHERE _t0.[CategoryID] NOT BETWEEN @p0 AND @p1"));
         }
     }
 }

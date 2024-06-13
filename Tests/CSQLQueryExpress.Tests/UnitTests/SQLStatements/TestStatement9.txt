@@ -1,0 +1,6 @@
+﻿SELECT 
+_t0.[ProductName], 
+_t0.[UnitPrice] 
+FROM [dbo].[Products] AS _t0 
+WHERE _t0.[CategoryID] BETWEEN @p0 AND @p1 
+ORDER BY _t0.[CategoryID] ASC

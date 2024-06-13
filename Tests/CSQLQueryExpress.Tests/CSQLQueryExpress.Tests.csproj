@@ -36,6 +36,33 @@
     <None Update="testhost.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="UnitTests\SQLStatements\TestStatement1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\SQLStatements\TestStatement2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\SQLStatements\TestStatement3.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\SQLStatements\TestStatement4.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\SQLStatements\TestStatement5.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\SQLStatements\TestStatement6.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\SQLStatements\TestStatement7.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\SQLStatements\TestStatement8.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\SQLStatements\TestStatement9.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

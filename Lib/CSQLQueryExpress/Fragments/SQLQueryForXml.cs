@@ -7,6 +7,11 @@ using System.Text;
 
 namespace CSQLQueryExpress.Fragments
 {
+    public interface ISQLQueryForXml
+    {
+
+    }
+
     public class SQLQueryForXml<T> : ISQLQueryFragment, ISQLQuery
     {
         private readonly IList<ISQLQueryFragment> _fragments;

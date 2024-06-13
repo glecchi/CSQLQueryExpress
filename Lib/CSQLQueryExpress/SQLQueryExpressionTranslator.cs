@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
@@ -28,10 +29,12 @@ namespace CSQLQueryExpress
     internal class SQLQueryExpressionTranslator : ExpressionVisitor, ISQLQueryExpressionTranslator
     {
         private readonly ISQLQueryExpressionParametersBuilder _parametersBuilder;
-        private readonly ISQLQueryExpressionTableResolver _aliasBuilder;
+        private readonly ISQLQueryExpressionTableNameResolver _aliasBuilder;
         private readonly StringBuilder _queryBuilder = new StringBuilder();
 
-        public SQLQueryExpressionTranslator(ISQLQueryExpressionParametersBuilder parametersBuilder, ISQLQueryExpressionTableResolver aliasBuilder)
+        public SQLQueryExpressionTranslator(
+            ISQLQueryExpressionParametersBuilder parametersBuilder, 
+            ISQLQueryExpressionTableNameResolver aliasBuilder)
         {
             _parametersBuilder = parametersBuilder;
             _aliasBuilder = aliasBuilder;
@@ -234,7 +237,29 @@ namespace CSQLQueryExpress
             {
                 return VisitAppLockMethodCall(node);
             }
-                       
+            else if (declaringType == typeof(Query))
+            {
+                return VisitQueryMethodCall(node);
+            }
+
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+        }
+
+        private Expression VisitQueryMethodCall(MethodCallExpression node)
+        {
+            if (node.Method.Name == nameof(Query.Instance))
+            {
+                if (node.Arguments[0] is MemberExpression memberExp)
+                {
+                    object container = ((ConstantExpression)memberExp.Expression).Value;
+                    container = TryExtractCSharpGeneratedClass(memberExp.Member, container);
+                    
+                    Visit(Expression.Constant(container));
+
+                    return node;
+                }
+            }
+
             throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
         }
 
@@ -904,6 +929,40 @@ namespace CSQLQueryExpress
 
                 return node;
             }
+            else if (node.Method.Name == nameof(SQLQueryConditionExtension.Exists))
+            {
+                _queryBuilder.Append("EXISTS ");
+                this.Visit(node.Arguments[1]);
+                
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryConditionExtension.NotExists))
+            {
+                _queryBuilder.Append("NOT EXISTS ");
+                this.Visit(node.Arguments[1]);
+                
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryConditionExtension.Between))
+            {
+                this.Visit(node.Arguments[0]);
+                _queryBuilder.Append(" BETWEEN ");
+                this.Visit(node.Arguments[1]);
+                _queryBuilder.Append(" AND ");
+                this.Visit(node.Arguments[2]);
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryConditionExtension.NotBetween))
+            {
+                this.Visit(node.Arguments[0]);
+                _queryBuilder.Append(" NOT BETWEEN ");
+                this.Visit(node.Arguments[1]);
+                _queryBuilder.Append(" AND ");
+                this.Visit(node.Arguments[2]);
+
+                return node;
+            }
 
             throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
         }
@@ -992,23 +1051,41 @@ namespace CSQLQueryExpress
 
                 return node;
             }
-            //else if (node.Method.Name == nameof(SQLQueryOperationExtensions.Path))
-            //{
-            //    _queryBuilder.Append("PATH");
-            //    if (node.Arguments.Count == 2)
-            //    {
-            //        _queryBuilder.Append($"({((ConstantExpression)node.Arguments[1]).Value})");
-            //    }
+            else if (node.Method.Name == nameof(SQLQueryOperationExtensions.Avg))
+            {
+                _queryBuilder.Append("AVG(");
+                Visit(node.Arguments[0]);
+                _queryBuilder.Append(")");
 
-            //    return node;
-            //}
-            //else if (node.Method.Name == nameof(SQLQueryOperationExtensions.Root))
-            //{
-            //    _queryBuilder.Append("root ");
-            //    _queryBuilder.Append($"({((ConstantExpression)node.Arguments[1]).Value})");
-                
-            //    return node;
-            //}
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryOperationExtensions.AvgDistinct))
+            {
+                _queryBuilder.Append("AVG(DISTINCT ");
+                Visit(node.Arguments[0]);
+                _queryBuilder.Append(")");
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryOperationExtensions.Path))
+            {
+                _queryBuilder.Append("PATH ");
+                if (node.Arguments.Count == 2)
+                {
+                    _queryBuilder.Append($"('{((ConstantExpression)node.Arguments[1]).Value}')");
+                }
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryOperationExtensions.Root))
+            {
+                Visit(node.Arguments[0]);
+
+                _queryBuilder.Append(", root ");
+                _queryBuilder.Append($"('{((ConstantExpression)node.Arguments[1]).Value}')");
+
+                return node;
+            }
 
             throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
         }
@@ -1039,6 +1116,7 @@ namespace CSQLQueryExpress
             else if (node.Expression != null && node.Expression.NodeType == ExpressionType.Constant)
             {                
                 object container = ((ConstantExpression)node.Expression).Value;
+
                 var member = node.Member;
                 if (member is FieldInfo field)
                 {
@@ -1054,7 +1132,7 @@ namespace CSQLQueryExpress
                 {
                     Visit(node.Expression);
                 }
-                
+
                 return node;
             }
             else if (node.NodeType == ExpressionType.MemberAccess)
@@ -1087,20 +1165,7 @@ namespace CSQLQueryExpress
                     if (memberExp.Expression != null && memberExp.Expression.NodeType == ExpressionType.Constant)
                     {
                         object container = ((ConstantExpression)memberExp.Expression).Value;
-                        var containerTypeName = container.GetType().Name;
-                        if (IsCSharpGeneratedClass(containerTypeName, "DisplayClass") ||
-                            IsCSharpGeneratedClass(containerTypeName, "AnonymousType"))
-                        {
-                            var displayClassMember = memberExp.Member;
-                            if (displayClassMember is FieldInfo fieldDisplayClassMember)
-                            {
-                                container = fieldDisplayClassMember.GetValue(container);
-                            }
-                            else if (displayClassMember is PropertyInfo propertyDisplayClassMember)
-                            {
-                                container = propertyDisplayClassMember.GetValue(container, null);
-                            }
-                        }
+                        container = TryExtractCSharpGeneratedClass(memberExp.Member, container);
 
                         var member = node.Member;
                         if (member is FieldInfo field)
@@ -1125,6 +1190,25 @@ namespace CSQLQueryExpress
 
 
             throw new NotSupportedException(string.Format("The member '{0}' is not supported", node.Member.Name));
+        }
+
+        private static object TryExtractCSharpGeneratedClass(MemberInfo memberInfo, object container)
+        {
+            var containerTypeName = container.GetType().Name;
+            if (IsCSharpGeneratedClass(containerTypeName, "DisplayClass") ||
+                IsCSharpGeneratedClass(containerTypeName, "AnonymousType"))
+            {
+                if (memberInfo is FieldInfo fieldDisplayClassMember)
+                {
+                    container = fieldDisplayClassMember.GetValue(container);
+                }
+                else if (memberInfo is PropertyInfo propertyDisplayClassMember)
+                {
+                    container = propertyDisplayClassMember.GetValue(container, null);
+                }
+            }
+
+            return container;
         }
 
         private static bool IsCSharpGeneratedClass(string typeName, string pattern)
@@ -1159,6 +1243,10 @@ namespace CSQLQueryExpress
             else if (node.Value is SqlDbType dbType)
             {
                 _queryBuilder.Append(dbType.ToString().ToUpper());
+            }
+            else if (node.Value is ISQLQuery sqlQuery)
+            {
+                _queryBuilder.Append($"({SQLQueryCompiler.CompileStatement(sqlQuery, _parametersBuilder, _aliasBuilder)})");
             }
             else if (node.Value is AppLockMode lockMode)
             {

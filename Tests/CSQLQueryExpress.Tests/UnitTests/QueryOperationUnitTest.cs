@@ -21,6 +21,34 @@ namespace CSQLQueryExpress.Tests.UnitTests
         }
 
         [Test]
+        public void TestAvgExpression()
+        {
+            var query = new SQLQuery()
+                .From<dbo.Products>()
+                .Select(p => p.UnitPrice.Avg());
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT AVG(_t0.[UnitPrice]) FROM [dbo].[Products] AS _t0"));
+        }
+
+        [Test]
+        public void TestAvgDistinctExpression()
+        {
+            var query = new SQLQuery()
+                .From<dbo.Products>()
+                .Select(p => p.UnitPrice.AvgDistinct());
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT AVG(DISTINCT _t0.[UnitPrice]) FROM [dbo].[Products] AS _t0"));
+        }
+
+        [Test]
         public void TestSignExpression()
         {
             var query = new SQLQuery()
