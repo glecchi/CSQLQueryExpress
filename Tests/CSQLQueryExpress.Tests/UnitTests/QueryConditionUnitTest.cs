@@ -165,7 +165,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             var query = new SQLQuery()
                 .From<dbo.Products>()
-                .Where(p => p.Exists(query1.Instance()))
+                .Where(p => p.Exists(query1))
                 .Select(p => p.ProductName, p => p.UnitPrice);
 
             var compiledQuery = query.Compile();
@@ -183,7 +183,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             var query = new SQLQuery()
                 .From<dbo.Products>()
-                .Where(p => p.NotExists(query1.Instance()))
+                .Where(p => p.NotExists(query1))
                 .Select(p => p.ProductName, p => p.UnitPrice);
 
             var compiledQuery = query.Compile();

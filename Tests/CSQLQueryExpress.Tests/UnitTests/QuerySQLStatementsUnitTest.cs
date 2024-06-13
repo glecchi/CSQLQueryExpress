@@ -217,7 +217,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             var query = new SQLQuery()
                 .From<dbo.Products>()
-                .Where(p => p.UnitPrice > query1.Instance())
+                .Where(p => p.UnitPrice > query1)
                 .Select(p => p.ProductName, p => p.UnitPrice);
 
             var compiledQuery = query.Compile();
@@ -257,6 +257,29 @@ namespace CSQLQueryExpress.Tests.UnitTests
                 .From<dbo.Products>()
                 .Where(p => p.CategoryID.Between(1, 100))
                 .OrderBy(p => p.CategoryID.Asc())
+                .Select(p => p.ProductName, p => p.UnitPrice);
+
+            var compiledQuery = query.Compile();
+
+            var statement = GetSQLStatement();
+
+            Assert.That(compiledQuery.Statement, Is.EqualTo(statement));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+        }
+
+        [Test]
+        public void TestStatement10()
+        {
+            var query1 = new SQLQuery()
+                .From<dbo.Products>()
+                .Select(p => p.ProductID);
+
+            var query = new SQLQuery()
+                .From<dbo.Products>()
+                .Where(p => p.Exists(query1))
                 .Select(p => p.ProductName, p => p.UnitPrice);
 
             var compiledQuery = query.Compile();

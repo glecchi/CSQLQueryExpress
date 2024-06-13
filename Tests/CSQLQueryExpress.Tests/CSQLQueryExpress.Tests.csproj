@@ -60,6 +60,9 @@
     <None Update="UnitTests\SQLStatements\TestStatement8.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="UnitTests\SQLStatements\TestStatement10.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="UnitTests\SQLStatements\TestStatement9.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

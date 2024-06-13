@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSQLQueryExpress.Fragments;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
@@ -91,12 +92,12 @@ namespace CSQLQueryExpress
             return default;
         }
 
-        public static bool Exists<T>(this T obj, QueryInstance instance) where T : ISQLQueryEntity
+        public static bool Exists<T>(this T obj, SQLQuerySelect query)
         {
             return default;
         }
 
-        public static bool NotExists<T>(this T obj, QueryInstance instance) where T : ISQLQueryEntity
+        public static bool NotExists<T>(this T obj, SQLQuerySelect query)
         {
             return default;
         }

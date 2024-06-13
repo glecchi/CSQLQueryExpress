@@ -249,5 +249,50 @@ namespace CSQLQueryExpress.Fragments
 
             return selectBase;
         }
+
+        public static bool operator ==(T value, SQLQuerySelect<T> i)
+        {
+            return default;
+        }
+
+        public static bool operator !=(T value, SQLQuerySelect<T> i)
+        {
+            return default;
+        }
+
+        public static bool operator <(T value, SQLQuerySelect<T> i)
+        {
+            return default;
+        }
+
+        public static bool operator >(T value, SQLQuerySelect<T> i)
+        {
+            return default;
+        }
+
+        public static bool operator <=(T value, SQLQuerySelect<T> i)
+        {
+            return default;
+        }
+
+        public static bool operator >=(T value, SQLQuerySelect<T> i)
+        {
+            return default;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }

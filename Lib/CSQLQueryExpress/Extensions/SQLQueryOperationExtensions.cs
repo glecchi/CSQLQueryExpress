@@ -9,7 +9,7 @@ namespace CSQLQueryExpress
             return default;
         }
 
-        public static T Sum<T>(this T? obj) where T : struct
+        public static T? Sum<T>(this T? obj) where T : struct
         {
             return default;
         }
@@ -19,7 +19,7 @@ namespace CSQLQueryExpress
             return default;
         }
 
-        public static T Sign<T>(this T? obj) where T : struct
+        public static T? Sign<T>(this T? obj) where T : struct
         {
             return default;
         }
@@ -59,7 +59,7 @@ namespace CSQLQueryExpress
             return default;
         }
 
-        public static T Max<T>(this T? obj) where T : struct
+        public static T? Max<T>(this T? obj) where T : struct
         {
             return default;
         }
@@ -69,7 +69,7 @@ namespace CSQLQueryExpress
             return default;
         }
 
-        public static T Min<T>(this T? obj) where T : struct
+        public static T? Min<T>(this T? obj) where T : struct
         {
             return default;
         }
@@ -94,7 +94,7 @@ namespace CSQLQueryExpress
             return default;
         }
 
-        public static T Avg<T>(this T? obj) where T : struct
+        public static T? Avg<T>(this T? obj) where T : struct
         {
             return default;
         }
@@ -104,7 +104,7 @@ namespace CSQLQueryExpress
             return default;
         }
 
-        public static T AvgDistinct<T>(this T? obj) where T : struct
+        public static T? AvgDistinct<T>(this T? obj) where T : struct
         {
             return default;
         }

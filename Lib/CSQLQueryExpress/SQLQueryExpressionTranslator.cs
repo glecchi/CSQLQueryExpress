@@ -237,29 +237,7 @@ namespace CSQLQueryExpress
             {
                 return VisitAppLockMethodCall(node);
             }
-            else if (declaringType == typeof(Query))
-            {
-                return VisitQueryMethodCall(node);
-            }
-
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
-        }
-
-        private Expression VisitQueryMethodCall(MethodCallExpression node)
-        {
-            if (node.Method.Name == nameof(Query.Instance))
-            {
-                if (node.Arguments[0] is MemberExpression memberExp)
-                {
-                    object container = ((ConstantExpression)memberExp.Expression).Value;
-                    container = TryExtractCSharpGeneratedClass(memberExp.Member, container);
-                    
-                    Visit(Expression.Constant(container));
-
-                    return node;
-                }
-            }
-
+            
             throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
         }
 

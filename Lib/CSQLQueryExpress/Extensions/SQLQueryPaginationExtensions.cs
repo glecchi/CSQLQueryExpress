@@ -21,6 +21,11 @@ namespace CSQLQueryExpress
             return default;
         }
 
+        public static T Over<T>(this T? obj, Expression<Func<IRowNumberOver, object>> expression) where T : struct
+        {
+            return default;
+        }
+
         public static IRowNumberOver PartitionBy(this IRowNumberOver over, params Expression<Func<object>>[] partitionBy)
         {
             return default;
