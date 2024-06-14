@@ -187,6 +187,10 @@ namespace CSQLQueryExpress
             {
                 return VisitDateTimeMethodCall(node);
             }
+            else if (declaringType == typeof(SQLQueryMathematicalExpressions))
+            {
+                return VisitSQLQueryMathematicalMethodCall(node);
+            }
             else if (declaringType == typeof(SQLQueryConditionExtension))
             {
                 return VisitQueryConditionMethodCall(node);
@@ -239,6 +243,54 @@ namespace CSQLQueryExpress
                 return VisitAppLockMethodCall(node);
             }
             
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+        }
+
+        private Expression VisitSQLQueryMathematicalMethodCall(MethodCallExpression node)
+        {
+            if (node.Method.Name == nameof(SQLQueryMathematicalExpressions.Abs))
+            {
+                _queryBuilder.Append("ABS(");
+                Visit(node.Arguments[0]);
+                _queryBuilder.Append(")");
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryMathematicalExpressions.Ceiling))
+            {
+                _queryBuilder.Append("CEILING(");
+                Visit(node.Arguments[0]);
+                _queryBuilder.Append(")");
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryMathematicalExpressions.Floor))
+            {
+                _queryBuilder.Append("FLOOR(");
+                Visit(node.Arguments[0]);
+                _queryBuilder.Append(")");
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryMathematicalExpressions.Round))
+            {
+                _queryBuilder.Append("ROUND(");
+                Visit(node.Arguments[0]);
+                _queryBuilder.Append(", ");
+                Visit(node.Arguments[1]);
+                _queryBuilder.Append(")");
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryMathematicalExpressions.Sqrt))
+            {
+                _queryBuilder.Append("SQRT(");
+                Visit(node.Arguments[0]);
+                _queryBuilder.Append(")");
+
+                return node;
+            }
+
             throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
         }
 

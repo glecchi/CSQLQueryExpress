@@ -65,6 +65,65 @@ public class Users : ISQLQueryEntity
 }
 ```
 
+## TSQL
+
+Some functions and statements supported by **CSQLQueryExpress**:
+
+### Scalar Functions:
+
+1. **Mathematical Functions:**
+    - `ABS`: Returns the absolute value of a number.
+    - `CEILING`: Returns the smallest integer greater than or equal to a number.
+    - `FLOOR`: Returns the largest integer less than or equal to a number.
+    - `ROUND`: Rounds a number to a specified number of decimal places.
+    - `SQRT`: Returns the square root of a number.
+
+2. **String Functions:**
+    - `LEN`: Returns the length of a string.
+    - `LOWER`: Converts a string to lowercase.
+    - `UPPER`: Converts a string to uppercase.
+    - `SUBSTRING`: Extracts a portion of a string.
+    - `REPLACE`: Replaces all occurrences of a substring within a string.
+    - `LTRIM` / `RTRIM`: Removes leading or trailing spaces from a string.
+    - `LEFT` / `RIGHT`: Returns characters from the left or right part of a string.
+
+3. **Date and Time Functions:**
+    - `DATEADD`: Adds an interval to a date.
+    - `DATEDIFF`: Returns the difference between two dates.
+    - `DATEPART`: Returns a specified part of a date as an integer.
+    - `CONVERT`: Converts a date to a specified format.
+
+4. **Logical Functions:**
+    - `ISNULL`: Replaces NULL with a specified replacement value.
+
+5. **Aggregate Functions:**
+    - `SUM`: Calculates the sum of a set of values.
+    - `AVG`: Calculates the average of a set of values.
+    - `MIN` / `MAX`: Returns the minimum or maximum value in a set of values.
+    - `COUNT`: Returns the number of values in a set.
+
+### Statements and Constructs:
+
+1. **`EXISTS`:** Checks if a subquery returns any rows.
+
+2. **`BETWEEN`:** Selects values within a given range.
+
+3. **Common Table Expressions (CTEs)**
+
+4. **Subqueries**
+
+5. **`FOR XML`:** Returns the query result as XML.
+
+6. **`CASE`:** Returns different values based on conditional logic.
+ 
+7. **`OUTPUT` with `INSERTED` and `DELETED`:** Returns the rows affected by an `INSERT`, `UPDATE`, or `DELETE` statement.
+    - `INSERTED`: Holds the new values being inserted or updated.
+    - `DELETED`: Holds the old values being deleted or updated.
+
+## Do you have a comprehensive list of examples?
+
+CSQLQueryExpress has a comprehensive test suite in the [test project](https://github.com/glecchi/CSQLQueryExpress/tree/main/Tests/CSQLQueryExpress.Tests).
+
 ## CSQLQueryExpress.Scaffolding
 
 **CSQLQueryExpress.Scaffolding** is a C# [NuGet library](https://www.nuget.org/packages/CSQLQueryExpress.Scaffolding) designed to compile the data model for CSQLQueryExpress from the database schema.
