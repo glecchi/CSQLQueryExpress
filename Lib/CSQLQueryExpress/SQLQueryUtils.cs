@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace CSQLQueryExpress
@@ -73,11 +74,11 @@ namespace CSQLQueryExpress
             }
         }
 
-        private static Dictionary<Type, IList<PropertyInfo>> _readableProperties = new Dictionary<Type, IList<PropertyInfo>>();
+        private static Dictionary<Type, IList<ReadablePropertyInfo>> _readableProperties = new Dictionary<Type, IList<ReadablePropertyInfo>>();
 
-        public static IList<PropertyInfo> GetReadableProperties(this Type type)
+        public static IList<ReadablePropertyInfo> GetReadableProperties(this Type type)
         {
-            if (!_readableProperties.TryGetValue(type, out IList<PropertyInfo> properties))
+            if (!_readableProperties.TryGetValue(type, out IList<ReadablePropertyInfo> properties))
             {
                 properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
                  .Where(p =>
@@ -103,6 +104,7 @@ namespace CSQLQueryExpress
                              )
 
                      ))
+                 .Select(p => new ReadablePropertyInfo(p))
                  .ToList();
 
                 _readableProperties.Add(type, properties);
@@ -189,5 +191,49 @@ namespace CSQLQueryExpress
 
             return properties;
         }
+    }
+}
+
+internal class ReadablePropertyInfo
+{
+    private readonly PropertyInfo _property;
+    private readonly Func<object, object> _propertyGetter;
+
+    public ReadablePropertyInfo(PropertyInfo property)
+    {
+        _property = property;
+        _propertyGetter = GenerateGetterLambda(property);
+    }
+
+    public string Name { get { return _property.Name; } }
+
+    public T GetCustomAttribute<T>() where T : Attribute
+    {
+        return _property.GetCustomAttribute<T>();
+    }
+
+    public object GetValue(object obj)
+    {
+        //return _property.GetValue(obj);
+        return _propertyGetter(obj);
+    }
+
+    /// <summary>
+    /// Source: https://blog.zhaytam.com/2020/11/17/expression-trees-property-getter/
+    /// </summary>
+    /// <param name="property">Property of type</param>
+    /// <returns>Delegate Getter</returns>
+    private static Func<object, object> GenerateGetterLambda(PropertyInfo property)
+    {
+        // Define our instance parameter, which will be the input of the Func
+        var objParameterExpr = Expression.Parameter(typeof(object), "instance");
+        // 1. Cast the instance to the correct type
+        var instanceExpr = Expression.TypeAs(objParameterExpr, property.DeclaringType);
+        // 2. Call the getter and retrieve the value of the property
+        var propertyExpr = Expression.Property(instanceExpr, property);
+        // 3. Convert the property's value to object
+        var propertyObjExpr = Expression.Convert(propertyExpr, typeof(object));
+        // Create a lambda expression of the latest call & compile it
+        return Expression.Lambda<Func<object, object>>(propertyObjExpr, objParameterExpr).Compile();
     }
 }
