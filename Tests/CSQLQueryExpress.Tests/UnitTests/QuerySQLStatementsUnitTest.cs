@@ -293,6 +293,25 @@ namespace CSQLQueryExpress.Tests.UnitTests
             Assert.DoesNotThrow(() => queryCommand.ToList());
         }
 
+        [Test]
+        public void TestStatement11()
+        {
+            var query = new SQLQuery()
+                .From<dbo.Products>().With(WithOptions.READPAST)
+                .InnerJoin<dbo.Categories>((p, c) => p.CategoryID == c.CategoryID).With(WithOptions.READPAST)
+                .Select((p, c) => c.CategoryName, (p, c) => p.ProductName);
+
+            var compiledQuery = query.Compile();
+
+            var statement = GetSQLStatement();
+
+            Assert.That(compiledQuery.Statement, Is.EqualTo(statement));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+        }
+
         private string GetSQLStatement([CallerMemberName] string memeberName = null)
         {
             var statement = File.ReadAllText($@"UnitTests\SQLStatements\{memeberName}.txt");

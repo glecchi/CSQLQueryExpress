@@ -1,5 +1,4 @@
-﻿using CSQLQueryExpress.Fragments;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -162,7 +161,7 @@ namespace CSQLQueryExpress
                  .Where(p =>
                      p.CanWrite &&
                      p.CanRead &&
-                     p.GetCustomAttribute<DatabaseGeneratedAttribute>() == null &&
+                     (p.GetCustomAttribute<DatabaseGeneratedAttribute>() == null || p.GetCustomAttribute<DatabaseGeneratedAttribute>().DatabaseGeneratedOption == DatabaseGeneratedOption.None) &&
                      (
                          p.PropertyType.IsValueType ||
                          p.PropertyType == typeof(string) ||
@@ -214,7 +213,6 @@ internal class ReadablePropertyInfo
 
     public object GetValue(object obj)
     {
-        //return _property.GetValue(obj);
         return _propertyGetter(obj);
     }
 

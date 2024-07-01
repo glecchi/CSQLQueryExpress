@@ -23,6 +23,8 @@ namespace CSQLQueryExpress.Fragments
         private readonly Expression _join;
         private readonly Type _type;
         private readonly SQLQuerySelect _select;
+        
+        protected WithOptions? WithOptions;
 
         public SQLQuerySelect FromSelect { get { return _select; } }
 
@@ -76,17 +78,24 @@ namespace CSQLQueryExpress.Fragments
             {
                 if (_select.FragmentType == SQLQueryFragmentType.SelectCte)
                 {
-                    joinBuilder.Append($" {expressionTranslator.GetTableAlias(_type)} ON {expressionTranslator.Translate(_join)}");
+                    joinBuilder.Append($" {expressionTranslator.GetTableAlias(_type)}");
                 }
                 else
                 {
-                    joinBuilder.Append($" {Environment.NewLine}({Environment.NewLine}{string.Join($"{Environment.NewLine} ", _select.Select(s => s.Translate(expressionTranslator)))}{Environment.NewLine}) AS {expressionTranslator.GetTableAlias(_type)} ON {expressionTranslator.Translate(_join)}");
+                    joinBuilder.Append($" {Environment.NewLine}({Environment.NewLine}{string.Join($"{Environment.NewLine} ", _select.Select(s => s.Translate(expressionTranslator)))}{Environment.NewLine}) AS {expressionTranslator.GetTableAlias(_type)}");
                 }
             }
             else
             {
-                joinBuilder.Append($" {expressionTranslator.Translate(Expression.Constant(_type))} ON {expressionTranslator.Translate(_join)}");
+                joinBuilder.Append($" {expressionTranslator.Translate(Expression.Constant(_type))}");
             }
+
+            if (WithOptions.HasValue)
+            {
+                joinBuilder.Append($" WITH ({WithOptions.Value})");
+            }
+                
+            joinBuilder.Append($" ON {expressionTranslator.Translate(_join)}");
 
             return joinBuilder.ToString();
         }
@@ -101,6 +110,12 @@ namespace CSQLQueryExpress.Fragments
             : base(fragments, joinType, join, typeof(TJ1), select)
         {
 
+        }
+
+        public SQLQueryJoin<T, TJ1> With(WithOptions options)
+        {
+            WithOptions = options;
+            return this;
         }
 
         public SQLQueryJoin<T, TJ1, TJ2> InnerJoin<TJ2>(Expression<Func<T, TJ1, TJ2, bool>> join) where TJ2 : ISQLQueryEntity
@@ -176,6 +191,12 @@ namespace CSQLQueryExpress.Fragments
             : base(fragments, joinType, join, typeof(TJ2), select)
         {
 
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2> With(WithOptions options)
+        {
+            WithOptions = options;
+            return this;
         }
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3> InnerJoin<TJ3>(Expression<Func<T, TJ1, TJ2, TJ3, bool>> join) where TJ3 : ISQLQueryEntity
@@ -258,6 +279,12 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3> With(WithOptions options)
+        {
+            WithOptions = options;
+            return this;
+        }
+
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4> InnerJoin<TJ4>(Expression<Func<T, TJ1, TJ2, TJ3, TJ4, bool>> join) where TJ4 : ISQLQueryEntity
         {
             return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4>(Fragments, SQLQueryJoinType.InnerJoin, join);
@@ -337,6 +364,12 @@ namespace CSQLQueryExpress.Fragments
             : base(fragments, joinType, join, typeof(TJ4), select)
         {
 
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4> With(WithOptions options)
+        {
+            WithOptions = options;
+            return this;
         }
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5> InnerJoin<TJ5>(Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, bool>> join) where TJ5 : ISQLQueryEntity
@@ -421,6 +454,12 @@ namespace CSQLQueryExpress.Fragments
             : base(fragments, joinType, join, typeof(TJ5), select)
         {
 
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5> With(WithOptions options)
+        {
+            WithOptions = options;
+            return this;
         }
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6> InnerJoin<TJ6>(Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, bool>> join) where TJ6 : ISQLQueryEntity
@@ -508,6 +547,12 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6> With(WithOptions options)
+        {
+            WithOptions = options;
+            return this;
+        }
+
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7> InnerJoin<TJ7>(Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, bool>> join) where TJ7 : ISQLQueryEntity
         {
             return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7>(Fragments, SQLQueryJoinType.InnerJoin, join);
@@ -592,6 +637,12 @@ namespace CSQLQueryExpress.Fragments
             : base(fragments, joinType, join, typeof(TJ7), select)
         {
 
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7> With(WithOptions options)
+        {
+            WithOptions = options;
+            return this;
         }
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8> InnerJoin<TJ8>(Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, bool>> join) where TJ8 : ISQLQueryEntity
@@ -681,6 +732,12 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8> With(WithOptions options)
+        {
+            WithOptions = options;
+            return this;
+        }
+
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9> InnerJoin<TJ9>(Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, bool>> join) where TJ9 : ISQLQueryEntity
         {
             return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9>(Fragments, SQLQueryJoinType.InnerJoin, join);
@@ -767,6 +824,12 @@ namespace CSQLQueryExpress.Fragments
             : base(fragments, joinType, join, typeof(TJ9), select)
         {
 
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9> With(WithOptions options)
+        {
+            WithOptions = options;
+            return this;
         }
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10> InnerJoin<TJ10>(Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, bool>> join) where TJ10 : ISQLQueryEntity
@@ -858,6 +921,12 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10> With(WithOptions options)
+        {
+            WithOptions = options;
+            return this;
+        }
+
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11> InnerJoin<TJ11>(Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, bool>> join) where TJ11 : ISQLQueryEntity
         {
             return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11>(Fragments, SQLQueryJoinType.InnerJoin, join);
@@ -946,6 +1015,12 @@ namespace CSQLQueryExpress.Fragments
             : base(fragments, joinType, join, typeof(TJ11), select)
         {
 
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11> With(WithOptions options)
+        {
+            WithOptions = options;
+            return this;
         }
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12> InnerJoin<TJ12>(Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, bool>> join) where TJ12 : ISQLQueryEntity
@@ -1039,6 +1114,12 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12> With(WithOptions options)
+        {
+            WithOptions = options;
+            return this;
+        }
+
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13> InnerJoin<TJ13>(Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13, bool>> join) where TJ13 : ISQLQueryEntity
         {
             return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13>(Fragments, SQLQueryJoinType.InnerJoin, join);
@@ -1129,6 +1210,12 @@ namespace CSQLQueryExpress.Fragments
             : base(fragments, joinType, join, typeof(TJ13), select)
         {
 
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13> With(WithOptions options)
+        {
+            WithOptions = options;
+            return this;
         }
 
         public SQLQueryGroup<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13> GroupBy(

@@ -6,8 +6,6 @@ Note that while CSQLQueryExpress handles the compilation of TSQL code, the execu
 
 In addition to compiling TSQL code, CSQLQueryExpress offers a [CSQLQueryExpress.Scaffolding](https://www.nuget.org/packages/CSQLQueryExpress.Scaffolding) tool and a test client for writing and executing queries.
 
-### ***Please note that this library is intended exclusively for use in non-production environments.***
-
 ## Key Features
 
 - **TSQL Syntax Familiarity:** Write C# code that mirrors TSQL syntax, making it easier for developers familiar with TSQL.

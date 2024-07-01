@@ -1,0 +1,3 @@
+﻿SELECT * 
+FROM [dbo].[Products] AS _t0 WITH (READPAST) 
+INNER JOIN [dbo].[Categories] AS _t1 WITH (READPAST) ON (_t0.[CategoryID] = _t1.[CategoryID])
