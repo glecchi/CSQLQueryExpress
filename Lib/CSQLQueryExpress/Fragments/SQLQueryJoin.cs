@@ -68,7 +68,7 @@ namespace CSQLQueryExpress.Fragments
                     joinBuilder.Append("LEFT OUTER JOIN");
                     break;
                 case SQLQueryJoinType.RightOuterJoin:
-                    joinBuilder.Append("OUTER OUTER JOIN");
+                    joinBuilder.Append("RIGHT OUTER JOIN");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
