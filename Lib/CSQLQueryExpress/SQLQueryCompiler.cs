@@ -122,6 +122,7 @@ namespace CSQLQueryExpress
         {
             Statement = statement;
             Parameters = parameters;
+            ParametersKeyValue = parameters.ToDictionary(p => p.Name, p => p.Value);
         }
 
         /// <summary>
@@ -133,5 +134,10 @@ namespace CSQLQueryExpress
         /// The list of parameters.
         /// </summary>
         public IList<SQLQueryParameter> Parameters { get; }
+
+        /// <summary>
+        /// The KeyValue parameters list. 
+        /// </summary>
+        public IDictionary<string, object> ParametersKeyValue { get; }
     }
 }
