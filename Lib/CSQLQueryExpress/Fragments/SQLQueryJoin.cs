@@ -13,6 +13,10 @@ namespace CSQLQueryExpress.Fragments
         LeftOuterJoin,
 
         RightOuterJoin,
+
+        CrossApply,
+
+        OuterApply
     }
 
     public abstract class SQLQueryJoin : ISQLQueryFragment, ISQLQueryFragmentFromSelect,
@@ -39,6 +43,12 @@ namespace CSQLQueryExpress.Fragments
             if (select != null && select.IsHierarchicalSelectFromCte())
             {
                 throw new NotSupportedException("Hierachical select queries from CTE TABLE is not supported");
+            }
+
+            if ((_joinType == SQLQueryJoinType.CrossApply || _joinType == SQLQueryJoinType.OuterApply) && 
+                (_select == null || _select.FragmentType == SQLQueryFragmentType.SelectCte))
+            {
+                throw new NotSupportedException("CrossApply/OuterApply without select query or with select based on CTE TABLE is not supported");
             }
 
             if (_select != null && _select.FragmentType == SQLQueryFragmentType.SelectCte && !Fragments.Contains(_select))
@@ -70,36 +80,82 @@ namespace CSQLQueryExpress.Fragments
                 case SQLQueryJoinType.RightOuterJoin:
                     joinBuilder.Append("RIGHT OUTER JOIN");
                     break;
+                case SQLQueryJoinType.CrossApply:
+                    joinBuilder.Append("CROSS APPLY");
+                    break;
+                case SQLQueryJoinType.OuterApply:
+                    joinBuilder.Append("OUTER APPLY");
+                    break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException($"{_joinType}");
             }
 
-            if (_select != null)
+            if (_joinType == SQLQueryJoinType.CrossApply || _joinType == SQLQueryJoinType.OuterApply)
             {
-                if (_select.FragmentType == SQLQueryFragmentType.SelectCte)
+                if (_select.Any(f => f.FragmentType == SQLQueryFragmentType.Where))
                 {
-                    joinBuilder.Append($" {expressionTranslator.GetTableAlias(_type)}");
+                    joinBuilder.Append($" {Environment.NewLine}({Environment.NewLine}{string.Join($"{Environment.NewLine} ", _select.Select(s => s.FragmentType == SQLQueryFragmentType.Where ? $"{s.Translate(expressionTranslator)} AND {expressionTranslator.Translate(_join)}" : s.Translate(expressionTranslator)))}{Environment.NewLine}) AS {expressionTranslator.GetTableAlias(_type)}");
                 }
                 else
                 {
-                    joinBuilder.Append($" {Environment.NewLine}({Environment.NewLine}{string.Join($"{Environment.NewLine} ", _select.Select(s => s.Translate(expressionTranslator)))}{Environment.NewLine}) AS {expressionTranslator.GetTableAlias(_type)}");
+                    var selectFragments = _select.ToList();
+                    selectFragments.Add(new SQLQueryJoinWhere(_join));
+                    
+                    joinBuilder.Append($" {Environment.NewLine}({Environment.NewLine}{string.Join($"{Environment.NewLine} ", selectFragments.OrderBy(f => f, new SQLQueryFragmentComparer(_select.FragmentType)).Select(s => s.Translate(expressionTranslator)))}{Environment.NewLine}) AS {expressionTranslator.GetTableAlias(_type)}");
+                }
+
+                if (WithOptions.HasValue)
+                {
+                    joinBuilder.Append($" WITH ({WithOptions.Value})");
                 }
             }
             else
             {
-                joinBuilder.Append($" {expressionTranslator.Translate(Expression.Constant(_type))}");
-            }
+                if (_select != null)
+                {
+                    if (_select.FragmentType == SQLQueryFragmentType.SelectCte)
+                    {
+                        joinBuilder.Append($" {expressionTranslator.GetTableAlias(_type)}");
+                    }
+                    else
+                    {
+                        joinBuilder.Append($" {Environment.NewLine}({Environment.NewLine}{string.Join($"{Environment.NewLine} ", _select.Select(s => s.Translate(expressionTranslator)))}{Environment.NewLine}) AS {expressionTranslator.GetTableAlias(_type)}");
+                    }
+                }
+                else
+                {
+                    joinBuilder.Append($" {expressionTranslator.Translate(Expression.Constant(_type))}");
+                }
 
-            if (WithOptions.HasValue)
-            {
-                joinBuilder.Append($" WITH ({WithOptions.Value})");
+                if (WithOptions.HasValue)
+                {
+                    joinBuilder.Append($" WITH ({WithOptions.Value})");
+                }
+
+                joinBuilder.Append($" ON {expressionTranslator.Translate(_join)}");
             }
-                
-            joinBuilder.Append($" ON {expressionTranslator.Translate(_join)}");
 
             return joinBuilder.ToString();
         }
     }
+
+    internal class SQLQueryJoinWhere : ISQLQueryFragment
+    {
+        private readonly Expression _where;
+
+        public SQLQueryJoinWhere(Expression where)
+        {
+            _where = where;
+        }
+
+        public SQLQueryFragmentType FragmentType => SQLQueryFragmentType.Where;
+
+        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        {
+            return $"WHERE {expressionTranslator.Translate(_where)}";
+        }
+    }
+
 
     public class SQLQueryJoin<T, TJ1> : SQLQueryJoin, ISQLQueryFragment,
         ISQLQueryWithSelect<T, TJ1>, ISQLQueryWithOrderBy<T, TJ1>
@@ -109,7 +165,7 @@ namespace CSQLQueryExpress.Fragments
         internal SQLQueryJoin(IList<ISQLQueryFragment> fragments, SQLQueryJoinType joinType, Expression<Func<T, TJ1, bool>> join, SQLQuerySelect<TJ1> select = null)
             : base(fragments, joinType, join, typeof(TJ1), select)
         {
-
+            
         }
 
         public SQLQueryJoin<T, TJ1> With(WithOptions options)
@@ -146,6 +202,16 @@ namespace CSQLQueryExpress.Fragments
         public SQLQueryJoin<T, TJ1, TJ2> RightOuterJoin<TJ2>(SQLQuerySelect<TJ2> select, Expression<Func<T, TJ1, TJ2, bool>> join) where TJ2 : ISQLQueryEntity
         {
             return new SQLQueryJoin<T, TJ1, TJ2>(Fragments, SQLQueryJoinType.RightOuterJoin, join, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2> CrossApply<TJ2>(SQLQuerySelect<TJ2> select, Expression<Func<T, TJ1, TJ2, bool>> where) where TJ2 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2>(Fragments, SQLQueryJoinType.CrossApply, where, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2> OuterApply<TJ2>(SQLQuerySelect<TJ2> select, Expression<Func<T, TJ1, TJ2, bool>> where) where TJ2 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2>(Fragments, SQLQueryJoinType.OuterApply, where, select);
         }
 
         public SQLQueryGroup<T, TJ1> GroupBy(
@@ -227,6 +293,16 @@ namespace CSQLQueryExpress.Fragments
         public SQLQueryJoin<T, TJ1, TJ2, TJ3> RightOuterJoin<TJ3>(SQLQuerySelect<TJ3> select, Expression<Func<T, TJ1, TJ2, TJ3, bool>> join) where TJ3 : ISQLQueryEntity
         {
             return new SQLQueryJoin<T, TJ1, TJ2, TJ3>(Fragments, SQLQueryJoinType.RightOuterJoin, join, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3> CrossApply<TJ3>(SQLQuerySelect<TJ3> select, Expression<Func<T, TJ1, TJ2, TJ3, bool>> where) where TJ3 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3>(Fragments, SQLQueryJoinType.CrossApply, where, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3> OuterApply<TJ3>(SQLQuerySelect<TJ3> select, Expression<Func<T, TJ1, TJ2, TJ3, bool>> where) where TJ3 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3>(Fragments, SQLQueryJoinType.OuterApply, where, select);
         }
 
         public SQLQueryGroup<T, TJ1, TJ2> GroupBy(
@@ -315,6 +391,16 @@ namespace CSQLQueryExpress.Fragments
             return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4>(Fragments, SQLQueryJoinType.RightOuterJoin, join, select);
         }
 
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4> CrossApply<TJ4>(SQLQuerySelect<TJ4> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, bool>> where) where TJ4 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4>(Fragments, SQLQueryJoinType.CrossApply, where, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4> OuterApply<TJ4>(SQLQuerySelect<TJ4> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, bool>> where) where TJ4 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4>(Fragments, SQLQueryJoinType.OuterApply, where, select);
+        }
+
         public SQLQueryGroup<T, TJ1, TJ2, TJ3> GroupBy(
             Expression<Func<T, TJ1, TJ2, TJ3, object>> group,
             params Expression<Func<T, TJ1, TJ2, TJ3, object>>[] otherGroup)
@@ -400,6 +486,16 @@ namespace CSQLQueryExpress.Fragments
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5> RightOuterJoin<TJ5>(SQLQuerySelect<TJ5> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, bool>> join) where TJ5 : ISQLQueryEntity
         {
             return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5>(Fragments, SQLQueryJoinType.RightOuterJoin, join, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5> CrossApply<TJ5>(SQLQuerySelect<TJ5> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, bool>> where) where TJ5 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5>(Fragments, SQLQueryJoinType.CrossApply, where, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5> OuterApply<TJ5>(SQLQuerySelect<TJ5> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, bool>> where) where TJ5 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5>(Fragments, SQLQueryJoinType.OuterApply, where, select);
         }
 
         public SQLQueryGroup<T, TJ1, TJ2, TJ3, TJ4> GroupBy(
@@ -492,6 +588,16 @@ namespace CSQLQueryExpress.Fragments
             return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6>(Fragments, SQLQueryJoinType.RightOuterJoin, join, select);
         }
 
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6> CrossApply<TJ6>(SQLQuerySelect<TJ6> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, bool>> where) where TJ6 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6>(Fragments, SQLQueryJoinType.CrossApply, where, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6> OuterApply<TJ6>(SQLQuerySelect<TJ6> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, bool>> where) where TJ6 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6>(Fragments, SQLQueryJoinType.OuterApply, where, select);
+        }
+
         public SQLQueryGroup<T, TJ1, TJ2, TJ3, TJ4, TJ5> GroupBy(
             Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, object>> group,
             params Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, object>>[] otherGroup)
@@ -581,6 +687,16 @@ namespace CSQLQueryExpress.Fragments
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7> RightOuterJoin<TJ7>(SQLQuerySelect<TJ7> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, bool>> join) where TJ7 : ISQLQueryEntity
         {
             return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7>(Fragments, SQLQueryJoinType.RightOuterJoin, join, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7> CrossApply<TJ7>(SQLQuerySelect<TJ7> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, bool>> where) where TJ7 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7>(Fragments, SQLQueryJoinType.CrossApply, where, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7> OuterApply<TJ7>(SQLQuerySelect<TJ7> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, bool>> where) where TJ7 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7>(Fragments, SQLQueryJoinType.OuterApply, where, select);
         }
 
         public SQLQueryGroup<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6> GroupBy(
@@ -675,6 +791,16 @@ namespace CSQLQueryExpress.Fragments
             return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8>(Fragments, SQLQueryJoinType.RightOuterJoin, join, select);
         }
 
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8> CrossApply<TJ8>(SQLQuerySelect<TJ8> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, bool>> where) where TJ8 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8>(Fragments, SQLQueryJoinType.CrossApply, where, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8> OuterApply<TJ8>(SQLQuerySelect<TJ8> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, bool>> where) where TJ8 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8>(Fragments, SQLQueryJoinType.OuterApply, where, select);
+        }
+
         public SQLQueryGroup<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7> GroupBy(
               Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, object>> group,
               params Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, object>>[] otherGroup)
@@ -766,6 +892,16 @@ namespace CSQLQueryExpress.Fragments
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9> RightOuterJoin<TJ9>(SQLQuerySelect<TJ9> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, bool>> join) where TJ9 : ISQLQueryEntity
         {
             return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9>(Fragments, SQLQueryJoinType.RightOuterJoin, join, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9> CrossApply<TJ9>(SQLQuerySelect<TJ9> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, bool>> where) where TJ9 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9>(Fragments, SQLQueryJoinType.CrossApply, where, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9> OuterApply<TJ9>(SQLQuerySelect<TJ9> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, bool>> where) where TJ9 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9>(Fragments, SQLQueryJoinType.OuterApply, where, select);
         }
 
         public SQLQueryGroup<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8> GroupBy(
@@ -862,6 +998,16 @@ namespace CSQLQueryExpress.Fragments
             return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10>(Fragments, SQLQueryJoinType.RightOuterJoin, join, select);
         }
 
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10> CrossApply<TJ10>(SQLQuerySelect<TJ10> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, bool>> where) where TJ10 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10>(Fragments, SQLQueryJoinType.CrossApply, where, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10> OuterApply<TJ10>(SQLQuerySelect<TJ10> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, bool>> where) where TJ10 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10>(Fragments, SQLQueryJoinType.OuterApply, where, select);
+        }
+
         public SQLQueryGroup<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9> GroupBy(
              Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, object>> group,
              params Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, object>>[] otherGroup)
@@ -955,6 +1101,16 @@ namespace CSQLQueryExpress.Fragments
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11> RightOuterJoin<TJ11>(SQLQuerySelect<TJ11> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, bool>> join) where TJ11 : ISQLQueryEntity
         {
             return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11>(Fragments, SQLQueryJoinType.RightOuterJoin, join, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11> CrossApply<TJ11>(SQLQuerySelect<TJ11> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, bool>> where) where TJ11 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11>(Fragments, SQLQueryJoinType.CrossApply, where, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11> OuterApply<TJ11>(SQLQuerySelect<TJ11> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, bool>> where) where TJ11 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11>(Fragments, SQLQueryJoinType.OuterApply, where, select);
         }
 
         public SQLQueryGroup<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10> GroupBy(
@@ -1053,6 +1209,16 @@ namespace CSQLQueryExpress.Fragments
             return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12>(Fragments, SQLQueryJoinType.RightOuterJoin, join, select);
         }
 
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12> CrossApply<TJ12>(SQLQuerySelect<TJ12> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, bool>> where) where TJ12 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12>(Fragments, SQLQueryJoinType.CrossApply, where, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12> OuterApply<TJ12>(SQLQuerySelect<TJ12> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, bool>> where) where TJ12 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12>(Fragments, SQLQueryJoinType.OuterApply, where, select);
+        }
+
         public SQLQueryGroup<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11> GroupBy(
              Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, object>> group,
              params Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, object>>[] otherGroup)
@@ -1148,6 +1314,16 @@ namespace CSQLQueryExpress.Fragments
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13> RightOuterJoin<TJ13>(SQLQuerySelect<TJ13> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13, bool>> join) where TJ13 : ISQLQueryEntity
         {
             return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13>(Fragments, SQLQueryJoinType.RightOuterJoin, join, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13> CrossApply<TJ13>(SQLQuerySelect<TJ13> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13, bool>> where) where TJ13 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13>(Fragments, SQLQueryJoinType.CrossApply, where, select);
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13> OuterApply<TJ13>(SQLQuerySelect<TJ13> select, Expression<Func<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13, bool>> where) where TJ13 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13>(Fragments, SQLQueryJoinType.OuterApply, where, select);
         }
 
         public SQLQueryGroup<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12> GroupBy(

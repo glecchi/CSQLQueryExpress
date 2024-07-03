@@ -67,6 +67,16 @@ namespace CSQLQueryExpress.Fragments
             return new SQLQueryJoin<T, TJ1>(_fragments, SQLQueryJoinType.RightOuterJoin, join, select);
         }
 
+        public SQLQueryJoin<T, TJ1> CrossApply<TJ1>(SQLQuerySelect<TJ1> select, Expression<Func<T, TJ1, bool>> where) where TJ1 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1>(_fragments, SQLQueryJoinType.CrossApply, where, select);
+        }
+
+        public SQLQueryJoin<T, TJ1> OuterApply<TJ1>(SQLQuerySelect<TJ1> select, Expression<Func<T, TJ1, bool>> where) where TJ1 : ISQLQueryEntity
+        {
+            return new SQLQueryJoin<T, TJ1>(_fragments, SQLQueryJoinType.OuterApply, where, select);
+        }
+
         public SQLQueryOrder<T> OrderBy(Expression<Func<T, object>> orderBy, params Expression<Func<T, object>>[] otherOrderBy)
         {
             return new SQLQueryOrder<T>(_fragments, orderBy, otherOrderBy);

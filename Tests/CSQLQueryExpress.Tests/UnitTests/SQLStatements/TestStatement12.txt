@@ -1,0 +1,10 @@
+﻿SELECT * 
+FROM [dbo].[Categories] AS _t0 
+CROSS APPLY 
+(
+SELECT TOP(1) 
+_t1.*
+ FROM [dbo].[Products] AS _t1
+ WHERE (_t1.[UnitsInStock] > @p0) AND (_t1.[CategoryID] = _t0.[CategoryID])
+ ORDER BY _t1.[ProductName] DESC
+) AS _t1

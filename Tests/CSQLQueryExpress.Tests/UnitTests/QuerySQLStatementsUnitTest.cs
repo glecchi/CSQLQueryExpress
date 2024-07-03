@@ -312,6 +312,58 @@ namespace CSQLQueryExpress.Tests.UnitTests
             Assert.DoesNotThrow(() => queryCommand.ToList());
         }
 
+        [Test]
+        public void TestStatement12()
+        {
+            var queryCrApply = new SQLQuery()
+                .From<dbo.Products>()
+                .Where(p => p.UnitsInStock > 20)
+                .OrderBy(p => p.ProductName.Desc())
+                .Select(c => c.All())
+                .Top(1);
+
+            var query = new SQLQuery()
+                .From<dbo.Categories>()
+                .CrossApply(queryCrApply, (c, p) => p.CategoryID == c.CategoryID)
+                .Select((c, p) => c.CategoryName, (c, p) => p.ProductName);
+
+            var compiledQuery = query.Compile();
+
+            var statement = GetSQLStatement();
+
+            Assert.That(compiledQuery.Statement, Is.EqualTo(statement));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+        }
+
+        [Test]
+        public void TestStatement13()
+        {
+            var queryCrApply = new SQLQuery()
+                .From<dbo.Products>()
+                .Where(p => p.UnitsInStock > 100)
+                .OrderBy(p => p.ProductName.Desc())
+                .Select(c => c.All())
+                .Top(1);
+
+            var query = new SQLQuery()
+                .From<dbo.Categories>()
+                .OuterApply(queryCrApply, (c, p) => p.CategoryID == c.CategoryID)
+                .Select((c, p) => c.CategoryName, (c, p) => p.ProductName);
+
+            var compiledQuery = query.Compile();
+
+            var statement = GetSQLStatement();
+
+            Assert.That(compiledQuery.Statement, Is.EqualTo(statement));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+        }
+
         private string GetSQLStatement([CallerMemberName] string memeberName = null)
         {
             var statement = File.ReadAllText($@"UnitTests\SQLStatements\{memeberName}.txt");
