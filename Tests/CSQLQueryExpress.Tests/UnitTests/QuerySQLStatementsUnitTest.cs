@@ -364,6 +364,46 @@ namespace CSQLQueryExpress.Tests.UnitTests
             Assert.DoesNotThrow(() => queryCommand.ToList());
         }
 
+        [Test]
+        public void TestStatement14()
+        {
+            var query = new SQLQuery()
+                .From<dbo.Categories>()
+                .LeftOuterJoin<dbo.Products>((c, p) => c.CategoryID == p.CategoryID)
+                .Where((c, p) => p.ProductID.IsNotNull())
+                .Select((c, p) => c.CategoryName, (c, p) => p.ProductName);
+
+            var compiledQuery = query.Compile();
+
+            var statement = GetSQLStatement();
+
+            Assert.That(compiledQuery.Statement, Is.EqualTo(statement));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+        }
+
+        [Test]
+        public void TestStatement15()
+        {
+            var query = new SQLQuery()
+                .From<dbo.Products>()
+                .RightOuterJoin<dbo.Categories>((p, c) => c.CategoryID == p.CategoryID)
+                .Where((p, c) => p.ProductID.IsNotNull())
+                .Select((p, c) => c.CategoryName, (p, c) => p.ProductName);
+
+            var compiledQuery = query.Compile();
+
+            var statement = GetSQLStatement();
+
+            Assert.That(compiledQuery.Statement, Is.EqualTo(statement));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+        }
+
         private string GetSQLStatement([CallerMemberName] string memeberName = null)
         {
             var statement = File.ReadAllText($@"UnitTests\SQLStatements\{memeberName}.txt");

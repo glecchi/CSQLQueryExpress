@@ -1,0 +1,6 @@
+﻿SELECT 
+_t0.[CategoryName], 
+_t1.[ProductName] 
+FROM [dbo].[Products] AS _t1 
+RIGHT OUTER JOIN [dbo].[Categories] AS _t0 ON (_t0.[CategoryID] = _t1.[CategoryID]) 
+WHERE (_t1.[ProductID] IS NOT NULL)
