@@ -17,6 +17,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT _t0.* FROM [dbo].[Products] AS _t0 WHERE (_t0.[ProductID] IS NULL)"));
         }
@@ -32,6 +33,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT _t0.* FROM [dbo].[Products] AS _t0 WHERE (_t0.[ProductID] IS NOT NULL)"));
         }
@@ -47,6 +49,10 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(3));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo(2));
+            Assert.That(compiledQuery.Parameters[2].Value, Is.EqualTo(3));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT _t0.* FROM [dbo].[Products] AS _t0 WHERE (_t0.[ProductID] IN (@p0, @p1, @p2))"));
         }
@@ -62,6 +68,10 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(3));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo(2));
+            Assert.That(compiledQuery.Parameters[2].Value, Is.EqualTo(3));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT _t0.* FROM [dbo].[Products] AS _t0 WHERE (_t0.[ProductID] NOT IN (@p0, @p1, @p2))"));
         }
@@ -76,6 +86,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT ISNULL(_t0.[ProductID], @p0) FROM [dbo].[Products] AS _t0"));
         }
@@ -90,6 +102,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT CASE WHEN (_t0.[ProductID] IS NOT NULL) THEN _t0.[ProductID] ELSE @p0 END FROM [dbo].[Products] AS _t0"));
         }
@@ -99,11 +113,17 @@ namespace CSQLQueryExpress.Tests.UnitTests
         {
             var query = new SQLQuery()
                  .From<dbo.Products>()
-                 .Select(p => Case.When(() => p.CategoryID == 1).Then(() => "CATEGORIA 1").When(() => p.CategoryID == 2).Then(() => "CATEGORIA 2").Else(() => "CATETORIA N"));
+                 .Select(p => Case.When(() => p.CategoryID == 1).Then(() => "CATEGORIA 1").When(() => p.CategoryID == 2).Then(() => "CATEGORIA 2").Else(() => "CATEGORIA N"));
 
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(5));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo("CATEGORIA 1"));
+            Assert.That(compiledQuery.Parameters[2].Value, Is.EqualTo(2));
+            Assert.That(compiledQuery.Parameters[3].Value, Is.EqualTo("CATEGORIA 2"));
+            Assert.That(compiledQuery.Parameters[4].Value, Is.EqualTo("CATEGORIA N"));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT CASE WHEN (_t0.[CategoryID] = @p0) THEN @p1 WHEN (_t0.[CategoryID] = @p2) THEN @p3 ELSE @p4 END FROM [dbo].[Products] AS _t0"));
         }
@@ -120,6 +140,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
             Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("A%"));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT _t0.* FROM [dbo].[Products] AS _t0 WHERE (_t0.[ProductName] LIKE @p0)"));
         }
@@ -136,6 +157,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
             Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("%A"));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT _t0.* FROM [dbo].[Products] AS _t0 WHERE (_t0.[ProductName] LIKE @p0)"));
         }
@@ -152,6 +174,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
             Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("%A%"));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT _t0.* FROM [dbo].[Products] AS _t0 WHERE (_t0.[ProductName] LIKE @p0)"));
         }
@@ -169,6 +192,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
                 .Select(p => p.ProductName, p => p.UnitPrice);
 
             var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
 
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                Is.EqualTo(@"SELECT _t0.[ProductName], _t0.[UnitPrice] FROM [dbo].[Products] AS _t0 WHERE EXISTS (SELECT _t0.[ProductID] FROM [dbo].[Products] AS _t0)"));
@@ -188,6 +213,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             var compiledQuery = query.Compile();
 
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                Is.EqualTo(@"SELECT _t0.[ProductName], _t0.[UnitPrice] FROM [dbo].[Products] AS _t0 WHERE NOT EXISTS (SELECT _t0.[ProductID] FROM [dbo].[Products] AS _t0)"));
         }
@@ -203,6 +230,9 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(2));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo(10));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                Is.EqualTo(@"SELECT _t0.[ProductName], _t0.[UnitPrice] FROM [dbo].[Products] AS _t0 WHERE _t0.[CategoryID] BETWEEN @p0 AND @p1"));
         }
@@ -218,6 +248,9 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(2));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo(10));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                Is.EqualTo(@"SELECT _t0.[ProductName], _t0.[UnitPrice] FROM [dbo].[Products] AS _t0 WHERE _t0.[CategoryID] NOT BETWEEN @p0 AND @p1"));
         }

@@ -14,6 +14,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             var compiledQuery = query.Compile();
 
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT ABS(_t0.[ReorderLevel]) FROM [dbo].[Products] AS _t0"));
         }
@@ -27,6 +29,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             var compiledQuery = query.Compile();
 
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT CEILING(_t0.[ReorderLevel]) FROM [dbo].[Products] AS _t0"));
         }
@@ -39,6 +43,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
                  .Select(c => c.ReorderLevel.Floor());
 
             var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
 
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT FLOOR(_t0.[ReorderLevel]) FROM [dbo].[Products] AS _t0"));
@@ -54,6 +60,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(1));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT ROUND(_t0.[UnitPrice], @p0) FROM [dbo].[Products] AS _t0"));
         }
@@ -66,6 +74,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
                  .Select(c => c.UnitPrice.Sqrt());
 
             var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
 
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT SQRT(_t0.[UnitPrice]) FROM [dbo].[Products] AS _t0"));

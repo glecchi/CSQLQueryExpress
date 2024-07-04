@@ -16,6 +16,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(1));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT SUM(_t0.[Quantity]) FROM [dbo].[Order Details] AS _t0 WHERE (_t0.[OrderID] = @p0)"));
         }
@@ -30,6 +32,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT AVG(_t0.[UnitPrice]) FROM [dbo].[Products] AS _t0"));
         }
@@ -44,6 +47,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT AVG(DISTINCT _t0.[UnitPrice]) FROM [dbo].[Products] AS _t0"));
         }
@@ -59,6 +63,10 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(3));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.TypeOf<DateTime>());
+            Assert.That(compiledQuery.Parameters[1].Value, Is.TypeOf<DateTime>());
+            Assert.That(compiledQuery.Parameters[2].Value, Is.EqualTo(-1));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT _t0.* FROM [dbo].[Orders] AS _t0 WHERE (SIGN(DATEDIFF(DAY, ISNULL(_t0.[OrderDate], @p0), @p1)) = @p2)"));
         }
@@ -73,6 +81,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT COUNT(_t0.[OrderID]) FROM [dbo].[Orders] AS _t0"));
         }
@@ -87,6 +96,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT COUNT(DISTINCT _t0.[OrderID]) FROM [dbo].[Order Details] AS _t0"));
         }
@@ -101,6 +111,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT MAX(_t0.[Quantity]) FROM [dbo].[Order Details] AS _t0"));
         }
@@ -115,6 +126,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT MIN(_t0.[Quantity]) FROM [dbo].[Order Details] AS _t0"));
         }
@@ -129,6 +141,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT MAX(LEN(_t0.[ProductName])) FROM [dbo].[Products] AS _t0"));
         }
@@ -143,6 +156,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(5));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT LEFT(_t0.[ProductName], @p0) FROM [dbo].[Products] AS _t0"));
         }
@@ -157,6 +172,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(5));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT RIGHT(_t0.[ProductName], @p0) FROM [dbo].[Products] AS _t0"));
         }
@@ -171,6 +188,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(5));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT LEFT(_t0.[ProductName], @p0) FROM [dbo].[Products] AS _t0"));
         }
@@ -185,6 +204,9 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(2));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(5));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(5));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT SUBSTRING(_t0.[ProductName], @p0, @p1) FROM [dbo].[Products] AS _t0"));
         }
@@ -199,6 +221,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT LTRIM(_t0.[ProductName]) FROM [dbo].[Products] AS _t0"));
         }
@@ -213,6 +236,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT RTRIM(_t0.[ProductName]) FROM [dbo].[Products] AS _t0"));
         }
@@ -227,6 +251,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT TRIM(_t0.[ProductName]) FROM [dbo].[Products] AS _t0"));
         }
@@ -241,6 +266,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT UPPER(_t0.[ProductName]) FROM [dbo].[Products] AS _t0"));
         }
@@ -255,6 +281,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT LOWER(_t0.[ProductName]) FROM [dbo].[Products] AS _t0"));
         }
@@ -269,6 +296,9 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(2));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("A"));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo("X"));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT REPLACE(_t0.[ProductName], @p0, @p1) FROM [dbo].[Products] AS _t0"));
         }
@@ -283,6 +313,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("A"));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT CHARINDEX(@p0, _t0.[ProductName]) FROM [dbo].[Products] AS _t0"));
         }
@@ -298,6 +330,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(" - "));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT CONCAT(_t0.[CategoryName], @p0, _t1.[ProductName]) FROM [dbo].[Products] AS _t1 INNER JOIN [dbo].[Categories] AS _t0 ON (_t1.[CategoryID] = _t0.[CategoryID])"));
         }

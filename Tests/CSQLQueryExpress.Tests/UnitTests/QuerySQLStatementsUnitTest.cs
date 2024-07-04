@@ -23,6 +23,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             var compiledQuery = query.Compile();
 
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             var statement = GetSQLStatement();
 
             Assert.That(compiledQuery.Statement, Is.EqualTo(statement));
@@ -57,6 +59,10 @@ namespace CSQLQueryExpress.Tests.UnitTests
                 .Select(c => c.All());
 
             var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(2));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("UNKNOWN"));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo(10));
 
             var statement = GetSQLStatement();
 
@@ -105,6 +111,9 @@ namespace CSQLQueryExpress.Tests.UnitTests
                 .Select(c => c.All());
 
             var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(3));
 
             var statement = GetSQLStatement();
 
@@ -163,6 +172,17 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             var compiledQuery = query.Compile();
 
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(9));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo(2));
+            Assert.That(compiledQuery.Parameters[2].Value, Is.EqualTo(3));
+            Assert.That(compiledQuery.Parameters[3].Value, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[4].Value, Is.EqualTo(0));
+            Assert.That(compiledQuery.Parameters[5].Value, Is.EqualTo(2));
+            Assert.That(compiledQuery.Parameters[6].Value, Is.EqualTo(0));
+            Assert.That(compiledQuery.Parameters[7].Value, Is.EqualTo(3));
+            Assert.That(compiledQuery.Parameters[8].Value, Is.EqualTo(0));
+
             var statement = GetSQLStatement();
 
             Assert.That(compiledQuery.Statement, Is.EqualTo(statement));
@@ -179,6 +199,9 @@ namespace CSQLQueryExpress.Tests.UnitTests
                .StoredProcedure(new dbo.Proc_CustOrderHist { CustomerID = "ALFKI" });
 
             var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("ALFKI"));
 
             var statement = GetSQLStatement();
 
@@ -198,6 +221,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
                 .Distinct();
 
             var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
 
             var statement = GetSQLStatement();
 
@@ -222,6 +247,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             var compiledQuery = query.Compile();
 
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             var statement = GetSQLStatement();
 
             Assert.That(compiledQuery.Statement, Is.EqualTo(statement));
@@ -240,6 +267,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
                 .ForXml(x => x.Path("ProductData").Root("Root"));
 
             var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
 
             var statement = GetSQLStatement();
 
@@ -260,6 +289,10 @@ namespace CSQLQueryExpress.Tests.UnitTests
                 .Select(p => p.ProductName, p => p.UnitPrice);
 
             var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(2));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo(100));
 
             var statement = GetSQLStatement();
 
@@ -284,6 +317,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             var compiledQuery = query.Compile();
 
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             var statement = GetSQLStatement();
 
             Assert.That(compiledQuery.Statement, Is.EqualTo(statement));
@@ -302,6 +337,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
                 .Select((p, c) => c.CategoryName, (p, c) => p.ProductName);
 
             var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
 
             var statement = GetSQLStatement();
 
@@ -329,6 +366,9 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             var compiledQuery = query.Compile();
 
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(20));
+            
             var statement = GetSQLStatement();
 
             Assert.That(compiledQuery.Statement, Is.EqualTo(statement));
@@ -355,6 +395,9 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             var compiledQuery = query.Compile();
 
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(100));
+
             var statement = GetSQLStatement();
 
             Assert.That(compiledQuery.Statement, Is.EqualTo(statement));
@@ -375,6 +418,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             var compiledQuery = query.Compile();
 
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             var statement = GetSQLStatement();
 
             Assert.That(compiledQuery.Statement, Is.EqualTo(statement));
@@ -394,6 +439,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
                 .Select((p, c) => c.CategoryName, (p, c) => p.ProductName);
 
             var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
 
             var statement = GetSQLStatement();
 

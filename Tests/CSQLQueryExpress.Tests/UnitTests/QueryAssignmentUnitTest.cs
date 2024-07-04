@@ -15,6 +15,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(1));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"UPDATE [dbo].[Products] SET [ProductID] = @p0"));
         }
@@ -31,6 +33,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.TypeOf<byte[]>());
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"UPDATE [dbo].[Categories] SET [Picture] = @p0"));
         }
@@ -45,6 +49,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(1));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"UPDATE [dbo].[Products] SET [ProductID] = ([ProductID] + @p0)"));
         }

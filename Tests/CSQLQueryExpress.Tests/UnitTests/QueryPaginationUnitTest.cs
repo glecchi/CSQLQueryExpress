@@ -17,6 +17,9 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(2));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(5));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo(5));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT _t0.* FROM [dbo].[Orders] AS _t0 ORDER BY _t0.[OrderID] OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY"));
         }
@@ -31,6 +34,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT ROW_NUMBER() OVER(PARTITION BY _t0.[ProductID] ORDER BY _t0.[OrderID] ASC) FROM [dbo].[Order Details] AS _t0"));
         }

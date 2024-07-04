@@ -16,6 +16,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT COMPRESS(_t0.[Picture]) FROM [dbo].[Categories] AS _t0 WHERE (_t0.[CategoryID] = @p0)"));
         }
@@ -31,6 +33,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT DECOMPRESS(_t0.[Picture]) FROM [dbo].[Categories] AS _t0 WHERE (_t0.[CategoryID] = @p0)"));
         }
@@ -46,6 +50,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT CAST(_t0.[ProductID] AS VARCHAR(MAX)) FROM [dbo].[Products] AS _t0 WHERE (_t0.[CategoryID] = @p0)"));
         }
@@ -61,6 +67,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT CONVERT(VARCHAR(50), _t0.[ProductID]) FROM [dbo].[Products] AS _t0 WHERE (_t0.[CategoryID] = @p0)"));
         }
@@ -76,6 +84,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT UNICODE(CONVERT(VARCHAR(50), _t0.[ProductID])) FROM [dbo].[Products] AS _t0 WHERE (_t0.[CategoryID] = @p0)"));
         }
@@ -91,6 +101,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT ASCII(CONVERT(VARCHAR(50), _t0.[ProductID])) FROM [dbo].[Products] AS _t0 WHERE (_t0.[CategoryID] = @p0)"));
         }
@@ -106,6 +118,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("XXX"));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT _t0.[ProductID] FROM [dbo].[Products] AS _t0 WHERE (_t0.[ProductName] COLLATE Latin1_General_CS_AS = @p0)"));
         }

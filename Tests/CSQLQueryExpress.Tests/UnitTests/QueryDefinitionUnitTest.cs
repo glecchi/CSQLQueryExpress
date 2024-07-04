@@ -16,6 +16,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT _t0.[ProductID] FROM [dbo].[Products] AS _t0 ORDER BY _t0.[SupplierID] DESC, _t0.[ProductID] ASC"));
         }
@@ -30,6 +31,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT CONVERT(VARCHAR(50), _t0.[ProductID]) FROM [dbo].[Products] AS _t0"));
         }
@@ -44,6 +46,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             var compiledQuery = query.Compile();
 
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT CONVERT(VARCHAR(MAX), _t0.[ProductID]) FROM [dbo].[Products] AS _t0"));
         }
