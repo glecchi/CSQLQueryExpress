@@ -119,22 +119,25 @@ namespace CSQLQueryExpress.Scaffolding
             var nameSpace = view.GetNamespace(_parameters);
 
             return scaffoldingScript
-                .Replace("{DatabaseName}", view.Database)
-                .Replace("{TableSchema}", view.Schema)
-                .Replace("{TableName}", view.Name)
-                .Replace("{Namespace}", nameSpace)
-                .Replace("{ClassName}", className);
+                .Replace(SQLDataModelCodeGeneratorConstants.DatabaseName, view.Database)
+                .Replace(SQLDataModelCodeGeneratorConstants.TableSchema, view.Schema)
+                .Replace(SQLDataModelCodeGeneratorConstants.TableName, view.Name)
+                .Replace(SQLDataModelCodeGeneratorConstants.Namespace, nameSpace)
+                .Replace(SQLDataModelCodeGeneratorConstants.ClassName, className)
+                .Replace(SQLDataModelCodeGeneratorConstants.PartialClass, _parameters.GeneratePartialClasses ? "1" : "0")
+                .Replace(SQLDataModelCodeGeneratorConstants.OtherUsing, string.Empty)
+                .Replace(SQLDataModelCodeGeneratorConstants.BaseClassAndInterfaces, SQLDataModelCodeGeneratorConstants.ISQLQueryEntity);
         }
 
         string GetScaffoldingScript()
         {
-            var scaffoldingScript = !_parameters.DecorateWithDatabaseAttribute 
+            var scaffoldingScript = !_parameters.DecorateWithDatabaseAttribute
                 ? !_parameters.GenerateSchemaNestedClasses
-                    ? "Script_Scaffolding_Table.sql" 
-                    : "Script_Scaffolding_Table_AsSchemaNestedClass.sql"
+                    ? SQLDataModelCodeGeneratorConstants.Script_Scaffolding_Table
+                    : SQLDataModelCodeGeneratorConstants.Script_Scaffolding_Table_AsSchemaNestedClass
                 : !_parameters.GenerateSchemaNestedClasses
-                    ? "Script_Scaffolding_Table_WithDbDecoration.sql"
-                    : "Script_Scaffolding_Table_WithDbDecoration_AsSchemaNestedClass.sql";
+                    ? SQLDataModelCodeGeneratorConstants.Script_Scaffolding_Table_WithDbDecoration
+                    : SQLDataModelCodeGeneratorConstants.Script_Scaffolding_Table_WithDbDecoration_AsSchemaNestedClass;
 
             var info = Assembly.GetExecutingAssembly().GetName();
             var name = info.Name;

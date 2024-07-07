@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace CSQLQueryExpress.Scaffolding
 {
@@ -89,6 +91,11 @@ namespace CSQLQueryExpress.Scaffolding
         public bool GenerateSchemaNestedClasses { get; set; } = true;
 
         /// <summary>
+        /// Generates data model classes as partiaL classes. (Default False)
+        /// </summary>
+        public bool GeneratePartialClasses { get; set; } = false;
+
+        /// <summary>
         /// Generate subfolders for database schemas. (Default True)
         /// </summary>
         public bool GenerateSchemaFolder { get; set; } = true;
@@ -107,6 +114,16 @@ namespace CSQLQueryExpress.Scaffolding
         /// Tables data model classes Suffix. (Default NULL)
         /// </summary>
         public string TableSuffix { get; set; }
+
+        /// <summary>
+        /// Defines a base class for all Table classes. (Default NULL)
+        /// </summary>
+        public string TablesBaseClassFullName { get; set; }
+
+        /// <summary>
+        /// Defines the interfaces that must be implemented by all Table classes. (Default NULL)
+        /// </summary>
+        public IList<string> TablesInterfacesFullNames { get; set; }
 
         /// <summary>
         /// Views data model classes sub-folder. (Default "Views")

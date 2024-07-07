@@ -3,18 +3,21 @@ DECLARE @TableSchema sysname = '{TableSchema}'
 DECLARE @TableName sysname = '{TableName}'
 DECLARE @Namespace VARCHAR(MAX) = '{Namespace}'
 DECLARE @ClassName VARCHAR(MAX) = '{ClassName}'
-DECLARE @Result VARCHAR(MAX) = '
-using System;
+DECLARE @PartialClass BIT = {PartialClass}
+DECLARE @OtherUsing VARCHAR(MAX) = '{OtherUsing}'
+DECLARE @BaseClassAndInterfaces VARCHAR(MAX) = '{BaseClassAndInterfaces}'
+DECLARE @Result VARCHAR(MAX) = 
+'using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using CSQLQueryExpress;
-using CSQLQueryExpress.Schema;
+using CSQLQueryExpress.Schema;' + @OtherUsing + '
 
 namespace ' + @Namespace + '
 {
     [Database("'+ @DatabaseName + '")]
 	[Table("'+ @TableName + '", Schema = "'+ @TableSchema + '")]
-	public class ' + @ClassName + ' : ISQLQueryEntity
+	public' + CASE WHEN @PartialClass = 1 THEN ' partial' ELSE '' END + ' class ' + @ClassName + ' : ' + @BaseClassAndInterfaces + '
 	{'
 
 SELECT @Result = @Result + DbGenComputedAttr + DbGenIdentityAttr + ReqAttr + '

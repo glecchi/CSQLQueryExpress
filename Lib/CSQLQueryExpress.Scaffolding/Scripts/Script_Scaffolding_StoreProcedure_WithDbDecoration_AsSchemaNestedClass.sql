@@ -3,12 +3,11 @@ DECLARE @ProcedureSchema sysname = '{ProcedureSchema}'
 DECLARE @ProcedureName sysname = '{ProcedureName}'
 DECLARE @Namespace VARCHAR(MAX) = '{Namespace}'
 DECLARE @ClassName VARCHAR(MAX) = '{ClassName}'
+DECLARE @PartialClass BIT = {PartialClass}
 DECLARE @NotNullableParams BIT = {NotNullableParams}
 DECLARE @SQLStoredProcedureInterface VARCHAR(MAX) = '{SQLStoredProcedureInterface}'
-DECLARE @Result VARCHAR(MAX) = '
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+DECLARE @Result VARCHAR(MAX) = 
+'using System;
 using CSQLQueryExpress;
 using CSQLQueryExpress.Schema;
 
@@ -18,7 +17,7 @@ namespace ' + @Namespace + '
     {
         [Database("'+ @DatabaseName + '")]
 	    [StoredProcedure("'+ @ProcedureName + '", Schema = "'+ @ProcedureSchema + '")]
-	    public class ' + @ClassName + ' : ' + @SQLStoredProcedureInterface + '
+	    public' + CASE WHEN @PartialClass = 1 THEN ' partial' ELSE '' END + ' class ' + @ClassName + ' : ' + @SQLStoredProcedureInterface + '
 	    {'
 
 SELECT @Result = @Result + ReqAttr + ParamAttr + '

@@ -189,8 +189,8 @@ namespace CSQLQueryExpress.Scaffolding
         string GetCheckResultCommand(Procedure procedure, string checkScript)
         {
             return checkScript
-                .Replace("{ProcedureSchema}", procedure.Schema)
-                .Replace("{ProcedureName}", procedure.Name);
+                .Replace(SQLDataModelCodeGeneratorConstants.ProcedureSchema, procedure.Schema)
+                .Replace(SQLDataModelCodeGeneratorConstants.ProcedureName, procedure.Name);
         }
 
         string GetProcedureCommand(Procedure procedure, string scaffoldingScript, bool hasResult)
@@ -200,13 +200,14 @@ namespace CSQLQueryExpress.Scaffolding
             var sqlStoredProcedureInterface = procedure.GetSqlStoreProcedureInterface(_parameters, hasResult);
 
             return scaffoldingScript
-                .Replace("{DatabaseName}", procedure.Database)
-                .Replace("{ProcedureSchema}", procedure.Schema)
-                .Replace("{ProcedureName}", procedure.Name)
-                .Replace("{Namespace}", nameSpace)
-                .Replace("{ClassName}", className)
-                .Replace("{NotNullableParams}", _parameters.StoreProceduresNotNullableParameters ? "1" : "0")
-                .Replace("{SQLStoredProcedureInterface}", sqlStoredProcedureInterface);
+                .Replace(SQLDataModelCodeGeneratorConstants.DatabaseName, procedure.Database)
+                .Replace(SQLDataModelCodeGeneratorConstants.ProcedureSchema, procedure.Schema)
+                .Replace(SQLDataModelCodeGeneratorConstants.ProcedureName, procedure.Name)
+                .Replace(SQLDataModelCodeGeneratorConstants.Namespace, nameSpace)
+                .Replace(SQLDataModelCodeGeneratorConstants.ClassName, className)
+                .Replace(SQLDataModelCodeGeneratorConstants.PartialClass, _parameters.GeneratePartialClasses ? "1" : "0")
+                .Replace(SQLDataModelCodeGeneratorConstants.NotNullableParams, _parameters.StoreProceduresNotNullableParameters ? "1" : "0")
+                .Replace(SQLDataModelCodeGeneratorConstants.SQLStoredProcedureInterface, sqlStoredProcedureInterface);
         }
 
         string GetProcedureResultCommand(Procedure procedure, string scaffoldingScript)
@@ -215,22 +216,22 @@ namespace CSQLQueryExpress.Scaffolding
             var nameSpace = procedure.GetNamespace(_parameters);
 
             return scaffoldingScript
-                .Replace("{DatabaseName}", procedure.Database)
-                .Replace("{ProcedureSchema}", procedure.Schema)
-                .Replace("{ProcedureName}", procedure.Name)
-                .Replace("{Namespace}", nameSpace)
-                .Replace("{ClassName}", className);
+                .Replace(SQLDataModelCodeGeneratorConstants.DatabaseName, procedure.Database)
+                .Replace(SQLDataModelCodeGeneratorConstants.ProcedureSchema, procedure.Schema)
+                .Replace(SQLDataModelCodeGeneratorConstants.ProcedureName, procedure.Name)
+                .Replace(SQLDataModelCodeGeneratorConstants.Namespace, nameSpace)
+                .Replace(SQLDataModelCodeGeneratorConstants.ClassName, className);
         }
 
         string GetProcedureScaffoldingScript()
         {
             var scaffoldingScript = !_parameters.DecorateWithDatabaseAttribute
                 ? !_parameters.GenerateSchemaNestedClasses
-                    ? "Script_Scaffolding_StoreProcedure.sql"
-                    : "Script_Scaffolding_StoreProcedure_AsSchemaNestedClass.sql"
+                    ? SQLDataModelCodeGeneratorConstants.Script_Scaffolding_StoreProcedure
+                    : SQLDataModelCodeGeneratorConstants.Script_Scaffolding_StoreProcedure_AsSchemaNestedClass
                 : !_parameters.GenerateSchemaNestedClasses
-                    ? "Script_Scaffolding_StoreProcedure_WithDbDecoration.sql"
-                    : "Script_Scaffolding_StoreProcedure_WithDbDecoration_AsSchemaNestedClass.sql";
+                    ? SQLDataModelCodeGeneratorConstants.Script_Scaffolding_StoreProcedure_WithDbDecoration
+                    : SQLDataModelCodeGeneratorConstants.Script_Scaffolding_StoreProcedure_WithDbDecoration_AsSchemaNestedClass;
 
             var info = Assembly.GetExecutingAssembly().GetName();
             var name = info.Name;
@@ -245,7 +246,7 @@ namespace CSQLQueryExpress.Scaffolding
 
         string GetCheckResultScript()
         {
-            var scaffoldingScript = "Script_Check_StoreProcedure_Result.sql";
+            var scaffoldingScript = SQLDataModelCodeGeneratorConstants.Script_Check_StoreProcedure_Result;
 
             var info = Assembly.GetExecutingAssembly().GetName();
             var name = info.Name;
@@ -260,7 +261,7 @@ namespace CSQLQueryExpress.Scaffolding
 
         string GetResultScaffoldingScript()
         {
-            var scaffoldingScript = "Script_Scaffolding_StoreProcedure_Result.sql";
+            var scaffoldingScript = SQLDataModelCodeGeneratorConstants.Script_Scaffolding_StoreProcedure_Result;
 
             var info = Assembly.GetExecutingAssembly().GetName();
             var name = info.Name;
@@ -312,10 +313,10 @@ namespace CSQLQueryExpress.Scaffolding
             {
                 if (!hasResult)
                 {
-                    return "ISQLStoredProcedure";
+                    return SQLDataModelCodeGeneratorConstants.ISQLStoredProcedure;
                 }
 
-                return $"ISQLStoredProcedure<{GetResultClassName(parameters)}>";
+                return string.Format(SQLDataModelCodeGeneratorConstants.ISQLStoredProcedureFormat, GetResultClassName(parameters));
             }
         }
     }
