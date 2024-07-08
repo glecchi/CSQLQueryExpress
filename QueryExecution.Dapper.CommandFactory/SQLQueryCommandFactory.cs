@@ -187,11 +187,11 @@ namespace QueryExecution.Dapper.CommandFactory
         {
             switch (pr.Direction)
             {
-                case SQLQueryParameterValueDirection.Input:
+                case SQLQueryParameterDirection.Input:
                     return ParameterDirection.Input;
-                case SQLQueryParameterValueDirection.Output:
+                case SQLQueryParameterDirection.Output:
                     return ParameterDirection.Output;
-                case SQLQueryParameterValueDirection.Result:
+                case SQLQueryParameterDirection.Result:
                     return ParameterDirection.ReturnValue;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(pr.Direction));
@@ -234,6 +234,14 @@ namespace QueryExecution.Dapper.CommandFactory
 
                         result = connection.Query(_queryCompiled.Statement, parameters, transaction).ToList();
 
+                        foreach (var pr in _queryCompiled.Parameters)
+                        {
+                            if (pr.Direction == SQLQueryParameterDirection.Result || pr.Direction == SQLQueryParameterDirection.Output)
+                            {
+                                pr.Value = parameters.Get<object>(pr.Name);
+                            }
+                        }
+
                         transaction.Commit();
                     }
                     catch (Exception)
@@ -254,11 +262,11 @@ namespace QueryExecution.Dapper.CommandFactory
         {
             switch (pr.Direction)
             {
-                case SQLQueryParameterValueDirection.Input:
+                case SQLQueryParameterDirection.Input:
                     return ParameterDirection.Input;
-                case SQLQueryParameterValueDirection.Output:
+                case SQLQueryParameterDirection.Output:
                     return ParameterDirection.Output;
-                case SQLQueryParameterValueDirection.Result:
+                case SQLQueryParameterDirection.Result:
                     return ParameterDirection.ReturnValue;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(pr.Direction));
@@ -326,11 +334,11 @@ namespace QueryExecution.Dapper.CommandFactory
         {
             switch (pr.Direction)
             {
-                case SQLQueryParameterValueDirection.Input:
+                case SQLQueryParameterDirection.Input:
                     return ParameterDirection.Input;
-                case SQLQueryParameterValueDirection.Output:
+                case SQLQueryParameterDirection.Output:
                     return ParameterDirection.Output;
-                case SQLQueryParameterValueDirection.Result:
+                case SQLQueryParameterDirection.Result:
                     return ParameterDirection.ReturnValue;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(pr.Direction));
@@ -408,11 +416,11 @@ namespace QueryExecution.Dapper.CommandFactory
         {
             switch (pr.Direction)
             {
-                case SQLQueryParameterValueDirection.Input:
+                case SQLQueryParameterDirection.Input:
                     return ParameterDirection.Input;
-                case SQLQueryParameterValueDirection.Output:
+                case SQLQueryParameterDirection.Output:
                     return ParameterDirection.Output;
-                case SQLQueryParameterValueDirection.Result:
+                case SQLQueryParameterDirection.Result:
                     return ParameterDirection.ReturnValue;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(pr.Direction));

@@ -335,5 +335,23 @@ namespace CSQLQueryExpress.Tests.UnitTests
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT CONCAT(_t0.[CategoryName], @p0, _t1.[ProductName]) FROM [dbo].[Products] AS _t1 INNER JOIN [dbo].[Categories] AS _t0 ON (_t1.[CategoryID] = _t0.[CategoryID])"));
         }
+
+        [Test]
+        public void TestStuffExpression()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Products>()
+                 .Select(p => p.ProductName.Stuff(0, 3, "PROD_"));
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(3));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(0));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo(3));
+            Assert.That(compiledQuery.Parameters[2].Value, Is.EqualTo("PROD_"));
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT STUFF(_t0.[ProductName], @p0, @p1, @p2) FROM [dbo].[Products] AS _t0"));
+        }
     }
 }

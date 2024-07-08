@@ -12,6 +12,7 @@ namespace CSQLQueryExpress.Fragments
         private readonly IList<ISQLQueryFragment> _fragments;
         private readonly SQLQuerySelect _select;
         private readonly List<string> _tableColumns;
+        private readonly IDictionary<string, Expression> _insertParameters;
         private readonly IDictionary<string, object> _insertProperties;
 
         internal SQLQueryInsert(IList<ISQLQueryFragment> fragments, SQLQuerySelect select)
@@ -59,6 +60,19 @@ namespace CSQLQueryExpress.Fragments
             AddSqlQueryInsertValues();
         }
 
+        internal SQLQueryInsert(IList<ISQLQueryFragment> fragments, Expression<Action<T>>[] insert)
+        {
+            _fragments = fragments;
+
+            _tableColumns = GetTableColumns();
+
+            _insertParameters = SQLQueryUtils.GetInsertParameters(insert);
+
+            _fragments.Add(this);
+
+            AddSqlQueryInsertParameters();
+        }
+
         public SQLQueryFragmentType FragmentType { get { return SQLQueryFragmentType.Insert; } }
 
         public SQLQueryOutput<TS> Output<TS>(Expression<Func<T, TS>> output)
@@ -99,7 +113,11 @@ namespace CSQLQueryExpress.Fragments
                 var properties = _insertProperties
                     .ToDictionary(p => p.Key.ToUpper(), p => p.Value);
 
-                insertBuilder.Append($"{Environment.NewLine}({string.Join(", ", _tableColumns.Where(c => properties.ContainsKey(c.ToUpper())))})");
+                insertBuilder.Append($"{Environment.NewLine}({string.Join(", ", _tableColumns.Where(c => properties.ContainsKey(c.ToUpper())).Select(c => $"[{c}]"))})");
+            }
+            else if (_insertParameters != null)
+            {
+                insertBuilder.Append($"{Environment.NewLine}({string.Join(", ", _tableColumns.Where(c => _insertParameters.ContainsKey(c)).Select(c => $"[{c}]"))})");
             }
             else
             {
@@ -124,6 +142,12 @@ namespace CSQLQueryExpress.Fragments
         {
             var insertSelect = new SQLQueryInsertValuesFromSelect<T>(_select);
             _fragments.Add(insertSelect);
+        }
+
+        private void AddSqlQueryInsertParameters()
+        {
+            var inserParameters = new SQLQueryInsertParameters<T>(_tableColumns, _insertParameters);
+            _fragments.Add(inserParameters);
         }
 
         private IDictionary<string, object> GetInsertProperties(object insert)
@@ -200,4 +224,28 @@ namespace CSQLQueryExpress.Fragments
         }
     }
 
+    public class SQLQueryInsertParameters<T> : ISQLQueryFragment
+    {
+        private readonly List<string> _tableColumns;
+        private IDictionary<string, Expression> _insertParameters;
+
+        public SQLQueryInsertParameters(List<string> tableColumns, IDictionary<string, Expression> insertParameters)
+        {
+            _tableColumns = tableColumns;
+            _insertParameters = insertParameters;
+        }
+
+        public SQLQueryFragmentType FragmentType { get { return SQLQueryFragmentType.InsertValues; } }
+
+        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        {
+            var valuesBuilder = new StringBuilder();
+
+            valuesBuilder.Append($"VALUES ");
+
+            valuesBuilder.Append($"{Environment.NewLine}({string.Join(", ", _tableColumns.Where(c => _insertParameters.ContainsKey(c)).Select(c => expressionTranslator.Translate(_insertParameters[c])))})");
+
+            return valuesBuilder.ToString();
+        }
+    }
 }

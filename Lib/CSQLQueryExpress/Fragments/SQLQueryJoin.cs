@@ -28,7 +28,7 @@ namespace CSQLQueryExpress.Fragments
         private readonly Type _type;
         private readonly SQLQuerySelect _select;
         
-        protected WithOptions? WithOptions;
+        protected TableHints? TableHints;
 
         public SQLQuerySelect FromSelect { get { return _select; } }
 
@@ -104,9 +104,9 @@ namespace CSQLQueryExpress.Fragments
                     joinBuilder.Append($" {Environment.NewLine}({Environment.NewLine}{string.Join($"{Environment.NewLine} ", selectFragments.OrderBy(f => f, new SQLQueryFragmentComparer(_select.FragmentType)).Select(s => s.Translate(expressionTranslator)))}{Environment.NewLine}) AS {expressionTranslator.GetTableAlias(_type)}");
                 }
 
-                if (WithOptions.HasValue)
+                if (TableHints.HasValue)
                 {
-                    joinBuilder.Append($" WITH ({WithOptions.Value})");
+                    joinBuilder.Append($" WITH ({TableHints.Value})");
                 }
             }
             else
@@ -127,9 +127,9 @@ namespace CSQLQueryExpress.Fragments
                     joinBuilder.Append($" {expressionTranslator.Translate(Expression.Constant(_type))}");
                 }
 
-                if (WithOptions.HasValue)
+                if (TableHints.HasValue)
                 {
-                    joinBuilder.Append($" WITH ({WithOptions.Value})");
+                    joinBuilder.Append($" WITH ({TableHints.Value})");
                 }
 
                 joinBuilder.Append($" ON {expressionTranslator.Translate(_join)}");
@@ -168,9 +168,9 @@ namespace CSQLQueryExpress.Fragments
             
         }
 
-        public SQLQueryJoin<T, TJ1> With(WithOptions options)
+        public SQLQueryJoin<T, TJ1> With(TableHints hints)
         {
-            WithOptions = options;
+            TableHints = hints;
             return this;
         }
 
@@ -259,9 +259,9 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
-        public SQLQueryJoin<T, TJ1, TJ2> With(WithOptions options)
+        public SQLQueryJoin<T, TJ1, TJ2> With(TableHints hints)
         {
-            WithOptions = options;
+            TableHints = hints;
             return this;
         }
 
@@ -355,9 +355,9 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
-        public SQLQueryJoin<T, TJ1, TJ2, TJ3> With(WithOptions options)
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3> With(TableHints hints)
         {
-            WithOptions = options;
+            TableHints = hints;
             return this;
         }
 
@@ -452,9 +452,9 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
-        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4> With(WithOptions options)
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4> With(TableHints hints)
         {
-            WithOptions = options;
+            TableHints = hints;
             return this;
         }
 
@@ -552,9 +552,9 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
-        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5> With(WithOptions options)
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5> With(TableHints hints)
         {
-            WithOptions = options;
+            TableHints = hints;
             return this;
         }
 
@@ -653,9 +653,9 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
-        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6> With(WithOptions options)
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6> With(TableHints hints)
         {
-            WithOptions = options;
+            TableHints = hints;
             return this;
         }
 
@@ -755,9 +755,9 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
-        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7> With(WithOptions options)
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7> With(TableHints hints)
         {
-            WithOptions = options;
+            TableHints = hints;
             return this;
         }
 
@@ -858,9 +858,9 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
-        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8> With(WithOptions options)
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8> With(TableHints hints)
         {
-            WithOptions = options;
+            TableHints = hints;
             return this;
         }
 
@@ -962,9 +962,9 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
-        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9> With(WithOptions options)
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9> With(TableHints hints)
         {
-            WithOptions = options;
+            TableHints = hints;
             return this;
         }
 
@@ -1067,9 +1067,9 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
-        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10> With(WithOptions options)
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10> With(TableHints hints)
         {
-            WithOptions = options;
+            TableHints = hints;
             return this;
         }
 
@@ -1173,9 +1173,9 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
-        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11> With(WithOptions options)
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11> With(TableHints hints)
         {
-            WithOptions = options;
+            TableHints = hints;
             return this;
         }
 
@@ -1280,9 +1280,9 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
-        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12> With(WithOptions options)
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12> With(TableHints hints)
         {
-            WithOptions = options;
+            TableHints = hints;
             return this;
         }
 
@@ -1388,9 +1388,9 @@ namespace CSQLQueryExpress.Fragments
 
         }
 
-        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13> With(WithOptions options)
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13> With(TableHints hints)
         {
-            WithOptions = options;
+            TableHints = hints;
             return this;
         }
 

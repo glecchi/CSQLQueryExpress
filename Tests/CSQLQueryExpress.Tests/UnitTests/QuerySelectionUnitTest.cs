@@ -48,7 +48,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty), 
                 Is.EqualTo(
-                @"INSERT INTO [dbo].[Products] (ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued) OUTPUT INSERTED.[ProductID] VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8)"));
+                @"INSERT INTO [dbo].[Products] ([ProductName], [SupplierID], [CategoryID], [QuantityPerUnit], [UnitPrice], [UnitsInStock], [UnitsOnOrder], [ReorderLevel], [Discontinued]) OUTPUT INSERTED.[ProductID] VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8)"));
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
 
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"DELETE  FROM [dbo].[Products] OUTPUT DELETED.[ProductID]"));
+                Is.EqualTo(@"DELETE FROM [dbo].[Products] OUTPUT DELETED.[ProductID]"));
         }
     }
 }

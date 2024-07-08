@@ -12,7 +12,7 @@ namespace CSQLQueryExpress.Fragments
     {
         private readonly SQLQuerySelect<T> _select;
         private readonly IList<ISQLQueryFragment> _fragments;
-        private WithOptions? _withOptions;
+        private TableHints? _tableHints;
 
         internal SQLQueryFrom(IList<ISQLQueryFragment> fragments, SQLQuerySelect<T> select = null)
         {
@@ -151,14 +151,19 @@ namespace CSQLQueryExpress.Fragments
             return new SQLQueryInsert<T>(_fragments, insert);
         }
 
+        public SQLQueryInsert<T> Insert(params Expression<Action<T>>[] insert)
+        {
+            return new SQLQueryInsert<T>(_fragments, insert);
+        }
+
         public SQLQueryDelete<T> Delete()
         {
             return new SQLQueryDelete<T>(_fragments);
         }
 
-        public SQLQueryFrom<T> With(WithOptions options)
+        public SQLQueryFrom<T> With(TableHints hints)
         {
-            _withOptions = options;
+            _tableHints = hints;
             return this;
         }
 
@@ -192,9 +197,9 @@ namespace CSQLQueryExpress.Fragments
                 }
             }
 
-            if (_withOptions.HasValue)
+            if (_tableHints.HasValue)
             {
-                fromBuilder.Append($" WITH ({_withOptions.Value})");
+                fromBuilder.Append($" WITH ({_tableHints.Value})");
             }
 
             return fromBuilder.ToString();

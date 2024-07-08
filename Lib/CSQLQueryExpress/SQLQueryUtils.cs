@@ -190,6 +190,22 @@ namespace CSQLQueryExpress
 
             return properties;
         }
+
+        public static IDictionary<string, Expression> GetInsertParameters<T>(Expression<Action<T>>[] parameters)
+        {
+            var parametersList = new Dictionary<string, Expression>();
+
+            foreach (var pr in parameters)
+            {
+                var methodCallExp = (MethodCallExpression)pr.Body;
+                var column = ((MemberExpression)methodCallExp.Arguments[0]).Member.Name;
+                var value = methodCallExp.Arguments[1];
+
+                parametersList.Add(column, value);
+            }
+
+            return parametersList;
+        }
     }
 }
 
@@ -205,6 +221,8 @@ internal class ReadablePropertyInfo
     }
 
     public string Name { get { return _property.Name; } }
+
+    public Type PropertyType { get { return _property.PropertyType; } }
 
     public T GetCustomAttribute<T>() where T : Attribute
     {

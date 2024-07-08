@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 namespace CSQLQueryExpress.Tests.UnitTests
 {
     [TestFixture]
-    public class QuerySQLStatementsUnitTest : UnitTestBase
+    public class QuerySelectUnitTest : UnitTestBase
     {
         [Test]
         public void TestStatement1()
@@ -332,8 +332,8 @@ namespace CSQLQueryExpress.Tests.UnitTests
         public void TestStatement11()
         {
             var query = new SQLQuery()
-                .From<dbo.Products>().With(WithOptions.READPAST)
-                .InnerJoin<dbo.Categories>((p, c) => p.CategoryID == c.CategoryID).With(WithOptions.READPAST)
+                .From<dbo.Products>().With(TableHints.READPAST)
+                .InnerJoin<dbo.Categories>((p, c) => p.CategoryID == c.CategoryID).With(TableHints.READPAST)
                 .Select((p, c) => c.CategoryName, (p, c) => p.ProductName);
 
             var compiledQuery = query.Compile();
@@ -381,7 +381,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
         [Test]
         public void TestStatement13()
         {
-            var queryCrApply = new SQLQuery()
+            var queryOtrApply = new SQLQuery()
                 .From<dbo.Products>()
                 .Where(p => p.UnitsInStock > 100)
                 .OrderBy(p => p.ProductName.Desc())
@@ -390,7 +390,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             var query = new SQLQuery()
                 .From<dbo.Categories>()
-                .OuterApply(queryCrApply, (c, p) => p.CategoryID == c.CategoryID)
+                .OuterApply(queryOtrApply, (c, p) => p.CategoryID == c.CategoryID)
                 .Select((c, p) => c.CategoryName, (c, p) => p.ProductName);
 
             var compiledQuery = query.Compile();
@@ -453,7 +453,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
         private string GetSQLStatement([CallerMemberName] string memeberName = null)
         {
-            var statement = File.ReadAllText($@"UnitTests\SQLStatements\{memeberName}.txt");
+            var statement = File.ReadAllText($@"UnitTests\SelectStatements\{memeberName}.txt");
 
             return statement;
         }

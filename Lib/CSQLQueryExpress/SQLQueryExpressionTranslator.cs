@@ -18,7 +18,7 @@ namespace CSQLQueryExpress
 
         string MakeParameter(object value);
 
-        string MakeStoredProcedureParameter(string name, object value, SQLQueryParameterValueDirection direction);
+        string MakeStoredProcedureParameter(string name, object value, SQLQueryParameterDirection direction);
 
         string GetTableAlias(Type GetTableAlias);
 
@@ -54,7 +54,7 @@ namespace CSQLQueryExpress
             return _parametersBuilder.AddParameter(value);
         }
 
-        public string MakeStoredProcedureParameter(string name, object value, SQLQueryParameterValueDirection direction)
+        public string MakeStoredProcedureParameter(string name, object value, SQLQueryParameterDirection direction)
         {
             return _parametersBuilder.AddStoredProcedureParameter(name, value, direction);
         }
@@ -1114,6 +1114,20 @@ namespace CSQLQueryExpress
 
                 _queryBuilder.Append(", root ");
                 _queryBuilder.Append($"('{((ConstantExpression)node.Arguments[1]).Value}')");
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryOperationExtensions.Stuff))
+            {
+                _queryBuilder.Append("STUFF(");
+                Visit(node.Arguments[0]);
+                _queryBuilder.Append(", ");
+                Visit(node.Arguments[1]);
+                _queryBuilder.Append(", ");
+                Visit(node.Arguments[2]);
+                _queryBuilder.Append(", ");
+                Visit(node.Arguments[3]);
+                _queryBuilder.Append(")");
 
                 return node;
             }

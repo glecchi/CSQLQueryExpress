@@ -3,7 +3,7 @@
 namespace CSQLQueryExpress
 {
     [Flags]
-    public enum WithOptions
+    public enum TableHints
     {
         FORCESCAN = 1,
         HOLDLOCK = 2,

@@ -52,8 +52,8 @@ namespace CSQLQueryExpress.Fragments
                     parameter.Item1.Name,
                     parameter.Item2,
                     parameter.Item1.Output
-                        ? SQLQueryParameterValueDirection.Output
-                        : SQLQueryParameterValueDirection.Input
+                        ? SQLQueryParameterDirection.Output
+                        : SQLQueryParameterDirection.Input
                     );
 
                 parametersNames.Add(parameter.Item1.Output
@@ -69,7 +69,7 @@ namespace CSQLQueryExpress.Fragments
 
             if (_addResultParameter)
             {
-                var resultParameter = expressionTranslator.MakeStoredProcedureParameter("RC", null, SQLQueryParameterValueDirection.Result);
+                var resultParameter = expressionTranslator.MakeStoredProcedureParameter("RC", null, SQLQueryParameterDirection.Result);
 
                 if (databaseAttribute != null)
                 {

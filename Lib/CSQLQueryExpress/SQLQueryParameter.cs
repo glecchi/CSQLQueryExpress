@@ -5,12 +5,12 @@ namespace CSQLQueryExpress
     public sealed class SQLQueryParameter
     {
         internal SQLQueryParameter(string name, object value)
-            : this(name, value, SQLQueryParameterValueDirection.Input)
+            : this(name, value, SQLQueryParameterDirection.Input)
         {
          
         }
 
-        internal SQLQueryParameter(string name, object value, SQLQueryParameterValueDirection direction)
+        internal SQLQueryParameter(string name, object value, SQLQueryParameterDirection direction)
         {
             Name = name;
             Value = value;
@@ -18,8 +18,8 @@ namespace CSQLQueryExpress
         }
 
         public string Name { get; }
-        public object Value { get; }
-        public SQLQueryParameterValueDirection Direction { get; }
+        public object Value { get; set; }
+        public SQLQueryParameterDirection Direction { get; }
 
         public override string ToString()
         {

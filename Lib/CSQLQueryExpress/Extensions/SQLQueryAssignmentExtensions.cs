@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSQLQueryExpress.Fragments;
+using System;
 using System.Linq.Expressions;
 
 namespace CSQLQueryExpress
@@ -21,6 +22,26 @@ namespace CSQLQueryExpress
         }
 
         public static void Set(this string obj, string value)
+        {
+
+        }
+
+        public static void Set<T>(this T obj, SQLQuerySelect<T> value) where T : struct
+        {
+
+        }
+
+        public static void Set(this byte[] obj, SQLQuerySelect<byte[]> value)
+        {
+
+        }
+
+        public static void Set<T>(this T? obj, SQLQuerySelect<T?> value) where T : struct
+        {
+
+        }
+
+        public static void Set(this string obj, SQLQuerySelect<string> value)
         {
 
         }

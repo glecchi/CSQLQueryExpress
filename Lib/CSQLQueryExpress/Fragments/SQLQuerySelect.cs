@@ -280,6 +280,31 @@ namespace CSQLQueryExpress.Fragments
             return default;
         }
 
+        public static T operator +(SQLQuerySelect<T> i, T value)
+        {
+            return default;
+        }
+
+        public static T operator -(SQLQuerySelect<T> i, T value)
+        {
+            return default;
+        }
+
+        public static T operator *(SQLQuerySelect<T> i, T value)
+        {
+            return default;
+        }
+        
+        public static T operator /(SQLQuerySelect<T> i, T value)
+        {
+            return default;
+        }
+
+        public static T operator %(SQLQuerySelect<T> i, T value)
+        {
+            return default;
+        }
+
         public override bool Equals(object obj)
         {
             return base.Equals(obj);

@@ -36,49 +36,49 @@
     <None Update="testhost.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SQLStatements\TestStatement1.txt">
+    <None Update="UnitTests\SelectStatements\TestStatement1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SQLStatements\TestStatement15.txt">
+    <None Update="UnitTests\SelectStatements\TestStatement15.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SQLStatements\TestStatement14.txt">
+    <None Update="UnitTests\SelectStatements\TestStatement14.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SQLStatements\TestStatement13.txt">
+    <None Update="UnitTests\SelectStatements\TestStatement13.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SQLStatements\TestStatement12.txt">
+    <None Update="UnitTests\SelectStatements\TestStatement12.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SQLStatements\TestStatement11.txt">
+    <None Update="UnitTests\SelectStatements\TestStatement11.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SQLStatements\TestStatement2.txt">
+    <None Update="UnitTests\SelectStatements\TestStatement2.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SQLStatements\TestStatement3.txt">
+    <None Update="UnitTests\SelectStatements\TestStatement3.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SQLStatements\TestStatement4.txt">
+    <None Update="UnitTests\SelectStatements\TestStatement4.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SQLStatements\TestStatement5.txt">
+    <None Update="UnitTests\SelectStatements\TestStatement5.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SQLStatements\TestStatement6.txt">
+    <None Update="UnitTests\SelectStatements\TestStatement6.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SQLStatements\TestStatement7.txt">
+    <None Update="UnitTests\SelectStatements\TestStatement7.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SQLStatements\TestStatement8.txt">
+    <None Update="UnitTests\SelectStatements\TestStatement8.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SQLStatements\TestStatement10.txt">
+    <None Update="UnitTests\SelectStatements\TestStatement10.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SQLStatements\TestStatement9.txt">
+    <None Update="UnitTests\SelectStatements\TestStatement9.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -54,5 +54,28 @@ namespace CSQLQueryExpress.Tests.UnitTests
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"UPDATE [dbo].[Products] SET [ProductID] = ([ProductID] + @p0)"));
         }
+
+        [Test]
+        public void TestSetQueryExpression()
+        {
+            var queryAssign = new SQLQuery()
+                .From<dbo.Products>()
+                .Where(p => p.CategoryID == 1)
+                .Select(p => p.ProductID)
+                .Top(1);
+
+            var query = new SQLQuery()
+                .From<dbo.Products>()
+                .Update(p => p.ProductID.Set(queryAssign))
+                .Top(1);
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(1));
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"UPDATE TOP(1) [dbo].[Products] SET [ProductID] = (SELECT TOP(1) [ProductID] FROM [dbo].[Products] AS _t0 WHERE ([CategoryID] = @p0))"));
+        }
     }
 }

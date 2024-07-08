@@ -9,7 +9,7 @@ namespace CSQLQueryExpress
 
         string AddParameter(object value);
 
-        string AddStoredProcedureParameter(string name, object value, SQLQueryParameterValueDirection direction);
+        string AddStoredProcedureParameter(string name, object value, SQLQueryParameterDirection direction);
     }
 
     internal class SQLQueryExpressionParametersBuilder : ISQLQueryExpressionParametersBuilder
@@ -23,7 +23,7 @@ namespace CSQLQueryExpress
             return parameterName;
         }
 
-        public string AddStoredProcedureParameter(string name, object value, SQLQueryParameterValueDirection direction)
+        public string AddStoredProcedureParameter(string name, object value, SQLQueryParameterDirection direction)
         {
             var parameterName = $"@{name}";
             Parameters.Add(parameterName, new SQLQueryParameter(parameterName, value, direction));

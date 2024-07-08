@@ -123,5 +123,10 @@ namespace CSQLQueryExpress
         {
             return default;
         }
+
+        public static string Stuff(this string obj, int start, int length, string replace)
+        {
+            return default;
+        }
     }
 }
