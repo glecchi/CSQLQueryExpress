@@ -11,7 +11,7 @@
     <PackageTags>csharp,sql-server-database,query-builder,stored-procedures,tsql,sql-query-builder,subquery,database-scaffolding,compiled-query,cte-table</PackageTags>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-	<PackageReleaseNotes>https://github.com/glecchi/CSQLQueryExpress/releases</PackageReleaseNotes>
+	<PackageReleaseNotes>https://github.com/glecchi/CSQLQueryExpress/releases/tag/$(Version)</PackageReleaseNotes>
     <IncludeSymbols>True</IncludeSymbols>
     <Company>$(Authors)</Company>
     <Authors>jED</Authors>
