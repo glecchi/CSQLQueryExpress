@@ -1,0 +1,11 @@
+﻿SELECT 
+_t0.* 
+FROM [dbo].[Region] AS _t0; 
+ 
+SELECT 
+_t1.* 
+FROM [dbo].[Categories] AS _t1; 
+ 
+SELECT 
+_t2.* 
+FROM [dbo].[Shippers] AS _t2; 

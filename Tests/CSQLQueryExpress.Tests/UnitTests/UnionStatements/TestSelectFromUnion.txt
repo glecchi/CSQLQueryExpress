@@ -1,0 +1,28 @@
+﻿SELECT 
+_t0.[OrderID], 
+SUM(_t0.[Quantity]) 
+FROM [dbo].[Order Details] AS _t0 
+INNER JOIN 
+(
+SELECT 
+_t1.*
+ FROM 
+(
+SELECT 
+_t1.* 
+FROM [dbo].[Products] AS _t1 
+WHERE (_t1.[UnitPrice] < (SELECT 
+AVG(_t1.[UnitPrice]) 
+FROM [dbo].[Products] AS _t1)) 
+
+UNION 
+ 
+SELECT 
+_t1.* 
+FROM [dbo].[Products] AS _t1 
+WHERE (_t1.[UnitPrice] > (SELECT 
+AVG(_t1.[UnitPrice]) 
+FROM [dbo].[Products] AS _t1))
+) AS _t1
+) AS _t1 ON (_t0.[ProductID] = _t1.[ProductID]) 
+GROUP BY _t0.[OrderID]

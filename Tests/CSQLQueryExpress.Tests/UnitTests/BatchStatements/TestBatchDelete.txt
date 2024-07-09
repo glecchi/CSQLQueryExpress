@@ -1,0 +1,20 @@
+﻿DELETE 
+FROM [dbo].[Region] 
+WHERE ([RegionID] = @p0);
+  
+DELETE 
+FROM [dbo].[Region] 
+WHERE ([RegionID] = @p1);
+  
+DELETE 
+FROM [dbo].[Region] 
+WHERE ([RegionID] = @p2);
+  
+DELETE 
+FROM [dbo].[Region] 
+WHERE ([RegionID] = @p3);
+  
+DELETE 
+FROM [dbo].[Region] 
+WHERE ([RegionID] = @p4);
+ 

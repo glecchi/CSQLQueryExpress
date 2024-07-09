@@ -1,0 +1,35 @@
+﻿INSERT INTO [dbo].[Region] 
+([RegionID], [RegionDescription]) 
+VALUES 
+(((SELECT 
+MAX(_t0.[RegionID]) 
+FROM [dbo].[Region] AS _t0) + @p0), @p1);
+  
+INSERT INTO [dbo].[Region] 
+([RegionID], [RegionDescription]) 
+VALUES 
+(((SELECT 
+MAX(_t0.[RegionID]) 
+FROM [dbo].[Region] AS _t0) + @p2), @p3);
+  
+INSERT INTO [dbo].[Region] 
+([RegionID], [RegionDescription]) 
+VALUES 
+(((SELECT 
+MAX(_t0.[RegionID]) 
+FROM [dbo].[Region] AS _t0) + @p4), @p5);
+  
+INSERT INTO [dbo].[Region] 
+([RegionID], [RegionDescription]) 
+VALUES 
+(((SELECT 
+MAX(_t0.[RegionID]) 
+FROM [dbo].[Region] AS _t0) + @p6), @p7);
+  
+INSERT INTO [dbo].[Region] 
+([RegionID], [RegionDescription]) 
+VALUES 
+(((SELECT 
+MAX(_t0.[RegionID]) 
+FROM [dbo].[Region] AS _t0) + @p8), @p9);
+ 

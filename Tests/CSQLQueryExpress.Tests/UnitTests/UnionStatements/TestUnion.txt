@@ -1,0 +1,17 @@
+﻿SELECT 
+_t0.[ProductName], 
+_t0.[UnitPrice] 
+FROM [dbo].[Products] AS _t0 
+WHERE (_t0.[UnitPrice] < (SELECT 
+AVG(_t0.[UnitPrice]) 
+FROM [dbo].[Products] AS _t0)) 
+
+UNION 
+ 
+SELECT 
+_t0.[ProductName], 
+_t0.[UnitPrice] 
+FROM [dbo].[Products] AS _t0 
+WHERE (_t0.[UnitPrice] > (SELECT 
+AVG(_t0.[UnitPrice]) 
+FROM [dbo].[Products] AS _t0))

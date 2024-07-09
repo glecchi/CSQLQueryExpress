@@ -1,0 +1,20 @@
+﻿UPDATE [dbo].[Region] 
+SET [RegionDescription] = @p0 
+WHERE ([RegionID] = @p1);
+  
+UPDATE [dbo].[Region] 
+SET [RegionDescription] = @p2 
+WHERE ([RegionID] = @p3);
+  
+UPDATE [dbo].[Region] 
+SET [RegionDescription] = @p4 
+WHERE ([RegionID] = @p5);
+  
+UPDATE [dbo].[Region] 
+SET [RegionDescription] = @p6 
+WHERE ([RegionID] = @p7);
+  
+UPDATE [dbo].[Region] 
+SET [RegionDescription] = @p8 
+WHERE ([RegionID] = @p9);
+ 
