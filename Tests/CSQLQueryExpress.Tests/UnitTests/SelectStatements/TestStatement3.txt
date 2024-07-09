@@ -1,18 +1,18 @@
 ﻿WITH _t2 AS 
-( 
+(
 SELECT 
 _t0.[Country], 
 _t0.[ContactName], 
 _t1.[ProductName], 
 COUNT(*) AS [Orders], 
 ROW_NUMBER() OVER(ORDER BY COUNT(*) DESC) AS [Row] 
-FROM [dbo].[Customers] AS _t0
-INNER JOIN [dbo].[Orders] AS _t3 ON (_t0.[CustomerID] = _t3.[CustomerID])
-INNER JOIN [dbo].[Order Details] AS _t4 ON (_t3.[OrderID] = _t4.[OrderID])
-INNER JOIN [dbo].[Products] AS _t1 ON (_t1.[ProductID] = _t4.[ProductID])
-GROUP BY _t0.[Country], _t0.[ContactName], _t1.[ProductName]
+FROM [dbo].[Customers] AS _t0 
+INNER JOIN [dbo].[Orders] AS _t3 ON (_t0.[CustomerID] = _t3.[CustomerID]) 
+INNER JOIN [dbo].[Order Details] AS _t4 ON (_t3.[OrderID] = _t4.[OrderID]) 
+INNER JOIN [dbo].[Products] AS _t1 ON (_t1.[ProductID] = _t4.[ProductID]) 
+GROUP BY _t0.[Country], _t0.[ContactName], _t1.[ProductName] 
 HAVING (COUNT(*) > @p0)
-) 
+)
  
 SELECT 
 _t2.* 

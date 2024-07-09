@@ -56,7 +56,7 @@ namespace CSQLQueryExpress
                         }
                         else
                         {
-                            translatedQueryBuilder.Append(Environment.NewLine);
+                            translatedQueryBuilder.Append($" {Environment.NewLine}");
                         }
 
                         translatedQueryBuilder.Append(fragment.Translate(queryExpressionTranslator));
@@ -64,11 +64,11 @@ namespace CSQLQueryExpress
 
                     if (idx-- > 0)
                     {
-                        translatedQueryBuilder.Append($"{Environment.NewLine}), ");
+                        translatedQueryBuilder.Append($"{Environment.NewLine}),");
                     }
                     else
                     {
-                        translatedQueryBuilder.Append($"{Environment.NewLine}) {Environment.NewLine}");
+                        translatedQueryBuilder.Append($"{Environment.NewLine}){Environment.NewLine}");
                     }
                 }
             }

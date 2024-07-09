@@ -244,7 +244,7 @@ namespace CSQLQueryExpress.Fragments
 
             if (FragmentType == SQLQueryFragmentType.SelectCte)
             {
-                return $"{expressionTranslator.GetTableAlias(typeof(T))} AS {Environment.NewLine}( {Environment.NewLine}{selectBase} ";
+                return $"{expressionTranslator.GetTableAlias(typeof(T))} AS {Environment.NewLine}({Environment.NewLine}{selectBase}";
             }
 
             return selectBase;
