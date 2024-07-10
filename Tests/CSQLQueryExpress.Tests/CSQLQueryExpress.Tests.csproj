@@ -45,6 +45,18 @@
     <None Update="UnitTests\BatchStatements\TestBatchInsert.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="UnitTests\DatePartStatements\TestDatePartWithDateNotNullable.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\DatePartStatements\TestDateDiffWithDataPartFromDates.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\DatePartStatements\TestDateSubqueryAvgFromDates.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\DatePartStatements\TestDatePartWithDateNullable.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="UnitTests\MultipleResultSetsStatements\TestMultipleResultSets.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

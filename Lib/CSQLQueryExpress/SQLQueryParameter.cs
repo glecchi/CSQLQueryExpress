@@ -25,7 +25,7 @@ namespace CSQLQueryExpress
         {
             if (Value != null)
             {
-                if (Value is string || Value is DateTime || Value is DateTimeOffset)
+                if (Value is string || Value is DateTime || Value is DateTimeOffset || Value is Guid)
                 {
                     return $"{Name} = '{Value}'";
                 }

@@ -1,0 +1,11 @@
+﻿SELECT 
+_t0.[OrderID], 
+_t0.[OrderDate], 
+_t0.[ShippedDate], 
+DATEDIFF(DAY, _t0.[OrderDate], _t0.[ShippedDate]) 
+FROM [dbo].[Orders] AS _t0 
+WHERE (((_t0.[OrderDate] IS NOT NULL) AND (_t0.[ShippedDate] IS NOT NULL)) AND (DATEDIFF(DAY, _t0.[OrderDate], _t0.[ShippedDate]) > (SELECT 
+AVG(DATEDIFF(DAY, _t0.[OrderDate], _t0.[ShippedDate])) 
+FROM [dbo].[Orders] AS _t0 
+WHERE ((_t0.[OrderDate] IS NOT NULL) AND (_t0.[ShippedDate] IS NOT NULL))))) 
+ORDER BY _t0.[OrderDate]

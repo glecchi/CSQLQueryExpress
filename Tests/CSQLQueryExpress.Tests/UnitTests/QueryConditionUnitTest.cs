@@ -254,5 +254,29 @@ namespace CSQLQueryExpress.Tests.UnitTests
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                Is.EqualTo(@"SELECT _t0.[ProductName], _t0.[UnitPrice] FROM [dbo].[Products] AS _t0 WHERE _t0.[CategoryID] NOT BETWEEN @p0 AND @p1"));
         }
+
+        [Test]
+        public void TestAppLockExpression()
+        {
+            var query = new SQLQuery()
+                .From<dbo.Products>()
+                .Where(p => AppLock.Test("public", () => string.Concat("Prod", p.ProductID.Cast<string>(System.Data.SqlDbType.VarChar.Size(50))), AppLockMode.Exclusive, AppLockOwner.Transaction) == 1)
+                .Select(p => p.ProductName, p => p.UnitPrice)
+                .Top(10);
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(3));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("public"));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo("Prod"));
+            Assert.That(compiledQuery.Parameters[2].Value, Is.EqualTo(1));
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+               Is.EqualTo(@"SELECT TOP(10) _t0.[ProductName], _t0.[UnitPrice] FROM [dbo].[Products] AS _t0 WHERE (APPLOCK_TEST(@p0, CONCAT(@p1, CAST(_t0.[ProductID] AS VARCHAR(50))), 'Exclusive', 'Transaction') = @p2)"));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+        }
     }
 }

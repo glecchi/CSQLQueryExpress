@@ -1,0 +1,8 @@
+﻿SELECT 
+DATEPART(YEAR, _t0.[CompletedDate]) AS [Year], 
+DATEPART(MONTH, _t0.[CompletedDate]) AS [Month], 
+COUNT(*) AS [Count] 
+FROM [dbo].[Orders] AS _t0 
+GROUP BY DATEPART(YEAR, _t0.[CompletedDate]), DATEPART(MONTH, _t0.[CompletedDate]) 
+HAVING (COUNT(*) > @p0) 
+ORDER BY DATEPART(YEAR, _t0.[CompletedDate]) DESC, DATEPART(MONTH, _t0.[CompletedDate]) ASC

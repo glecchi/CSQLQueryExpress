@@ -1,0 +1,9 @@
+﻿SELECT 
+DATEPART(YEAR, _t0.[OrderDate]) AS [Year], 
+DATEPART(MONTH, _t0.[OrderDate]) AS [Month], 
+COUNT(*) AS [Count] 
+FROM [dbo].[Orders] AS _t0 
+WHERE (_t0.[OrderDate] IS NOT NULL) 
+GROUP BY DATEPART(YEAR, _t0.[OrderDate]), DATEPART(MONTH, _t0.[OrderDate]) 
+HAVING (COUNT(*) > @p0) 
+ORDER BY DATEPART(YEAR, _t0.[OrderDate]) DESC, DATEPART(MONTH, _t0.[OrderDate]) ASC

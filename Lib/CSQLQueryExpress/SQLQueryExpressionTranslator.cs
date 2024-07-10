@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace CSQLQueryExpress
 {
@@ -470,7 +471,27 @@ namespace CSQLQueryExpress
 
                 return node;
             }
+            else if (node.Method.Name == nameof(DateTime.AddSeconds))
+            {
+                _queryBuilder.Append("DATEADD(SECOND, ");
+                Visit(node.Arguments[0]);
+                _queryBuilder.Append(", ");
+                Visit(node.Object);
+                _queryBuilder.Append(")");
 
+                return node;
+            }
+            else if (node.Method.Name == nameof(DateTime.AddMilliseconds))
+            {
+                _queryBuilder.Append("DATEADD(MILLISECOND, ");
+                Visit(node.Arguments[0]);
+                _queryBuilder.Append(", ");
+                Visit(node.Object);
+                _queryBuilder.Append(")");
+
+                return node;
+            }
+            
             throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
         }
 
@@ -1151,10 +1172,26 @@ namespace CSQLQueryExpress
 
         protected override Expression VisitMember(MemberExpression node)
         {
-            if (node.Expression != null && node.Expression.NodeType == ExpressionType.Parameter)
+            if (node.Expression != null && 
+                (
+                    node.Expression.NodeType == ExpressionType.Parameter ||
+                    (
+                        node.Expression.NodeType == ExpressionType.MemberAccess) &&
+                        node.Expression.Type.IsGenericType && node.Expression.Type.GetGenericTypeDefinition() == typeof(Nullable<>)
+                    )
+                )
             {
-                var tableName = _aliasBuilder.ResolveTableName(node.Expression.Type);
-                var columnName = _aliasBuilder.ResolveColumnName(node.Expression.Type, node.Member);
+                var type = node.Expression.NodeType == ExpressionType.Parameter
+                    ? node.Expression.Type
+                    : ((MemberExpression)node.Expression).Expression.Type;
+
+                var member = node.Expression.NodeType == ExpressionType.Parameter
+                    ? node.Member
+                    : ((MemberExpression)node.Expression).Member;
+                        
+                var tableName = _aliasBuilder.ResolveTableName(type);
+                var columnName = _aliasBuilder.ResolveColumnName(type, member);
+
                 _queryBuilder.Append($"{tableName.TableAlias}.{columnName}");
                 return node;
             }
@@ -1191,6 +1228,12 @@ namespace CSQLQueryExpress
                     return node;
                 }
                 else if (node.Expression is MethodCallExpression methodCall &&
+                    (
+                        methodCall.Method.DeclaringType == typeof(DateTime) ||
+                        methodCall.Method.DeclaringType == typeof(DateTime?) ||
+                        methodCall.Method.DeclaringType == typeof(DateTimeOffset) ||
+                        methodCall.Method.DeclaringType == typeof(DateTimeOffset?)
+                    ) &&
                     methodCall.Method.Name == nameof(DateTime.Subtract)) 
                 {
                     _queryBuilder.Append("DATEDIFF(");
@@ -1207,7 +1250,25 @@ namespace CSQLQueryExpress
                 else if (node.Expression != null && node.Expression.NodeType == ExpressionType.MemberAccess)
                 {
                     var memberExp = (MemberExpression)node.Expression;
-                    if (memberExp.Expression != null && memberExp.Expression.NodeType == ExpressionType.Constant)
+                    if (memberExp.Type == typeof(DateTime) || memberExp.Type == typeof(DateTimeOffset) ||
+                        (
+                            memberExp.Expression.NodeType == ExpressionType.MemberAccess &&
+                            (
+                                ((MemberExpression)memberExp.Expression).Type == typeof(DateTime?) ||
+                                ((MemberExpression)memberExp.Expression).Type == typeof(DateTimeOffset?)
+                            )
+                        ))
+                    {
+                        if (TryGetDatePart(node.Member, out string partName))
+                        {
+                            _queryBuilder.Append($"DATEPART({partName}, ");
+                            Visit(memberExp);
+                            _queryBuilder.Append(")");
+
+                            return node;
+                        }
+                    }
+                    else if (memberExp.Expression != null && memberExp.Expression.NodeType == ExpressionType.Constant)
                     {
                         object container = ((ConstantExpression)memberExp.Expression).Value;
                         container = TryExtractCSharpGeneratedClass(memberExp.Member, container);
@@ -1235,6 +1296,34 @@ namespace CSQLQueryExpress
 
 
             throw new NotSupportedException(string.Format("The member '{0}' is not supported", node.Member.Name));
+        }
+
+        private static bool TryGetDatePart(MemberInfo member, out string partName)
+        {
+            partName = null;
+
+            switch (member.Name)
+            {
+                case nameof(DateTime.Year):
+                case nameof(DateTime.Month):
+                case nameof(DateTime.Day):
+                case nameof(DateTime.Hour):
+                case nameof(DateTime.Minute):
+                case nameof(DateTime.Second):
+                case nameof(DateTime.Millisecond):
+                    partName = member.Name.ToUpper();
+                    break;
+                case nameof(DateTime.DayOfYear):
+                    partName = "DAYOFYEAR";
+                    break;
+                case nameof(DateTime.DayOfWeek):
+                    partName = "WEEKDAY";
+                    break;
+                default:
+                    break;
+            }
+
+            return partName != null;
         }
 
         private static object TryExtractCSharpGeneratedClass(MemberInfo memberInfo, object container)
@@ -1346,7 +1435,6 @@ namespace CSQLQueryExpress
             
             Visit(Expression.Constant(listVal));
 
-
             return node;
         }
 
@@ -1364,6 +1452,22 @@ namespace CSQLQueryExpress
             }
             
             return node;
+        }
+
+        protected override Expression VisitUnary(UnaryExpression node)
+        {
+            if (node.NodeType == ExpressionType.Negate)
+            {
+                _queryBuilder.Append("-(");
+
+                base.VisitUnary(node);
+
+                _queryBuilder.Append(")");
+
+                return node;
+            }
+
+            return base.VisitUnary(node);
         }
     }
 }
