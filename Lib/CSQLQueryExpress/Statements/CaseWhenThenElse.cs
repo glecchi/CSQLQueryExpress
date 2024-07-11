@@ -5,7 +5,7 @@ namespace CSQLQueryExpress
 {
     public static class Case
     {
-        public static ICaseWhen When(Expression<Func<bool>> when)
+        public static ICaseWhen When(bool when)
         {
             return default;
         }
@@ -13,37 +13,36 @@ namespace CSQLQueryExpress
 
     public interface ICase<T>
     {
-        ICaseWhen<T> When(Expression<Func<T>> when);
-
+        ICaseWhen<T> When(T when);
     }
 
     public interface ICaseWhen<T>
     {
-        ICaseThen<T, TT> Then<TT>(Expression<Func<TT>> expression);
+        ICaseThen<T, TT> Then<TT>(TT then);
     }
 
     public interface ICaseWhen<TW, TT>
     {
-        ICaseThen<TW, TT> Then(Expression<Func<TT>> expression);
+        ICaseThen<TW, TT> Then(TT then);
     }
 
     public interface ICaseThen<TW, TT>
     {
-        ICaseWhen<TW, TT> When(Expression<Func<TW>> when);
+        ICaseWhen<TW, TT> When(TW when);
 
-        TT Else(Expression<Func<TT>> then);
+        TT Else(TT then);
     }
 
     public interface ICaseWhen
     {
-        ICaseThen<T> Then<T>(Expression<Func<T>> expression);
+        ICaseThen<T> Then<T>(T then);
     }
 
     public interface ICaseThen<T>
     {
-        ICaseWhen When(Expression<Func<bool>> when);
+        ICaseWhen When(bool when);
 
-        T Else(Expression<Func<T>> then);
+        T Else(T then);
     }
 
     public interface ICaseElse<T>

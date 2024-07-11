@@ -30,7 +30,7 @@ namespace QueryExecution.TestClient.Queries.NorthwindPubs
                     (cus, ord, ordDet, prod, res) => cus.ContactName,
                     (cus, ord, ordDet, prod, res) => prod.ProductName,
                     (cus, ord, ordDet, prod, res) => Count.All().As(res.Orders),
-                    (cus, ord, ordDet, prod, res) => Row.Number().Over(o => o.OrderBy(() => Count.All().Desc())).As(res.Row))
+                    (cus, ord, ordDet, prod, res) => Row.Number().Over(o => o.OrderBy(Count.All().Desc())).As(res.Row))
                 .ToCteTable();
 
             var query = new SQLQuery()

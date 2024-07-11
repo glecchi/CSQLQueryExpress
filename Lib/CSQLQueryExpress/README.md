@@ -76,6 +76,7 @@ Some functions and statements supported by **CSQLQueryExpress**:
     - `ROUND`: Rounds a number to a specified number of decimal places.
     - `SQRT`: Returns the square root of a number.  
     
+	
 2. **String Functions:**
     - `LEN`: Returns the length of a string.
     - `LOWER`: Converts a string to lowercase.
@@ -85,21 +86,29 @@ Some functions and statements supported by **CSQLQueryExpress**:
     - `LTRIM` / `RTRIM`: Removes leading or trailing spaces from a string.
     - `LEFT` / `RIGHT`: Returns characters from the left or right part of a string.  
     
+	
 3. **Date and Time Functions:**
     - `DATEADD`: Adds an interval to a date.
     - `DATEDIFF`: Returns the difference between two dates.
     - `DATEPART`: Returns a specified part of a date as an integer.
+    - `DATEFROMPARTS`: Returns a date from year, month, and day values.
+    - `SYSDATETIME`: Returns a system datetime.
+    - `TIMEFROMPARTS`: Returns a time value for the specified time and with the specified precision.
+    - `EOMONTH`: Returns the last day of the month containing a specified date, with an optional offset.
     - `CONVERT`: Converts a date to a specified format.  
     
+	
 4. **Logical Functions:**
     - `ISNULL`: Replaces NULL with a specified replacement value.  
     
+	
 5. **Aggregate Functions:**
     - `SUM`: Calculates the sum of a set of values.
     - `AVG`: Calculates the average of a set of values.
     - `MIN` / `MAX`: Returns the minimum or maximum value in a set of values.
     - `COUNT`: Returns the number of values in a set.  
     
+	
 ### Statements and Constructs:
 
 1. **`EXISTS`:** Checks if a subquery returns any rows.  

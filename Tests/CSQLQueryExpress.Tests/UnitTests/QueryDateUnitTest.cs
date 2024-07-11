@@ -223,6 +223,196 @@ namespace CSQLQueryExpress.Tests.UnitTests
             Assert.DoesNotThrow(() => queryCommand.ToList());
         }
 
+        [Test]
+        public void TestDateFromPart()
+        {
+            var query = new SQLQuery()
+                .From<dbo.Orders>()
+                .Where(o => o.OrderDate.IsNotNull())
+                .Select(
+                    o => o.OrderID,
+                    o => o.OrderDate,
+                    o => Sys.DateFromParts(o.OrderDate.Value.Year, 12, 31));
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(2));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(12));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo(31));
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT _t0.[OrderID], _t0.[OrderDate], DATEFROMPARTS(DATEPART(YEAR, _t0.[OrderDate]), @p0, @p1) FROM [dbo].[Orders] AS _t0 WHERE (_t0.[OrderDate] IS NOT NULL)"));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+        }
+
+        [Test]
+        public void TestDateTimeFromPart()
+        {
+            var query = new SQLQuery()
+                .From<dbo.Orders>()
+                .Where(o => o.OrderDate.IsNotNull())
+                .Select(
+                    o => o.OrderID,
+                    o => o.OrderDate,
+                    o => Sys.DateTimeFromParts(o.OrderDate.Value.Year, 12, 31, 23, 59, 59, 0));
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(6));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(12));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo(31));
+            Assert.That(compiledQuery.Parameters[2].Value, Is.EqualTo(23));
+            Assert.That(compiledQuery.Parameters[3].Value, Is.EqualTo(59));
+            Assert.That(compiledQuery.Parameters[4].Value, Is.EqualTo(59));
+            Assert.That(compiledQuery.Parameters[5].Value, Is.EqualTo(0));
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT _t0.[OrderID], _t0.[OrderDate], DATETIMEFROMPARTS(DATEPART(YEAR, _t0.[OrderDate]), @p0, @p1, @p2, @p3, @p4, @p5) FROM [dbo].[Orders] AS _t0 WHERE (_t0.[OrderDate] IS NOT NULL)"));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+        }
+
+        [Test]
+        public void TestDateTime2FromPart()
+        {
+            var query = new SQLQuery()
+                .From<dbo.Orders>()
+                .Where(o => o.OrderDate.IsNotNull())
+                .Select(
+                    o => o.OrderID,
+                    o => o.OrderDate,
+                    o => Sys.DateTime2FromParts(o.OrderDate.Value.Year, 12, 31, 23, 59, 59, 0, 7));
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(6));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(12));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo(31));
+            Assert.That(compiledQuery.Parameters[2].Value, Is.EqualTo(23));
+            Assert.That(compiledQuery.Parameters[3].Value, Is.EqualTo(59));
+            Assert.That(compiledQuery.Parameters[4].Value, Is.EqualTo(59));
+            Assert.That(compiledQuery.Parameters[5].Value, Is.EqualTo(0));
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT _t0.[OrderID], _t0.[OrderDate], DATETIME2FROMPARTS(DATEPART(YEAR, _t0.[OrderDate]), @p0, @p1, @p2, @p3, @p4, @p5, 7) FROM [dbo].[Orders] AS _t0 WHERE (_t0.[OrderDate] IS NOT NULL)"));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+        }
+
+        [Test]
+        public void TestDateTimeOffsetFromPart()
+        {
+            var query = new SQLQuery()
+                .From<dbo.Orders>()
+                .Where(o => o.OrderDate.IsNotNull())
+                .Select(
+                    o => o.OrderID,
+                    o => o.OrderDate,
+                    o => Sys.DateTimeOffsetFromParts(o.OrderDate.Value.Year, 12, 31, 23, 59, 59, 0, 0, 0, 7));
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(8));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(12));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo(31));
+            Assert.That(compiledQuery.Parameters[2].Value, Is.EqualTo(23));
+            Assert.That(compiledQuery.Parameters[3].Value, Is.EqualTo(59));
+            Assert.That(compiledQuery.Parameters[4].Value, Is.EqualTo(59));
+            Assert.That(compiledQuery.Parameters[5].Value, Is.EqualTo(0));
+            Assert.That(compiledQuery.Parameters[6].Value, Is.EqualTo(0));
+            Assert.That(compiledQuery.Parameters[7].Value, Is.EqualTo(0));
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT _t0.[OrderID], _t0.[OrderDate], DATETIMEOFFSETFROMPARTS(DATEPART(YEAR, _t0.[OrderDate]), @p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, 7) FROM [dbo].[Orders] AS _t0 WHERE (_t0.[OrderDate] IS NOT NULL)"));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+        }
+
+        [Test]
+        public void TestEoMonth()
+        {
+            var query = new SQLQuery()
+                .From<dbo.Orders>()
+                .Where(o => o.OrderDate.IsNotNull())
+                .Select(
+                    o => o.OrderID,
+                    o => o.OrderDate,
+                    o => Sys.EoMonth(o.OrderDate.Value),
+                    o => Sys.EoMonth(o.OrderDate.Value, 2));
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(2));
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT _t0.[OrderID], _t0.[OrderDate], EOMONTH(_t0.[OrderDate]), EOMONTH(_t0.[OrderDate], @p0) FROM [dbo].[Orders] AS _t0 WHERE (_t0.[OrderDate] IS NOT NULL)"));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+        }
+
+        [Test]
+        public void TestTimeFromParts()
+        {
+            var query = new SQLQuery()
+                .From<dbo.Orders>()
+                .Where(o => o.OrderDate.IsNotNull())
+                .Select(
+                    o => o.OrderID,
+                    o => o.OrderDate,
+                    o => Sys.TimeFromParts(o.OrderDate.Value.Hour, 23, 59, 0, 7));
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(3));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(23));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo(59));
+            Assert.That(compiledQuery.Parameters[2].Value, Is.EqualTo(0));
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT _t0.[OrderID], _t0.[OrderDate], TIMEFROMPARTS(DATEPART(HOUR, _t0.[OrderDate]), @p0, @p1, @p2, 7) FROM [dbo].[Orders] AS _t0 WHERE (_t0.[OrderDate] IS NOT NULL)"));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+        }
+
+        [Test]
+        public void TestSysDateTime()
+        {
+            var query = new SQLQuery()
+                .From<dbo.Orders>()
+                .Where(o => o.OrderDate.IsNotNull())
+                .Select(
+                    o => o.OrderID,
+                    o => o.OrderDate,
+                    o => Sys.DateTime(),
+                    o => Sys.UtcDateTime(),
+                    o => Sys.DateTimeOffset());
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT _t0.[OrderID], _t0.[OrderDate], SYSDATETIME(), SYSUTCDATETIME(), SYSDATETIMEOFFSET() FROM [dbo].[Orders] AS _t0 WHERE (_t0.[OrderDate] IS NOT NULL)"));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+        }
+
         class OrdersCompleted : dbo.Orders
         {
             public DateTime CompletedDate { get; set; }

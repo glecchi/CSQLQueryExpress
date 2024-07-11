@@ -134,7 +134,7 @@ namespace QueryExecution.TestClient.Queries.NorthwindPubs
                     (sh, ord, ordDet, prod, res) => prod.ProductName,
                     (sh, ord, ordDet, prod, res) => Count.All().As(res.ProductCount),
                     (sh, ord, ordDet, prod, res) => Row.Number()
-                        .Over(n => n.PartitionBy(() => sh.CompanyName).OrderBy(() => Count.All().Desc()))
+                        .Over(n => n.PartitionBy(sh.CompanyName).OrderBy(Count.All().Desc()))
                         .As(res.RowNumber))
                 .ToCteTable();
 

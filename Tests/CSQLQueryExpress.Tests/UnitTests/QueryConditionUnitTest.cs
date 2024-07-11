@@ -97,7 +97,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
         {
             var query = new SQLQuery()
                  .From<dbo.Products>()
-                 .Select(p => Case.When(() => p.ProductID.IsNotNull()).Then(() => p.ProductID).Else(() => 0));
+                 .Select(p => Case.When(p.ProductID.IsNotNull()).Then(p.ProductID).Else(0));
 
             var compiledQuery = query.Compile();
 
@@ -113,7 +113,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
         {
             var query = new SQLQuery()
                  .From<dbo.Products>()
-                 .Select(p => Case.When(() => p.CategoryID == 1).Then(() => "CATEGORIA 1").When(() => p.CategoryID == 2).Then(() => "CATEGORIA 2").Else(() => "CATEGORIA N"));
+                 .Select(p => Case.When(p.CategoryID == 1).Then("CATEGORIA 1").When(p.CategoryID == 2).Then("CATEGORIA 2").Else("CATEGORIA N"));
 
             var compiledQuery = query.Compile();
 
@@ -260,7 +260,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
         {
             var query = new SQLQuery()
                 .From<dbo.Products>()
-                .Where(p => AppLock.Test("public", () => string.Concat("Prod", p.ProductID.Cast<string>(System.Data.SqlDbType.VarChar.Size(50))), AppLockMode.Exclusive, AppLockOwner.Transaction) == 1)
+                .Where(p => AppLock.Test("public", string.Concat("Prod", p.ProductID.Cast<string>(System.Data.SqlDbType.VarChar.Size(50))), AppLockMode.Exclusive, AppLockOwner.Transaction) == 1)
                 .Select(p => p.ProductName, p => p.UnitPrice)
                 .Top(10);
 

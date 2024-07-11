@@ -26,12 +26,12 @@ namespace CSQLQueryExpress
             return default;
         }
 
-        public static IRowNumberOver PartitionBy(this IRowNumberOver over, params Expression<Func<object>>[] partitionBy)
+        public static IRowNumberOver PartitionBy(this IRowNumberOver over, params object[] partitionBy)
         {
             return default;
         }
 
-        public static IRowNumberOver OrderBy(this IRowNumberOver over, params Expression<Func<object>>[] orderBy)
+        public static IRowNumberOver OrderBy(this IRowNumberOver over, params object[] orderBy)
         {
             return default;
         }

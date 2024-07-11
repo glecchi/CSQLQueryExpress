@@ -49,7 +49,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
                     (sh, ord, ordDet, prod, res) => sh.CompanyName,
                     (sh, ord, ordDet, prod, res) => prod.ProductName.IsNull("UNKNOWN").As(res.ProductName),
                     (sh, ord, ordDet, prod, res) => Count.All().As(res.ProductCount),
-                    (sh, ord, ordDet, prod, res) => Row.Number().Over(n => n.PartitionBy(() => sh.CompanyName).OrderBy(() => Count.All().Desc())).As(res.RowNumber))
+                    (sh, ord, ordDet, prod, res) => Row.Number().Over(n => n.PartitionBy(sh.CompanyName).OrderBy(Count.All().Desc())).As(res.RowNumber))
                 .ToCteTable();
 
             var query = new SQLQuery()
@@ -102,7 +102,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
                     (cus, ord, ordDet, prod, res) => cus.ContactName,
                     (cus, ord, ordDet, prod, res) => prod.ProductName,
                     (cus, ord, ordDet, prod, res) => Count.All().As(res.Orders),
-                    (cus, ord, ordDet, prod, res) => Row.Number().Over(o => o.OrderBy(() => Count.All().Desc())).As(res.Row))
+                    (cus, ord, ordDet, prod, res) => Row.Number().Over(o => o.OrderBy(Count.All().Desc())).As(res.Row))
                 .ToCteTable();
 
             var query = new SQLQuery()
@@ -217,7 +217,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
         {            
             var query = new SQLQuery()
                 .From<dbo.Products>()
-                .Select(p => p.CategoryID, p => p.UnitPrice.Avg().Over(o => o.PartitionBy(() => p.CategoryID)))
+                .Select(p => p.CategoryID, p => p.UnitPrice.Avg().Over(o => o.PartitionBy(p.CategoryID)))
                 .Distinct();
 
             var compiledQuery = query.Compile();

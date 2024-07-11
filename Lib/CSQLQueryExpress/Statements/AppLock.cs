@@ -5,7 +5,7 @@ namespace CSQLQueryExpress
 {
     public class AppLock
     {
-        public static int Test(string databasePrinpal, Expression<Func<string>> resourceName, AppLockMode lockMode, AppLockOwner lockOwner)
+        public static int Test(string databasePrinpal, string resourceName, AppLockMode lockMode, AppLockOwner lockOwner)
         {
             return default;
         }

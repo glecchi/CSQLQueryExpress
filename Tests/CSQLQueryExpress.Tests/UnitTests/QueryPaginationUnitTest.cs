@@ -29,7 +29,7 @@ namespace CSQLQueryExpress.Tests.UnitTests
         {
             var query = new SQLQuery()
                  .From<dbo.Order_Details>()
-                 .Select(c => Row.Number().Over(o => o.PartitionBy(() => c.ProductID).OrderBy(() => c.OrderID.Asc())));
+                 .Select(c => Row.Number().Over(o => o.PartitionBy(c.ProductID).OrderBy(c.OrderID.Asc())));
 
             var compiledQuery = query.Compile();
 

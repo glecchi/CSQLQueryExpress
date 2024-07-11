@@ -220,6 +220,10 @@ namespace CSQLQueryExpress
             {
                 return VisitQueryAssignmentMethodCall(node);
             }
+            else if (declaringType == typeof(Sys))
+            {
+                return VisitSysMethodCall(node);
+            }
             else if (declaringType == typeof(Count))
             {
                 return VisitCountMethodCall(node);
@@ -288,6 +292,71 @@ namespace CSQLQueryExpress
                 _queryBuilder.Append("SQRT(");
                 Visit(node.Arguments[0]);
                 _queryBuilder.Append(")");
+
+                return node;
+            }
+
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+        }
+
+        private Expression VisitSysMethodCall(MethodCallExpression node)
+        {
+            if (node.Method.Name == nameof(Sys.DateFromParts) ||
+                node.Method.Name == nameof(Sys.DateTimeFromParts) ||
+                node.Method.Name == nameof(Sys.DateTime2FromParts) ||
+                node.Method.Name == nameof(Sys.DateTimeOffsetFromParts) ||
+                node.Method.Name == nameof(Sys.TimeFromParts))
+            {
+                _queryBuilder.Append(node.Method.Name.ToUpper());
+                _queryBuilder.Append("(");
+
+                for (int idx = 0; idx < node.Arguments.Count; idx++)
+                {
+                    if (idx > 0)
+                    {
+                        _queryBuilder.Append(", ");
+                    }
+
+                    if ((node.Method.Name == nameof(Sys.DateTimeOffsetFromParts) && idx == 9) ||
+                        (node.Method.Name == nameof(Sys.DateTime2FromParts) && idx == 7) ||
+                        (node.Method.Name == nameof(Sys.TimeFromParts) && idx == 4))
+                    {
+                        _queryBuilder.Append($"{GetValue<int>(node.Arguments[idx])}");
+                    }
+                    else
+                    {
+                        Visit(node.Arguments[idx]);
+                    }
+                }
+
+                _queryBuilder.Append(")");
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(Sys.EoMonth))
+            {
+                _queryBuilder.Append(node.Method.Name.ToUpper());
+                _queryBuilder.Append("(");
+
+                for (int idx = 0; idx < node.Arguments.Count; idx++)
+                {
+                    if (idx > 0)
+                    {
+                        _queryBuilder.Append(", ");
+                    }
+
+                    Visit(node.Arguments[idx]);
+                }
+
+                _queryBuilder.Append(")");
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(Sys.DateTimeOffset) ||
+                node.Method.Name == nameof(Sys.DateTime) ||
+                node.Method.Name == nameof(Sys.UtcDateTime))
+            {
+                _queryBuilder.Append($"SYS{node.Method.Name.ToUpper()}()");
 
                 return node;
             }
@@ -491,7 +560,14 @@ namespace CSQLQueryExpress
 
                 return node;
             }
-            
+            else if (node.Method.Name == nameof(DateTime.Parse) ||
+                node.Method.Name == nameof(DateTime.ParseExact))
+            {
+                Visit(Expression.Constant(GetExpressionResultValue(node)));
+
+                return node;
+            }
+
             throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
         }
 
@@ -1361,6 +1437,30 @@ namespace CSQLQueryExpress
             var value = getter();
 
             return value;
+        }
+
+        private T GetValue<T>(Expression node)
+        {
+            if (node.NodeType == ExpressionType.Constant)
+            {
+                return (T)((ConstantExpression)node).Value;
+            }
+            else if (node.NodeType == ExpressionType.MemberAccess)
+            {
+                return (T)GetMemberValue((MemberExpression)node);
+            }
+            else if (node.NodeType == ExpressionType.Call ||
+                node.NodeType == ExpressionType.New)
+            {
+                return (T)GetExpressionResultValue(node);
+            }
+
+            throw new NotSupportedException(string.Format("Get Value from expression type '{0}' is not supported", node.NodeType));
+        }
+
+        private static object GetExpressionResultValue(Expression node)
+        {
+            return Expression.Lambda(node).Compile().DynamicInvoke();
         }
 
         protected override Expression VisitConstant(ConstantExpression node)
