@@ -63,19 +63,19 @@
     <None Update="UnitTests\SelectStatements\TestStatement1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SelectStatements\TestStatement15.txt">
+    <None Update="UnitTests\JoinStatements\TestRightOuterJoin.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SelectStatements\TestStatement14.txt">
+    <None Update="UnitTests\JoinStatements\TestLeftOuterJoin.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SelectStatements\TestStatement13.txt">
+    <None Update="UnitTests\JoinStatements\TestOuterApply.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SelectStatements\TestStatement12.txt">
+    <None Update="UnitTests\JoinStatements\TestCrossApply.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="UnitTests\SelectStatements\TestStatement11.txt">
+    <None Update="UnitTests\JoinStatements\TestInnerJoin.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="UnitTests\SelectStatements\TestStatement2.txt">

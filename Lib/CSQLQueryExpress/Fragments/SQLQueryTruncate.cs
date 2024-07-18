@@ -26,7 +26,7 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryFragmentType FragmentType { get { return SQLQueryFragmentType.Truncate; } }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             return $"TRUNCATE TABLE {expressionTranslator.GetTableName(typeof(T))}";
         }

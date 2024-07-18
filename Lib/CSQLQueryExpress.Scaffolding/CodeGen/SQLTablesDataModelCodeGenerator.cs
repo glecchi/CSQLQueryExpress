@@ -7,11 +7,11 @@ using System.Text;
 
 namespace CSQLQueryExpress.Scaffolding
 {
-    internal class SQLViewsDataModelCodeGenerator
+    internal class SQLTablesDataModelCodeGenerator
     {
         private readonly SQLDataModelCodeGeneratorParameters _parameters;
 
-        public SQLViewsDataModelCodeGenerator(SQLDataModelCodeGeneratorParameters parameters)
+        public SQLTablesDataModelCodeGenerator(SQLDataModelCodeGeneratorParameters parameters)
         {
             _parameters = parameters;
         }
@@ -38,26 +38,26 @@ namespace CSQLQueryExpress.Scaffolding
             {
                 connection.Open();
 
-                var views = new List<View>();
+                var tables = new List<Table>();
 
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = _parameters.ScaffoldingViewsQuery;
+                    cmd.CommandText = _parameters.ScaffoldingTablesQuery;
 
                     using (var rd = cmd.ExecuteReader())
                     {
                         while (rd.Read())
                         {
-                            views.Add(new View { Database = connectionStringBuilder.InitialCatalog, Schema = rd.GetString(0), Name = rd.GetString(1) });
+                            tables.Add(new Table { Database = connectionStringBuilder.InitialCatalog, Schema = rd.GetString(0), Name = rd.GetString(1) });
                         }
                     }
                 }
 
-                foreach (var view in views)
+                foreach (var table in tables)
                 {
                     try
                     {
-                        var fileCs = GetFileCs(workingFolder.FullName, view);
+                        var fileCs = GetFileCs(workingFolder.FullName, table);
                         if (!_parameters.OverwriteExistingDataModelClasses && File.Exists(fileCs))
                         {
                             continue;
@@ -70,7 +70,7 @@ namespace CSQLQueryExpress.Scaffolding
 
                         using (var cmd = connection.CreateCommand())
                         {
-                            cmd.CommandText = GetCommand(view, scaffoldingScript);
+                            cmd.CommandText = GetCommand(table, scaffoldingScript);
 
                             var dto = (string)cmd.ExecuteScalar();
 
@@ -84,7 +84,7 @@ namespace CSQLQueryExpress.Scaffolding
                     }
                     catch (Exception ex)
                     {
-                        result.AddError(SQLDataModelCodeGeneratorEntityType.View, view.Name, ex);
+                        result.AddError(SQLDataModelCodeGeneratorEntityType.Table, table.Name, ex);
                     }
                 }
             }
@@ -92,15 +92,19 @@ namespace CSQLQueryExpress.Scaffolding
 
         string GetFolderPath(string databaseName)
         {
-            return !string.IsNullOrWhiteSpace(_parameters.ViewsFolder)
-                ? Path.Combine(_parameters.OutputRootFolder, databaseName, _parameters.ViewsFolder)
-                : Path.Combine(_parameters.OutputRootFolder, databaseName);
+            return _parameters.GenerateDatabaseFolder
+                ? !string.IsNullOrWhiteSpace(_parameters.TablesFolder)
+                    ? Path.Combine(_parameters.OutputRootFolder, databaseName, _parameters.TablesFolder)
+                    : Path.Combine(_parameters.OutputRootFolder, databaseName)
+                : !string.IsNullOrWhiteSpace(_parameters.TablesFolder)
+                    ? Path.Combine(_parameters.OutputRootFolder, _parameters.TablesFolder)
+                    : Path.Combine(_parameters.OutputRootFolder);
         }
 
-        string GetFileCs(string databaseFolderPath, View view)
+        string GetFileCs(string databaseFolderPath, Table table)
         {
-            var schemaFolderPath = _parameters.GenerateSchemaFolder 
-                ? Path.Combine(databaseFolderPath, view.Schema)
+            var schemaFolderPath = _parameters.GenerateSchemaFolder
+                ? Path.Combine(databaseFolderPath, table.Schema)
                 : databaseFolderPath;
 
             if (!Directory.Exists(schemaFolderPath))
@@ -108,25 +112,27 @@ namespace CSQLQueryExpress.Scaffolding
                 Directory.CreateDirectory(schemaFolderPath);
             }
 
-            var path = Path.Combine(schemaFolderPath, view.GetFileCs(_parameters));
+            var path = Path.Combine(schemaFolderPath, table.GetFileCs(_parameters));
 
             return path;
         }
 
-        string GetCommand(View view, string scaffoldingScript)
+        string GetCommand(Table table, string scaffoldingScript)
         {
-            var className = view.GetClassName(_parameters);
-            var nameSpace = view.GetNamespace(_parameters);
+            var className = table.GetClassName(_parameters);
+
+            var otherUsing = _parameters.GetOtherUsings();
+            var baseClassAndInterfaces = _parameters.GetBaseClassAndInterfaces();
 
             return scaffoldingScript
-                .Replace(SQLDataModelCodeGeneratorConstants.DatabaseName, view.Database)
-                .Replace(SQLDataModelCodeGeneratorConstants.TableSchema, view.Schema)
-                .Replace(SQLDataModelCodeGeneratorConstants.TableName, view.Name)
-                .Replace(SQLDataModelCodeGeneratorConstants.Namespace, nameSpace)
+                .Replace(SQLDataModelCodeGeneratorConstants.DatabaseName, table.Database)
+                .Replace(SQLDataModelCodeGeneratorConstants.TableSchema, table.Schema)
+                .Replace(SQLDataModelCodeGeneratorConstants.TableName, table.Name)
+                .Replace(SQLDataModelCodeGeneratorConstants.Namespace, _parameters.UseDatabaseNameAsNamespace ? $"{_parameters.RootNamespace}.{table.Database}" : _parameters.RootNamespace)
                 .Replace(SQLDataModelCodeGeneratorConstants.ClassName, className)
                 .Replace(SQLDataModelCodeGeneratorConstants.PartialClass, _parameters.GeneratePartialClasses ? "1" : "0")
-                .Replace(SQLDataModelCodeGeneratorConstants.OtherUsing, string.Empty)
-                .Replace(SQLDataModelCodeGeneratorConstants.BaseClassAndInterfaces, SQLDataModelCodeGeneratorConstants.ISQLQueryEntity);
+                .Replace(SQLDataModelCodeGeneratorConstants.OtherUsing, otherUsing)
+                .Replace(SQLDataModelCodeGeneratorConstants.BaseClassAndInterfaces, baseClassAndInterfaces);
         }
 
         string GetScaffoldingScript()
@@ -150,7 +156,7 @@ namespace CSQLQueryExpress.Scaffolding
             }
         }
 
-        class View
+        class Table
         {
             public string Database { get; set; }
 
@@ -163,16 +169,9 @@ namespace CSQLQueryExpress.Scaffolding
                 return $"{GetClassName(parameters)}.cs";
             }
 
-            public string GetNamespace(SQLDataModelCodeGeneratorParameters parameters)
-            {
-                return !string.IsNullOrWhiteSpace(parameters.ViewsNamespace)
-                    ? $"{parameters.RootNamespace}.{Database}.{parameters.ViewsNamespace}"
-                    : $"{parameters.RootNamespace}.{Database}";
-            }
-
             public string GetClassName(SQLDataModelCodeGeneratorParameters parameters)
             {
-                return $"{parameters.ViewPrefix}{Name.Replace(" ", "_")}{parameters.ViewSuffix}";
+                return $"{parameters.TablePrefix}{Name.Replace(" ", "_")}{parameters.TableSuffix}";
             }
         }
     }

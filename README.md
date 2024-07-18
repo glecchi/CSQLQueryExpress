@@ -32,32 +32,55 @@ Here's a simple example to demonstrate how to use CSQLQueryExpress with Dapper:
 using CSQLQueryExpress;
 using Dapper;
 using System.Data.SqlClient;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 class Program
 {
     static void Main()
     {
-        SQLQuerySelect<dbo.Users> query = new SQLQuery()
-          .From<dbo.Users>()
-          .Where(u => u.Age > 30)
-          .Select(u => u.All());
+        SQLQuerySelect<Users> query = 
+            new SQLQuery()
+                .From<Users>()
+                .Where(u => u.Age.IsNotNull() && u.Age > 30)
+                .Select(u => u.All());
 
         var tSqlQuery = query.Compile();
 
-        var statement = tSqlQuery.Statement;
-        var parameters = tSqlQuery.Parameters.ToDictionary(p => p.Name, p => p.Value);
+        var statement = tSqlQuery.Statement; //"SELECT _t0.* FROM [dbo].[Users] AS _t0 WHERE ((_t0.[Age] IS NOT NULL) AND (_t0.[Age] > @p0))"
+
+        var parameters = tSqlQuery.ParametersKeyValue; //@p0 = 30
 
         using (var connection = new SqlConnection("YourConnectionString"))
         {
             connection.Open();
 
-            var result = connection.Query<dbo.Users>(statement, parameters);
+            var result = connection.Query<Users>(statement, parameters);
             foreach (var user in result)
             {
-                Console.WriteLine(user);
+                Console.WriteLine($"UserID:{user.UserID} - FirstName:{user.FirstName} - LastName:{user.LastName} - Age:{user.Age}");
             }
         }
     }
+}
+
+[Table("Users", Schema = "dbo")]
+public class Users : ISQLQueryEntity
+{
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Column("EmployeeID")]
+    public int UserID { get; set; }
+    
+    [Required]
+    [Column("FirstName")]
+    public string FirstName { get; set; }
+    
+    [Required]
+    [Column("LastName")]
+    public string LastName { get; set; }
+    	
+    [Column("Age")]
+    public int? Age { get; set; }
 }
 ```
 

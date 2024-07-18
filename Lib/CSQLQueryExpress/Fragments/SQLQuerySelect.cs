@@ -38,7 +38,7 @@ namespace CSQLQueryExpress.Fragments
         {
             if (_top.HasValue)
             {
-                throw new NotSupportedException("Select TOP with COUNT is not supported");
+                throw new NotSupportedException("Select TOP with COUNT is not supported.");
             }
 
             _count = true;
@@ -55,7 +55,7 @@ namespace CSQLQueryExpress.Fragments
         {
             if (_count)
             {
-                throw new NotSupportedException("Select TOP with COUNT is not supported");
+                throw new NotSupportedException("Select TOP with COUNT is not supported.");
             }
 
             _top = count;
@@ -66,7 +66,7 @@ namespace CSQLQueryExpress.Fragments
         {
             if (_useCte)
             {
-                throw new NotSupportedException("SELECT INTO in WITH CTE declaration is not supported");
+                throw new NotSupportedException("SELECT INTO in WITH CTE declaration is not supported.");
             }
 
             return new SQLQueryInto<TI>(_fragments);
@@ -87,7 +87,7 @@ namespace CSQLQueryExpress.Fragments
             return new SQLQueryForXml<TX>(_fragments, forXml);
         }
 
-        public virtual string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public virtual string Translate(ISQLQueryTranslator expressionTranslator)
         {
             var selectBase = new StringBuilder();
 
@@ -201,12 +201,12 @@ namespace CSQLQueryExpress.Fragments
         {
             if (_useCte)
             {
-                throw new NotSupportedException("SELECT INTO in CTE TABLE declaration is not supported");
+                throw new NotSupportedException("SELECT INTO in CTE TABLE declaration is not supported.");
             }
 
             if (!typeof(ISQLQueryEntity).IsAssignableFrom(typeof(T)))
             {
-                throw new NotSupportedException("SELECT INTO with T not a ISQLQueryEntity is not supported");
+                throw new NotSupportedException("SELECT INTO with T not a ISQLQueryEntity is not supported.");
             }
 
             return new SQLQueryInto<T>(_fragments);
@@ -216,7 +216,7 @@ namespace CSQLQueryExpress.Fragments
         {
             if (_fragments.Any(f => f.FragmentType == SQLQueryFragmentType.SelectCte))
             {
-                throw new NotSupportedException("CTE TABLE declaration FROM CTE TABLE is not supported");
+                throw new NotSupportedException("CTE TABLE declaration FROM CTE TABLE is not supported.");
             }
 
             _useCte = true;
@@ -238,7 +238,7 @@ namespace CSQLQueryExpress.Fragments
             return new SQLQueryForXml<T>(_fragments, forXml);
         }
 
-        public override string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public override string Translate(ISQLQueryTranslator expressionTranslator)
         {
             var selectBase = base.Translate(expressionTranslator);
 

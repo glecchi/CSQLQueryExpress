@@ -4,13 +4,13 @@ namespace CSQLQueryExpress
 {
     public sealed class SQLQueryParameter
     {
-        internal SQLQueryParameter(string name, object value)
+        public SQLQueryParameter(string name, object value)
             : this(name, value, SQLQueryParameterDirection.Input)
         {
          
         }
 
-        internal SQLQueryParameter(string name, object value, SQLQueryParameterDirection direction)
+        public SQLQueryParameter(string name, object value, SQLQueryParameterDirection direction)
         {
             Name = name;
             Value = value;

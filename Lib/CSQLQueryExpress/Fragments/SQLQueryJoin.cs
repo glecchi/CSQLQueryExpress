@@ -28,7 +28,8 @@ namespace CSQLQueryExpress.Fragments
         private readonly Type _type;
         private readonly SQLQuerySelect _select;
         
-        protected TableHints? TableHints;
+        private TableHints? TableHints;
+        private JoinHints? JoinHints;
 
         public SQLQuerySelect FromSelect { get { return _select; } }
 
@@ -42,13 +43,13 @@ namespace CSQLQueryExpress.Fragments
 
             if (select != null && select.IsHierarchicalSelectFromCte())
             {
-                throw new NotSupportedException("Hierachical select queries from CTE TABLE is not supported");
+                throw new NotSupportedException("Hierachical select queries from CTE TABLE is not supported.");
             }
 
             if ((_joinType == SQLQueryJoinType.CrossApply || _joinType == SQLQueryJoinType.OuterApply) && 
                 (_select == null || _select.FragmentType == SQLQueryFragmentType.SelectCte))
             {
-                throw new NotSupportedException("CrossApply/OuterApply without select query or with select based on CTE TABLE is not supported");
+                throw new NotSupportedException("CrossApply/OuterApply without select query or with select based on CTE TABLE is not supported.");
             }
 
             if (_select != null && _select.FragmentType == SQLQueryFragmentType.SelectCte && !Fragments.Contains(_select))
@@ -66,19 +67,19 @@ namespace CSQLQueryExpress.Fragments
             return new SQLQuerySelect(Fragments);
         }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             var joinBuilder = new StringBuilder(); ;
             switch (_joinType)
             {
                 case SQLQueryJoinType.InnerJoin:
-                    joinBuilder.Append("INNER JOIN");
+                    joinBuilder.Append($"INNER {(JoinHints.HasValue ? $"{JoinHints} " : string.Empty)}JOIN");
                     break;
                 case SQLQueryJoinType.LeftOuterJoin:
-                    joinBuilder.Append("LEFT OUTER JOIN");
+                    joinBuilder.Append($"LEFT OUTER {(JoinHints.HasValue ? $"{JoinHints} " : string.Empty)}JOIN");
                     break;
                 case SQLQueryJoinType.RightOuterJoin:
-                    joinBuilder.Append("RIGHT OUTER JOIN");
+                    joinBuilder.Append($"RIGHT OUTER {(JoinHints.HasValue ? $"{JoinHints} " : string.Empty)}JOIN");
                     break;
                 case SQLQueryJoinType.CrossApply:
                     joinBuilder.Append("CROSS APPLY");
@@ -137,6 +138,21 @@ namespace CSQLQueryExpress.Fragments
 
             return joinBuilder.ToString();
         }
+
+        protected void SetTableHints(TableHints hints)
+        {
+            TableHints = hints;
+        }
+
+        protected void SetJoinHints(JoinHints hints)
+        {
+            if (_joinType == SQLQueryJoinType.CrossApply || _joinType == SQLQueryJoinType.OuterApply)
+            {
+                throw new NotSupportedException($"{nameof(JoinHints)} in {_joinType} is not supported.");
+            }
+
+            JoinHints = hints;
+        }
     }
 
     internal class SQLQueryJoinWhere : ISQLQueryFragment
@@ -150,7 +166,7 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryFragmentType FragmentType => SQLQueryFragmentType.Where;
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             return $"WHERE {expressionTranslator.Translate(_where)}";
         }
@@ -170,7 +186,13 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryJoin<T, TJ1> With(TableHints hints)
         {
-            TableHints = hints;
+            SetTableHints(hints);
+            return this;
+        }
+
+        public SQLQueryJoin<T, TJ1> With(JoinHints hints)
+        {
+            SetJoinHints(hints);
             return this;
         }
 
@@ -238,7 +260,7 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQuerySelect Select(Expression<Func<T, TJ1, object>> select, params Expression<Func<T, TJ1, object>>[] otherSelect)
         {
-            return new SQLQuerySelect(Fragments);
+            return new SQLQuerySelect(Fragments, select.Merge(otherSelect));
         }
 
         public SQLQuerySelect<TS> Select<TS>(Expression<Func<T, TJ1, TS, object>> select, params Expression<Func<T, TJ1, TS, object>>[] otherSelect)
@@ -261,7 +283,13 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryJoin<T, TJ1, TJ2> With(TableHints hints)
         {
-            TableHints = hints;
+            SetTableHints(hints);
+            return this;
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2> With(JoinHints hints)
+        {
+            SetJoinHints(hints);
             return this;
         }
 
@@ -357,7 +385,13 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3> With(TableHints hints)
         {
-            TableHints = hints;
+            SetTableHints(hints);
+            return this;
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3> With(JoinHints hints)
+        {
+            SetJoinHints(hints);
             return this;
         }
 
@@ -454,7 +488,13 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4> With(TableHints hints)
         {
-            TableHints = hints;
+            SetTableHints(hints);
+            return this;
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4> With(JoinHints hints)
+        {
+            SetJoinHints(hints);
             return this;
         }
 
@@ -554,7 +594,13 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5> With(TableHints hints)
         {
-            TableHints = hints;
+            SetTableHints(hints);
+            return this;
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5> With(JoinHints hints)
+        {
+            SetJoinHints(hints);
             return this;
         }
 
@@ -655,7 +701,13 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6> With(TableHints hints)
         {
-            TableHints = hints;
+            SetTableHints(hints);
+            return this;
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6> With(JoinHints hints)
+        {
+            SetJoinHints(hints);
             return this;
         }
 
@@ -757,7 +809,13 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7> With(TableHints hints)
         {
-            TableHints = hints;
+            SetTableHints(hints);
+            return this;
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7> With(JoinHints hints)
+        {
+            SetJoinHints(hints);
             return this;
         }
 
@@ -860,7 +918,13 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8> With(TableHints hints)
         {
-            TableHints = hints;
+            SetTableHints(hints);
+            return this;
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8> With(JoinHints hints)
+        {
+            SetJoinHints(hints);
             return this;
         }
 
@@ -964,7 +1028,13 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9> With(TableHints hints)
         {
-            TableHints = hints;
+            SetTableHints(hints);
+            return this;
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9> With(JoinHints hints)
+        {
+            SetJoinHints(hints);
             return this;
         }
 
@@ -1069,7 +1139,13 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10> With(TableHints hints)
         {
-            TableHints = hints;
+            SetTableHints(hints);
+            return this;
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10> With(JoinHints hints)
+        {
+            SetJoinHints(hints);
             return this;
         }
 
@@ -1175,7 +1251,13 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11> With(TableHints hints)
         {
-            TableHints = hints;
+            SetTableHints(hints);
+            return this;
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11> With(JoinHints hints)
+        {
+            SetJoinHints(hints);
             return this;
         }
 
@@ -1282,7 +1364,13 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12> With(TableHints hints)
         {
-            TableHints = hints;
+            SetTableHints(hints);
+            return this;
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12> With(JoinHints hints)
+        {
+            SetJoinHints(hints);
             return this;
         }
 
@@ -1390,7 +1478,13 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13> With(TableHints hints)
         {
-            TableHints = hints;
+            SetTableHints(hints);
+            return this;
+        }
+
+        public SQLQueryJoin<T, TJ1, TJ2, TJ3, TJ4, TJ5, TJ6, TJ7, TJ8, TJ9, TJ10, TJ11, TJ12, TJ13> With(JoinHints hints)
+        {
+            SetJoinHints(hints);
             return this;
         }
 

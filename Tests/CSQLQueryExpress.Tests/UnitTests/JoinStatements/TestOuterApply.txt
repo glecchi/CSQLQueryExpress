@@ -1,6 +1,8 @@
-﻿SELECT * 
+﻿SELECT 
+_t0.[CategoryName], 
+_t1.[ProductName] 
 FROM [dbo].[Categories] AS _t0 
-CROSS APPLY 
+OUTER APPLY 
 (
 SELECT TOP(1) 
 _t1.*

@@ -102,7 +102,7 @@ namespace CSQLQueryExpress.Fragments
             }
         }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             var insertBuilder = new StringBuilder();
 
@@ -177,7 +177,7 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryFragmentType FragmentType { get { return SQLQueryFragmentType.InsertValues; } }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             var valuesBuilder = new StringBuilder();
 
@@ -203,7 +203,7 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryFragmentType FragmentType { get { return SQLQueryFragmentType.InsertValues; } }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             var selectBuilder = new StringBuilder();
 
@@ -237,7 +237,7 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryFragmentType FragmentType { get { return SQLQueryFragmentType.InsertValues; } }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             var valuesBuilder = new StringBuilder();
 

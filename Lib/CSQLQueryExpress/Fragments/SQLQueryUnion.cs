@@ -42,7 +42,7 @@ namespace CSQLQueryExpress.Fragments
             }
         }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             return $"{Environment.NewLine}{(_all ? "UNION ALL" : "UNION")} {Environment.NewLine}";
         }

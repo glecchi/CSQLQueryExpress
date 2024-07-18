@@ -26,7 +26,7 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryFragmentType FragmentType { get { return SQLQueryFragmentType.GroupHaving; } }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             return $"HAVING {string.Join(", ", _having.Select(h => expressionTranslator.Translate(h)))}";
         }

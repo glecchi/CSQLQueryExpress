@@ -4,6 +4,6 @@
     {
         SQLQueryFragmentType FragmentType { get; }
 
-        string Translate(ISQLQueryExpressionTranslator expressionTranslator);
+        string Translate(ISQLQueryTranslator expressionTranslator);
     }
 }

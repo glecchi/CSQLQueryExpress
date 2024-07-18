@@ -10,7 +10,7 @@ namespace CSQLQueryExpress.Fragments
 
         public abstract IEnumerator<ISQLQueryFragment> GetEnumerator();
 
-        public abstract string Translate(ISQLQueryExpressionTranslator expressionTranslator);
+        public abstract string Translate(ISQLQueryTranslator expressionTranslator);
 
         IEnumerator IEnumerable.GetEnumerator()
         {
@@ -29,7 +29,7 @@ namespace CSQLQueryExpress.Fragments
             _fragments.Add(this);
         }
 
-        public override string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public override string Translate(ISQLQueryTranslator expressionTranslator)
         {
             return $"INTO {expressionTranslator.GetTableName(typeof(T))}";
         }

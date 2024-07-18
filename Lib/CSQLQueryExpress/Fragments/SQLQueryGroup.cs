@@ -26,7 +26,7 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryFragmentType FragmentType { get { return SQLQueryFragmentType.Group; } }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             return $"GROUP BY {string.Join(", ", _group.Select(g => expressionTranslator.Translate(g)))}";
         }

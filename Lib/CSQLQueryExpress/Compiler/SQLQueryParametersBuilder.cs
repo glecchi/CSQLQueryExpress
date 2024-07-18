@@ -2,17 +2,7 @@
 
 namespace CSQLQueryExpress
 {
-
-    public interface ISQLQueryExpressionParametersBuilder
-    {
-        IDictionary<string, SQLQueryParameter> Parameters { get; }
-
-        string AddParameter(object value);
-
-        string AddStoredProcedureParameter(string name, object value, SQLQueryParameterDirection direction);
-    }
-
-    internal class SQLQueryExpressionParametersBuilder : ISQLQueryExpressionParametersBuilder
+    internal class SQLQueryParametersBuilder : ISQLQueryParametersBuilder
     {
         public IDictionary<string, SQLQueryParameter> Parameters { get; } = new Dictionary<string, SQLQueryParameter>();
 

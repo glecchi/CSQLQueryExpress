@@ -26,7 +26,7 @@ namespace CSQLQueryExpress.Fragments
             }
         }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             return $"DROP TABLE {expressionTranslator.GetTableName(typeof(T))}";
         }

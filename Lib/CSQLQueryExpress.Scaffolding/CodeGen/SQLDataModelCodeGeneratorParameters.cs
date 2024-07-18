@@ -56,6 +56,11 @@ namespace CSQLQueryExpress.Scaffolding
         public string RootNamespace { get; }
 
         /// <summary>
+        /// Concat database name to <see cref="RootNamespace"/>. (Default True)
+        /// </summary>
+        public bool UseDatabaseNameAsNamespace { get; set; } = true;
+
+        /// <summary>
         /// True data model classes will be decorated with DatabaseAttribute. Otherwise False. (Default False)
         /// </summary>
         public bool DecorateWithDatabaseAttribute { get; }
@@ -86,7 +91,7 @@ namespace CSQLQueryExpress.Scaffolding
         public bool ClearFolder { get; set; }
 
         /// <summary>
-        /// Generates data model classes as nested classes of their own schema subclass. (Default True)
+        /// Generates data model classes as nested classes of their own schema sub-class. (Default True)
         /// </summary>
         public bool GenerateSchemaNestedClasses { get; set; } = true;
 
@@ -96,9 +101,14 @@ namespace CSQLQueryExpress.Scaffolding
         public bool GeneratePartialClasses { get; set; } = false;
 
         /// <summary>
-        /// Generate subfolders for database schemas. (Default True)
+        /// Generate sub-folders for database schemas. (Default True)
         /// </summary>
         public bool GenerateSchemaFolder { get; set; } = true;
+
+        /// <summary>
+        /// Generate sub-folder for database. (Default True)
+        /// </summary>
+        public bool GenerateDatabaseFolder { get; set; } = true;
 
         /// <summary>
         /// Tables sub-folder. (Default NULL)

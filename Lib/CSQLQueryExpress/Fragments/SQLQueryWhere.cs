@@ -26,7 +26,7 @@ namespace CSQLQueryExpress.Fragments
             return new SQLQuerySelect(Fragments);
         }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             if (Fragments.Any(f => f.FragmentType == SQLQueryFragmentType.FromBySelect || f.FragmentType == SQLQueryFragmentType.Select || f.FragmentType == SQLQueryFragmentType.SelectCte))
             {

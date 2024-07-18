@@ -19,7 +19,7 @@ namespace CSQLQueryExpress.Fragments
 
             if (queries.Any(q => q.IsHierarchicalSelectFromCte()))
             {
-                throw new NotSupportedException($"Queries with CTE TABLEs is not supported in {nameof(SQLQueryBatch<T>)}");
+                throw new NotSupportedException($"Queries with CTE TABLEs is not supported in {nameof(SQLQueryBatch<T>)}.");
             }
 
             _fragments = fragments;
@@ -46,7 +46,7 @@ namespace CSQLQueryExpress.Fragments
             }
         }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             return $";{Environment.NewLine} ";
         }

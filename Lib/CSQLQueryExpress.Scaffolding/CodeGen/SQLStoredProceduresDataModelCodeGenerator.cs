@@ -152,9 +152,13 @@ namespace CSQLQueryExpress.Scaffolding
 
         string GetFolderPath(string databaseName)
         {
-            return !string.IsNullOrWhiteSpace(_parameters.StoredProcedureFolder)
-                ? Path.Combine(_parameters.OutputRootFolder, databaseName, _parameters.StoredProcedureFolder)
-                : Path.Combine(_parameters.OutputRootFolder, databaseName);
+            return _parameters.GenerateDatabaseFolder
+               ? !string.IsNullOrWhiteSpace(_parameters.StoredProcedureFolder)
+                   ? Path.Combine(_parameters.OutputRootFolder, databaseName, _parameters.StoredProcedureFolder)
+                   : Path.Combine(_parameters.OutputRootFolder, databaseName)
+               : !string.IsNullOrWhiteSpace(_parameters.TablesFolder)
+                   ? Path.Combine(_parameters.OutputRootFolder, _parameters.StoredProcedureFolder)
+                   : Path.Combine(_parameters.OutputRootFolder);
         }
 
         string GetProcedureFileCs(string databaseFolderPath, Procedure procedure)
@@ -289,9 +293,13 @@ namespace CSQLQueryExpress.Scaffolding
 
             public string GetNamespace(SQLDataModelCodeGeneratorParameters parameters)
             {
-                return !string.IsNullOrWhiteSpace(parameters.StoredProcedurNamespace)
-                    ? $"{parameters.RootNamespace}.{Database}.{parameters.StoredProcedurNamespace}"
-                    : $"{parameters.RootNamespace}.{Database}";
+                return parameters.UseDatabaseNameAsNamespace 
+                    ? !string.IsNullOrWhiteSpace(parameters.StoredProcedurNamespace)
+                        ? $"{parameters.RootNamespace}.{Database}.{parameters.StoredProcedurNamespace}"
+                        : $"{parameters.RootNamespace}.{Database}"
+                    : !string.IsNullOrWhiteSpace(parameters.StoredProcedurNamespace)
+                        ? $"{parameters.RootNamespace}.{parameters.StoredProcedurNamespace}"
+                        : $"{parameters.RootNamespace}";
             }
 
             public string GetClassName(SQLDataModelCodeGeneratorParameters parameters)

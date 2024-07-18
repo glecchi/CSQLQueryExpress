@@ -13,7 +13,7 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQueryFragmentType FragmentType { get { return SQLQueryFragmentType.Page; } }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             return expressionTranslator.Translate(_paging);
         }

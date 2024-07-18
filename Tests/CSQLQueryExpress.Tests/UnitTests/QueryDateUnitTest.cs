@@ -89,6 +89,26 @@ namespace CSQLQueryExpress.Tests.UnitTests
         }
 
         [Test]
+        public void TestsysDateDiffWithDateNullable()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Orders>()
+                 .Select(o => Sys.DateTime().Subtract(o.OrderDate.Value).Days);
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+            
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT DATEDIFF(DAY, _t0.[OrderDate], SYSDATETIME()) FROM [dbo].[Orders] AS _t0"));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+
+        }
+
+        [Test]
         public void TestDateDiffFromDateNullable()
         {
             var query = new SQLQuery()
@@ -102,6 +122,26 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"SELECT DATEDIFF(DAY, @p0, _t0.[OrderDate]) FROM [dbo].[Orders] AS _t0"));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+
+        }
+
+        [Test]
+        public void TestSysDateDiffFromDateNullable()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Orders>()
+                 .Select(o => o.OrderDate.Value.Subtract(Sys.DateTime()).Days);
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+            
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT DATEDIFF(DAY, SYSDATETIME(), _t0.[OrderDate]) FROM [dbo].[Orders] AS _t0"));
 
             var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
 

@@ -50,7 +50,7 @@ namespace CSQLQueryExpress.Fragments
             return new SQLQueryOutput<TS>(FragmentType, _fragments, output.Merge(otherOutput));
         }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             var deleteBuilder = new StringBuilder();
 

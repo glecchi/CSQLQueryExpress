@@ -22,13 +22,14 @@ class Program
         SQLQuerySelect<Users> query = 
             new SQLQuery()
                 .From<Users>()
-                .Where(u => u.Age > 30)
+                .Where(u => u.Age.IsNotNull() && u.Age > 30)
                 .Select(u => u.All());
 
         var tSqlQuery = query.Compile();
 
-        var statement = tSqlQuery.Statement;
-        var parameters = tSqlQuery.Parameters.ToDictionary(p => p.Name, p => p.Value);
+        var statement = tSqlQuery.Statement; //"SELECT _t0.* FROM [dbo].[Users] AS _t0 WHERE ((_t0.[Age] IS NOT NULL) AND (_t0.[Age] > @p0))"
+
+        var parameters = tSqlQuery.ParametersKeyValue; //@p0 = 30
 
         using (var connection = new SqlConnection("YourConnectionString"))
         {
@@ -37,7 +38,7 @@ class Program
             var result = connection.Query<Users>(statement, parameters);
             foreach (var user in result)
             {
-                Console.WriteLine($"{user.UserID} - {user.FirstName} - {user.LastName} - {user.Age}");
+                Console.WriteLine($"UserID:{user.UserID} - FirstName:{user.FirstName} - LastName:{user.LastName} - Age:{user.Age}");
             }
         }
     }
@@ -59,7 +60,7 @@ public class Users : ISQLQueryEntity
     public string LastName { get; set; }
     	
     [Column("Age")]
-    public int Age { get; set; }
+    public int? Age { get; set; }
 }
 ```
 
@@ -75,7 +76,7 @@ Some functions and statements supported by **CSQLQueryExpress**:
     - `FLOOR`: Returns the largest integer less than or equal to a number.
     - `ROUND`: Rounds a number to a specified number of decimal places.
     - `SQRT`: Returns the square root of a number.  
-    
+   **** 
 	
 2. **String Functions:**
     - `LEN`: Returns the length of a string.
@@ -85,7 +86,7 @@ Some functions and statements supported by **CSQLQueryExpress**:
     - `REPLACE`: Replaces all occurrences of a substring within a string.
     - `LTRIM` / `RTRIM`: Removes leading or trailing spaces from a string.
     - `LEFT` / `RIGHT`: Returns characters from the left or right part of a string.  
-    
+   **** 
 	
 3. **Date and Time Functions:**
     - `DATEADD`: Adds an interval to a date.
@@ -96,36 +97,50 @@ Some functions and statements supported by **CSQLQueryExpress**:
     - `TIMEFROMPARTS`: Returns a time value for the specified time and with the specified precision.
     - `EOMONTH`: Returns the last day of the month containing a specified date, with an optional offset.
     - `CONVERT`: Converts a date to a specified format.  
-    
+   **** 
 	
 4. **Logical Functions:**
     - `ISNULL`: Replaces NULL with a specified replacement value.  
-    
+   **** 
 	
 5. **Aggregate Functions:**
     - `SUM`: Calculates the sum of a set of values.
     - `AVG`: Calculates the average of a set of values.
     - `MIN` / `MAX`: Returns the minimum or maximum value in a set of values.
     - `COUNT`: Returns the number of values in a set.  
-    
+   **** 
 	
 ### Statements and Constructs:
 
-1. **`EXISTS`:** Checks if a subquery returns any rows.  
+1. **`CTE`:** Common Table Expression.  
 
-2. **`BETWEEN`:** Selects values within a given range.  
+2. **`SUBQUERY`**  
 
-3. **Common Table Expressions (CTEs)**  
+3. **`STORED PROCEDURE`**  
 
-4. **Subqueries**  
+4. **`VIEW`**  
 
-5. **`FOR XML`:** Returns the query result as XML.  
+5. **`EXISTS`:** Checks if a subquery returns any rows.  
 
-6. **`CASE`:** Returns different values based on conditional logic.  
+6. **`BETWEEN`:** Selects values within a given range.  
+
+7. **`FOR XML`:** Returns the query result as XML.  
+
+8. **`CASE`:** Returns different values based on conditional logic.  
  
-7. **`OUTPUT` with `INSERTED` and `DELETED`:** Returns the rows affected by an `INSERT`, `UPDATE`, or `DELETE` statement.
+9. **`OUTPUT` with `INSERTED` and `DELETED`:** Returns the rows affected by an `INSERT`, `UPDATE`, or `DELETE` statement.
     - `INSERTED`: Holds the new values being inserted or updated.
     - `DELETED`: Holds the old values being deleted or updated.  
+
+10. **`BATCH`:** A group of two or more SQL statements executed before any results.
+
+11. **`MULTIPLE RESULT SETS`:**  A feature that works with SQL Server to allow the execution of multiple batches on a single connection.  
+
+12. **`TABLE HINTS`:** Used to override the default behavior of the query optimizer during the data manipulation language (DML) statement.  
+	
+13. **`JOIN HINTS`:** Specify that the query optimizer enforce a join strategy between two tables.  
+
+**** 
 
 ## Do you have a comprehensive list of examples?
 

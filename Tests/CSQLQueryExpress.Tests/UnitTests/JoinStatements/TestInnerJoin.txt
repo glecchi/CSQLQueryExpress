@@ -1,0 +1,5 @@
+﻿SELECT 
+_t0.[CategoryName], 
+_t1.[ProductName] 
+FROM [dbo].[Products] AS _t1 
+INNER JOIN [dbo].[Categories] AS _t0 ON (_t1.[CategoryID] = _t0.[CategoryID])

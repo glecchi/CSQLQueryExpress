@@ -20,7 +20,7 @@ namespace CSQLQueryExpress.Fragments
 
             if (select != null && select.IsHierarchicalSelectFromCte())
             {
-                throw new NotSupportedException("Hierachical select queries from CTE TABLE is not supported");
+                throw new NotSupportedException("Hierachical select queries from CTE TABLE is not supported.");
             }
 
             _select = select;
@@ -167,7 +167,7 @@ namespace CSQLQueryExpress.Fragments
             return this;
         }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             var fromBuilder = new StringBuilder();
 

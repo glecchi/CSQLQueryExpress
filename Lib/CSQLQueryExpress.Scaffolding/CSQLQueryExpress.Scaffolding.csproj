@@ -3,12 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 	<Title>CSQLQueryExpress.Scaffolding</Title>
-    <Version>1.2.3</Version>
+    <Version>1.3.1</Version>
     <Description>A simple c# library to compile data model from database schema.</Description>
     <PackageProjectUrl></PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/glecchi/CSQLQueryExpress</RepositoryUrl>
-    <PackageTags>csharp,sql-server-database,query-builder,stored-procedures,tsql,sql-query-builder,subquery,database-scaffolding,compiled-query,cte-table</PackageTags>
+	<PackageTags>csharp,dotnet,data-model,sql-server-database,query-builder,lambda-expressions,dapper,scaffolding,stored-procedures,tsql,sql-query-builder,expression-tree,subquery,database-scaffolding,dotnet-lib,compiled-query,cte-table,orm</PackageTags>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 	<PackageReleaseNotes>https://github.com/glecchi/CSQLQueryExpress/releases/tag/$(Version)</PackageReleaseNotes>
@@ -17,6 +17,7 @@
     <Authors>jED</Authors>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageIcon>Icon.png</PackageIcon>
+    <Copyright>Copyright (c) 2024, G.L. and Contributors</Copyright>
   </PropertyGroup>
 
     <ItemGroup>

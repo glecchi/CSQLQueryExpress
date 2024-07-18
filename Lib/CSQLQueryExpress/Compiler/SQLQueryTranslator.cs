@@ -2,41 +2,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 
 namespace CSQLQueryExpress
 {
-    public interface ISQLQueryExpressionTranslator
+    internal class SQLQueryTranslator : ExpressionVisitor, ISQLQueryTranslator
     {
-        string Translate(Expression expression);
-
-        string MakeParameter(object value);
-
-        string MakeStoredProcedureParameter(string name, object value, SQLQueryParameterDirection direction);
-
-        string GetTableAlias(Type GetTableAlias);
-
-        string GetTableName(Type tableType);
-
-        string GetColumnsWithoutTableAlias(string columns);
-    }
-
-    internal class SQLQueryExpressionTranslator : ExpressionVisitor, ISQLQueryExpressionTranslator
-    {
-        private readonly ISQLQueryExpressionParametersBuilder _parametersBuilder;
-        private readonly ISQLQueryExpressionTableNameResolver _aliasBuilder;
+        private readonly ISQLQueryParametersBuilder _parametersBuilder;
+        private readonly ISQLQueryTableNameResolver _aliasBuilder;
         private readonly StringBuilder _queryBuilder = new StringBuilder();
 
-        public SQLQueryExpressionTranslator(
-            ISQLQueryExpressionParametersBuilder parametersBuilder, 
-            ISQLQueryExpressionTableNameResolver aliasBuilder)
+        public SQLQueryTranslator(
+            ISQLQueryParametersBuilder parametersBuilder, 
+            ISQLQueryTableNameResolver aliasBuilder)
         {
             _parametersBuilder = parametersBuilder;
             _aliasBuilder = aliasBuilder;
@@ -162,7 +145,7 @@ namespace CSQLQueryExpress
                     break;
                                     
                 default:
-                    throw new NotSupportedException(string.Format("The binary operator '{0}' is not supported", node.NodeType));
+                    throw new NotSupportedException(string.Format("The binary operator '{0}' is not supported.", node.NodeType));
 
             }
 
@@ -248,7 +231,7 @@ namespace CSQLQueryExpress
                 return VisitAppLockMethodCall(node);
             }
             
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
         private Expression VisitSQLQueryMathematicalMethodCall(MethodCallExpression node)
@@ -296,7 +279,7 @@ namespace CSQLQueryExpress
                 return node;
             }
 
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
         private Expression VisitSysMethodCall(MethodCallExpression node)
@@ -361,7 +344,7 @@ namespace CSQLQueryExpress
                 return node;
             }
 
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
         private Expression VisitCountMethodCall(MethodCallExpression node)
@@ -373,7 +356,7 @@ namespace CSQLQueryExpress
                 return node;
             }
 
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
         private Expression VisitAppLockMethodCall(MethodCallExpression node)
@@ -393,7 +376,7 @@ namespace CSQLQueryExpress
                 return node;
             }
 
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
         private Expression VisitCaseThenElseMethodCall(MethodCallExpression node)
@@ -451,7 +434,7 @@ namespace CSQLQueryExpress
                 return node;
             }
 
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
         private void CountWhen(MethodCallExpression node, ref int whenCount)
@@ -485,7 +468,7 @@ namespace CSQLQueryExpress
                 return node;
             }
 
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
         private Expression VisitDateTimeMethodCall(MethodCallExpression node)
@@ -568,7 +551,7 @@ namespace CSQLQueryExpress
                 return node;
             }
 
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
         private Expression VisitStringMethodCall(MethodCallExpression node)
@@ -712,7 +695,7 @@ namespace CSQLQueryExpress
                 return node;
             }
 
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
         public Expression VisitQueryPaginationMethodCall(MethodCallExpression node)
@@ -770,7 +753,7 @@ namespace CSQLQueryExpress
                 return node;
             }
 
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
         private Expression VisitQuerySelectionMethodCall(MethodCallExpression node)
@@ -833,7 +816,7 @@ namespace CSQLQueryExpress
                 }
             }
 
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
         private Expression VisitQueryConversionMethodCall(MethodCallExpression node)
@@ -921,7 +904,7 @@ namespace CSQLQueryExpress
                 return node;
             }
 
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
         private Expression GetConstantExpressionOfDbType(Type returnType)
@@ -962,7 +945,7 @@ namespace CSQLQueryExpress
                 return Expression.Constant(sqlDbType.Value);
             }
 
-            throw new NotSupportedException(string.Format("The implicit conversion in SqlDbType of '{0}' is not supported", returnType.Name));
+            throw new NotSupportedException(string.Format("The implicit conversion in SqlDbType of '{0}' is not supported.", returnType.Name));
         }
 
         private Expression VisitQueryDefinitionMethodCall(MethodCallExpression node)
@@ -996,7 +979,7 @@ namespace CSQLQueryExpress
                 return node;
             }
 
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
         private Expression VisitQueryConditionMethodCall(MethodCallExpression node)
@@ -1092,7 +1075,7 @@ namespace CSQLQueryExpress
                 return node;
             }
 
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
         private Expression VisitQueryOperationMethodCall(MethodCallExpression node)
@@ -1229,7 +1212,7 @@ namespace CSQLQueryExpress
                 return node;
             }
 
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
         private Expression VisitQueryAssignmentMethodCall(MethodCallExpression node)
@@ -1243,7 +1226,7 @@ namespace CSQLQueryExpress
                 return node;
             }
 
-            throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
         protected override Expression VisitMember(MemberExpression node)
@@ -1371,7 +1354,7 @@ namespace CSQLQueryExpress
             }
 
 
-            throw new NotSupportedException(string.Format("The member '{0}' is not supported", node.Member.Name));
+            throw new NotSupportedException(string.Format("The member '{0}' is not supported.", node.Member.Name));
         }
 
         private static bool TryGetDatePart(MemberInfo member, out string partName)
@@ -1455,7 +1438,7 @@ namespace CSQLQueryExpress
                 return (T)GetExpressionResultValue(node);
             }
 
-            throw new NotSupportedException(string.Format("Get Value from expression type '{0}' is not supported", node.NodeType));
+            throw new NotSupportedException(string.Format("Get Value from expression type '{0}' is not supported.", node.NodeType));
         }
 
         private static object GetExpressionResultValue(Expression node)
@@ -1471,7 +1454,7 @@ namespace CSQLQueryExpress
             }
             else if (node.Value is Type valueType)
             {
-                var alias = _aliasBuilder.ResolveTableAlias(valueType);
+                var alias = _aliasBuilder.ResolveTableNameAsAlias(valueType);
                 _queryBuilder.Append(alias);
             }
             else if (node.Value is SqlDbType dbType)
@@ -1483,10 +1466,10 @@ namespace CSQLQueryExpress
                 if (sqlQuery.FragmentType == SQLQueryFragmentType.SelectCte ||
                     sqlQuery.IsHierarchicalSelectFromCte())
                 {
-                    throw new NotSupportedException($"Queries with CTE TABLEs is not supported in InLine {nameof(SQLQuerySelect)}");
+                    throw new NotSupportedException($"Queries with CTE TABLEs is not supported in InLine {nameof(SQLQuerySelect)}.");
                 }
 
-                _queryBuilder.Append($"({SQLQueryCompiler.CompileStatement(sqlQuery, _parametersBuilder, _aliasBuilder)})");
+                _queryBuilder.Append($"({SQLQueryCompiler.CompileQuery(sqlQuery, _parametersBuilder, _aliasBuilder)})");
             }
             else if (node.Value is AppLockMode lockMode)
             {

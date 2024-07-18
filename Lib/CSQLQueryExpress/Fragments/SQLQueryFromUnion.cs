@@ -51,7 +51,7 @@ namespace CSQLQueryExpress.Fragments
             return new SQLQuerySelect<TS>(_fragments, select.Merge(otherSelect));
         }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             return $"FROM {Environment.NewLine}({Environment.NewLine}{string.Join($" {Environment.NewLine}", _union.Select(u => u.Translate(expressionTranslator)))}{Environment.NewLine}) AS {expressionTranslator.GetTableAlias(typeof(T))}";
         }

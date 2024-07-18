@@ -31,7 +31,7 @@ namespace CSQLQueryExpress.Fragments
             Fragments.Add(new SQLQueryPage(paging));
         }
 
-        public string Translate(ISQLQueryExpressionTranslator expressionTranslator)
+        public string Translate(ISQLQueryTranslator expressionTranslator)
         {
             return $"ORDER BY {string.Join(", ", _orderBy.Select(o => expressionTranslator.Translate(o)))}";
         }
