@@ -96,7 +96,7 @@ namespace CSQLQueryExpress.Scaffolding
                ? !string.IsNullOrWhiteSpace(_parameters.ViewsFolder)
                    ? Path.Combine(_parameters.OutputRootFolder, databaseName, _parameters.ViewsFolder)
                    : Path.Combine(_parameters.OutputRootFolder, databaseName)
-               : !string.IsNullOrWhiteSpace(_parameters.TablesFolder)
+               : !string.IsNullOrWhiteSpace(_parameters.ViewsFolder)
                    ? Path.Combine(_parameters.OutputRootFolder, _parameters.ViewsFolder)
                    : Path.Combine(_parameters.OutputRootFolder);
         }

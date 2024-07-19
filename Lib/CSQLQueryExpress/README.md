@@ -127,18 +127,18 @@ Some functions and statements supported by **CSQLQueryExpress**:
 7. **`FOR XML`:** Returns the query result as XML.  
 
 8. **`CASE`:** Returns different values based on conditional logic.  
+
+9. **`BATCH`:** A group of two or more SQL statements executed before any results.  
+
+10. **`MULTIPLE RESULT SETS`:**  A feature that works with SQL Server to allow the execution of multiple batches on a single connection.  
+
+11. **`TABLE HINTS`:** Used to override the default behavior of the query optimizer during the data manipulation language (DML) statement.  
+	
+12. **`JOIN HINTS`:** Specify that the query optimizer enforce a join strategy between two tables.  
  
-9. **`OUTPUT` with `INSERTED` and `DELETED`:** Returns the rows affected by an `INSERT`, `UPDATE`, or `DELETE` statement.
+13. **`OUTPUT` with `INSERTED` and `DELETED`:** Returns the rows affected by an `INSERT`, `UPDATE`, or `DELETE` statement.
     - `INSERTED`: Holds the new values being inserted or updated.
     - `DELETED`: Holds the old values being deleted or updated.  
-
-10. **`BATCH`:** A group of two or more SQL statements executed before any results.
-
-11. **`MULTIPLE RESULT SETS`:**  A feature that works with SQL Server to allow the execution of multiple batches on a single connection.  
-
-12. **`TABLE HINTS`:** Used to override the default behavior of the query optimizer during the data manipulation language (DML) statement.  
-	
-13. **`JOIN HINTS`:** Specify that the query optimizer enforce a join strategy between two tables.  
 
 **** 
 

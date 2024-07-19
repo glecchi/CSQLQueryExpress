@@ -16,7 +16,7 @@ var overwriteExistingDataModelClasses = true;
 var dataModelClassNamespace = ...;
 var decorateWithDatabaseAttribute = false;
 
-var scaffoldingParameters = new SQLDataModelCodeGeneratorParameters(
+var codeGeneratorParameters = new SQLDataModelCodeGeneratorParameters(
     connectionString,
     outputFolder,
     dataModelClassNamespace,
@@ -24,7 +24,7 @@ var scaffoldingParameters = new SQLDataModelCodeGeneratorParameters(
     overwriteExistingDataModelClasses, 
     decorateWithDatabaseAttribute);
 
-var dataModelCodeGen = new SQLDataModelCodeGenerator(scaffoldingParameters);
+var dataModelCodeGen = new SQLDataModelCodeGenerator(codeGeneratorParameters);
 
 var result = dataModelCodeGen.GenerateDataModel();
 
