@@ -30,10 +30,10 @@ namespace CSQLQueryExpress.Fragments
         {
             if (Fragments.Any(f => f.FragmentType == SQLQueryFragmentType.FromBySelect || f.FragmentType == SQLQueryFragmentType.Select || f.FragmentType == SQLQueryFragmentType.SelectCte))
             {
-                return $"WHERE {expressionTranslator.Translate(GetWhereCondition())}";
+                return $"WHERE {expressionTranslator.Translate(GetWhereCondition(), FragmentType)}";
             }
 
-            return $"WHERE {expressionTranslator.GetColumnsWithoutTableAlias(expressionTranslator.Translate(GetWhereCondition()))}";
+            return $"WHERE {expressionTranslator.GetColumnsWithoutTableAlias(expressionTranslator.Translate(GetWhereCondition(), FragmentType))}";
         }
     }
 

@@ -121,7 +121,7 @@ namespace CSQLQueryExpress.Fragments
             }
             else
             {
-                insertBuilder.Append($"{Environment.NewLine}({string.Join(", ", _select.Select.Select(u => expressionTranslator.GetColumnsWithoutTableAlias(expressionTranslator.Translate(u))))})");
+                insertBuilder.Append($"{Environment.NewLine}({string.Join(", ", _select.Select.Select(u => expressionTranslator.GetColumnsWithoutTableAlias(expressionTranslator.Translate(u, FragmentType))))})");
             }
 
             return insertBuilder.ToString();
@@ -211,7 +211,7 @@ namespace CSQLQueryExpress.Fragments
             {
                 selectBuilder.Append($"SELECT ");
 
-                selectBuilder.Append($"{Environment.NewLine}{string.Join($", {Environment.NewLine}", _select.Select.Select(s => expressionTranslator.Translate(s)))} {Environment.NewLine}");
+                selectBuilder.Append($"{Environment.NewLine}{string.Join($", {Environment.NewLine}", _select.Select.Select(s => expressionTranslator.Translate(s, FragmentType)))} {Environment.NewLine}");
 
                 selectBuilder.Append($"FROM {expressionTranslator.GetTableAlias(typeof(T))}");
             }
@@ -243,7 +243,7 @@ namespace CSQLQueryExpress.Fragments
 
             valuesBuilder.Append($"VALUES ");
 
-            valuesBuilder.Append($"{Environment.NewLine}({string.Join(", ", _tableColumns.Where(c => _insertParameters.ContainsKey(c)).Select(c => expressionTranslator.Translate(_insertParameters[c])))})");
+            valuesBuilder.Append($"{Environment.NewLine}({string.Join(", ", _tableColumns.Where(c => _insertParameters.ContainsKey(c)).Select(c => expressionTranslator.Translate(_insertParameters[c], FragmentType)))})");
 
             return valuesBuilder.ToString();
         }

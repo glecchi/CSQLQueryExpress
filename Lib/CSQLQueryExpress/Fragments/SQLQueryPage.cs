@@ -15,7 +15,7 @@ namespace CSQLQueryExpress.Fragments
 
         public string Translate(ISQLQueryTranslator expressionTranslator)
         {
-            return expressionTranslator.Translate(_paging);
+            return expressionTranslator.Translate(_paging, FragmentType);
         }
     }
 }

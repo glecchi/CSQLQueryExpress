@@ -28,7 +28,7 @@ namespace CSQLQueryExpress.Fragments
 
         public string Translate(ISQLQueryTranslator expressionTranslator)
         {
-            return $"HAVING {string.Join(", ", _having.Select(h => expressionTranslator.Translate(h)))}";
+            return $"HAVING {string.Join(", ", _having.Select(h => expressionTranslator.Translate(h, FragmentType)))}";
         }
     }
 

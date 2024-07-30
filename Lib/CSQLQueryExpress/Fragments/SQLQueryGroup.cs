@@ -28,7 +28,7 @@ namespace CSQLQueryExpress.Fragments
 
         public string Translate(ISQLQueryTranslator expressionTranslator)
         {
-            return $"GROUP BY {string.Join(", ", _group.Select(g => expressionTranslator.Translate(g)))}";
+            return $"GROUP BY {string.Join(", ", _group.Select(g => expressionTranslator.Translate(g, FragmentType)))}";
         }
     }
 

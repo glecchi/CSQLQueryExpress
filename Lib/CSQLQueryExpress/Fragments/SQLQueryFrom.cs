@@ -189,7 +189,7 @@ namespace CSQLQueryExpress.Fragments
             {
                 if (_fragments.Any(f => f.FragmentType == SQLQueryFragmentType.Select || f.FragmentType == SQLQueryFragmentType.SelectCte))
                 {
-                    fromBuilder.Append($"FROM {expressionTranslator.Translate(Expression.Constant(typeof(T)))}");
+                    fromBuilder.Append($"FROM {expressionTranslator.Translate(Expression.Constant(typeof(T)), FragmentType)}");
                 }
                 else
                 {

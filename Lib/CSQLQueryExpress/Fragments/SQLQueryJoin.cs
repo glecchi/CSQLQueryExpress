@@ -95,7 +95,7 @@ namespace CSQLQueryExpress.Fragments
             {
                 if (_select.Any(f => f.FragmentType == SQLQueryFragmentType.Where))
                 {
-                    joinBuilder.Append($" {Environment.NewLine}({Environment.NewLine}{string.Join($"{Environment.NewLine} ", _select.Select(s => s.FragmentType == SQLQueryFragmentType.Where ? $"{s.Translate(expressionTranslator)} AND {expressionTranslator.Translate(_join)}" : s.Translate(expressionTranslator)))}{Environment.NewLine}) AS {expressionTranslator.GetTableAlias(_type)}");
+                    joinBuilder.Append($" {Environment.NewLine}({Environment.NewLine}{string.Join($"{Environment.NewLine} ", _select.Select(s => s.FragmentType == SQLQueryFragmentType.Where ? $"{s.Translate(expressionTranslator)} AND {expressionTranslator.Translate(_join, FragmentType)}" : s.Translate(expressionTranslator)))}{Environment.NewLine}) AS {expressionTranslator.GetTableAlias(_type)}");
                 }
                 else
                 {
@@ -125,7 +125,7 @@ namespace CSQLQueryExpress.Fragments
                 }
                 else
                 {
-                    joinBuilder.Append($" {expressionTranslator.Translate(Expression.Constant(_type))}");
+                    joinBuilder.Append($" {expressionTranslator.Translate(Expression.Constant(_type), FragmentType)}");
                 }
 
                 if (TableHints.HasValue)
@@ -133,7 +133,7 @@ namespace CSQLQueryExpress.Fragments
                     joinBuilder.Append($" WITH ({TableHints.Value})");
                 }
 
-                joinBuilder.Append($" ON {expressionTranslator.Translate(_join)}");
+                joinBuilder.Append($" ON {expressionTranslator.Translate(_join, FragmentType)}");
             }
 
             return joinBuilder.ToString();
@@ -168,7 +168,7 @@ namespace CSQLQueryExpress.Fragments
 
         public string Translate(ISQLQueryTranslator expressionTranslator)
         {
-            return $"WHERE {expressionTranslator.Translate(_where)}";
+            return $"WHERE {expressionTranslator.Translate(_where, FragmentType)}";
         }
     }
 

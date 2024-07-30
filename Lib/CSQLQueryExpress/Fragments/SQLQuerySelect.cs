@@ -99,7 +99,7 @@ namespace CSQLQueryExpress.Fragments
                 {
                     if (_select != null && _select.Length > 0)
                     {
-                        selectBase.Append($"{Environment.NewLine}COUNT(DISTINCT {string.Join($", ", _select.Select(s => expressionTranslator.Translate(s)))})");
+                        selectBase.Append($"{Environment.NewLine}COUNT(DISTINCT {string.Join($", ", _select.Select(s => expressionTranslator.Translate(s, FragmentType)))})");
                     }
                     else
                     {
@@ -110,7 +110,7 @@ namespace CSQLQueryExpress.Fragments
                 {
                     if (_select != null && _select.Length > 0)
                     {
-                        selectBase.Append($"{Environment.NewLine}COUNT({string.Join($", ", _select.Select(s => expressionTranslator.Translate(s)))})");
+                        selectBase.Append($"{Environment.NewLine}COUNT({string.Join($", ", _select.Select(s => expressionTranslator.Translate(s, FragmentType)))})");
                     }
                     else
                     {
@@ -130,7 +130,7 @@ namespace CSQLQueryExpress.Fragments
 
                 if (_select != null && _select.Length > 0)
                 {
-                    selectBase.Append($"{Environment.NewLine}{string.Join($", {Environment.NewLine}", _select.Select(s => expressionTranslator.Translate(s)))}");
+                    selectBase.Append($"{Environment.NewLine}{string.Join($", {Environment.NewLine}", _select.Select(s => expressionTranslator.Translate(s, FragmentType)))}");
                 }
                 else
                 {
@@ -146,7 +146,7 @@ namespace CSQLQueryExpress.Fragments
 
                 if (_select != null && _select.Length > 0)
                 {
-                    selectBase.Append($"{Environment.NewLine}{string.Join($", {Environment.NewLine}", _select.Select(s => expressionTranslator.Translate(s)))}");
+                    selectBase.Append($"{Environment.NewLine}{string.Join($", {Environment.NewLine}", _select.Select(s => expressionTranslator.Translate(s, FragmentType)))}");
                 }
                 else
                 {

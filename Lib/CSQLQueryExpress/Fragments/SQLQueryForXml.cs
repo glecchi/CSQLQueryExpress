@@ -46,7 +46,7 @@ namespace CSQLQueryExpress.Fragments
         {
             if (_forXml != null)
             {
-                return $"FOR XML {expressionTranslator.Translate(_forXml)}";
+                return $"FOR XML {expressionTranslator.Translate(_forXml, FragmentType)}";
             }
 
             return "FOR XML";

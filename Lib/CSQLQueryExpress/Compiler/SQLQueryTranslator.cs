@@ -16,6 +16,7 @@ namespace CSQLQueryExpress
         private readonly ISQLQueryParametersBuilder _parametersBuilder;
         private readonly ISQLQueryTableNameResolver _aliasBuilder;
         private readonly StringBuilder _queryBuilder = new StringBuilder();
+        private SQLQueryFragmentType _fragmentType;
 
         public SQLQueryTranslator(
             ISQLQueryParametersBuilder parametersBuilder, 
@@ -25,8 +26,10 @@ namespace CSQLQueryExpress
             _aliasBuilder = aliasBuilder;
         }
 
-        public string Translate(Expression expression)
+        public string Translate(Expression expression, SQLQueryFragmentType fragmentType)
         {
+            _fragmentType = fragmentType;
+
             _queryBuilder.Clear();
 
             base.Visit(expression);
@@ -63,10 +66,19 @@ namespace CSQLQueryExpress
             return column.Replace(tableAlias, string.Empty);
         }
 
+        private bool _memberExpressionFromBinaryExpression;
+        
         protected override Expression VisitBinary(BinaryExpression node)
         {
             _queryBuilder.Append("(");
+
+            _memberExpressionFromBinaryExpression = node.Left.NodeType == ExpressionType.MemberAccess && 
+                node.NodeType != ExpressionType.And && node.NodeType != ExpressionType.AndAlso && 
+                node.NodeType != ExpressionType.Or && node.NodeType != ExpressionType.OrElse;
+
             this.Visit(node.Left);
+
+            _memberExpressionFromBinaryExpression = false;
 
             switch (node.NodeType)
             {
@@ -1229,6 +1241,10 @@ namespace CSQLQueryExpress
             throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
+        private readonly Type BoolType = typeof(bool);
+        private readonly Type NullBoolType = typeof(bool?);
+        private readonly IList<Type> BooleanTypes = new List<Type> { typeof(bool), typeof(bool?) };
+
         protected override Expression VisitMember(MemberExpression node)
         {
             if (node.Expression != null && 
@@ -1247,11 +1263,43 @@ namespace CSQLQueryExpress
                 var member = node.Expression.NodeType == ExpressionType.Parameter
                     ? node.Member
                     : ((MemberExpression)node.Expression).Member;
-                        
+
                 var tableName = _aliasBuilder.ResolveTableName(type);
                 var columnName = _aliasBuilder.ResolveColumnName(type, member);
 
-                _queryBuilder.Append($"{tableName.TableAlias}.{columnName}");
+                if (_fragmentType == SQLQueryFragmentType.Where &&
+                    !_memberExpressionFromBinaryExpression &&
+                    BooleanTypes.Contains(node.Expression.NodeType == ExpressionType.Parameter ? node.Type : node.Expression.Type))
+                {
+                    ExpressionType typeExpression;
+                    Expression valueExpression;
+                    if (node.Member.Name == nameof(Nullable<bool>.HasValue))
+                    {
+                        typeExpression = ExpressionType.NotEqual;
+                        valueExpression = Expression.Constant(null);
+                    }
+                    else
+                    {
+                        typeExpression = ExpressionType.Equal;
+                        valueExpression = (node.Expression.NodeType == ExpressionType.Parameter 
+                            ? node.Type 
+                            : node.Expression.Type) == NullBoolType
+                                ? (Expression)Expression.Convert(Expression.Constant(true), NullBoolType)
+                                : Expression.Constant(true);
+                    }
+
+                    Visit(Expression.MakeBinary(
+                        typeExpression, 
+                        node.Expression.NodeType == ExpressionType.Parameter 
+                            ? node 
+                            : node.Expression,
+                        valueExpression));
+                }
+                else
+                {
+                    _queryBuilder.Append($"{tableName.TableAlias}.{columnName}");
+                }
+
                 return node;
             }
             else if (node.Expression != null && node.Expression.NodeType == ExpressionType.Constant)
@@ -1546,6 +1594,36 @@ namespace CSQLQueryExpress
                 base.VisitUnary(node);
 
                 _queryBuilder.Append(")");
+
+                return node;
+            }
+            else if (_fragmentType == SQLQueryFragmentType.Where &&
+                node.NodeType == ExpressionType.Not && 
+                node.Operand.NodeType == ExpressionType.MemberAccess &&
+                BooleanTypes.Contains(((MemberExpression)node.Operand).Expression.NodeType == ExpressionType.Parameter 
+                    ? node.Operand.Type : 
+                    ((MemberExpression)node.Operand).Expression.Type))
+            {
+                Expression valueExpression;
+                if (((MemberExpression)node.Operand).Member.Name == nameof(Nullable<bool>.HasValue))
+                {
+                    valueExpression = Expression.Constant(null);
+                }
+                else
+                {
+                    valueExpression = (((MemberExpression)node.Operand).Expression.NodeType == ExpressionType.Parameter 
+                        ? node.Operand.Type 
+                        : ((MemberExpression)node.Operand).Expression.Type) == NullBoolType
+                            ? (Expression)Expression.Convert(Expression.Constant(false), NullBoolType)
+                            : Expression.Constant(false);
+                }
+
+                Visit(Expression.MakeBinary(
+                    ExpressionType.Equal, 
+                    ((MemberExpression)node.Operand).Expression.NodeType == ExpressionType.Parameter 
+                        ? node.Operand 
+                        : ((MemberExpression)node.Operand).Expression,
+                    valueExpression));
 
                 return node;
             }

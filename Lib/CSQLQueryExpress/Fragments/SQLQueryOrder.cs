@@ -33,7 +33,7 @@ namespace CSQLQueryExpress.Fragments
 
         public string Translate(ISQLQueryTranslator expressionTranslator)
         {
-            return $"ORDER BY {string.Join(", ", _orderBy.Select(o => expressionTranslator.Translate(o)))}";
+            return $"ORDER BY {string.Join(", ", _orderBy.Select(o => expressionTranslator.Translate(o, FragmentType)))}";
         }
     }
 

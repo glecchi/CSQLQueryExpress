@@ -5,7 +5,7 @@ namespace CSQLQueryExpress
 {
     public interface ISQLQueryTranslator
     {
-        string Translate(Expression expression);
+        string Translate(Expression expression, SQLQueryFragmentType fragmentType);
 
         string MakeParameter(object value);
 

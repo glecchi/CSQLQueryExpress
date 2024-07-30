@@ -81,7 +81,7 @@ namespace CSQLQueryExpress.Fragments
 
                 if (_updateProperties == null)
                 {
-                    updateBuilder.Append($"{Environment.NewLine}SET {string.Join(", ", _update.Select(u => expressionTranslator.Translate(u)))}");
+                    updateBuilder.Append($"{Environment.NewLine}SET {string.Join(", ", _update.Select(u => expressionTranslator.Translate(u, FragmentType)))}");
                 }
                 else
                 {
@@ -99,7 +99,7 @@ namespace CSQLQueryExpress.Fragments
 
                 if (_updateProperties == null)
                 {
-                    updateBuilder.Append($"{Environment.NewLine}SET {string.Join(", ", _update.Select(u => expressionTranslator.GetColumnsWithoutTableAlias(expressionTranslator.Translate(u))))}");
+                    updateBuilder.Append($"{Environment.NewLine}SET {string.Join(", ", _update.Select(u => expressionTranslator.GetColumnsWithoutTableAlias(expressionTranslator.Translate(u, FragmentType))))}");
                 }
                 else
                 {

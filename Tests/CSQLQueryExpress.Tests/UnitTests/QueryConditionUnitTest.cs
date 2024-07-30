@@ -39,6 +39,33 @@ namespace CSQLQueryExpress.Tests.UnitTests
         }
 
         [Test]
+        public void TestImplicitBooleanExpression()
+        {
+            var query = new SQLQuery()
+                 .From<ShippedOrders>()
+                 .Where(o => (!o.Shipped.HasValue || (o.Shipped.HasValue && (o.Shipped.Value || !o.Shipped.Value))) && (o.Prepared || !o.Prepared))
+                 .Select(p => p.All());
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(4));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo(true));
+            Assert.That(compiledQuery.Parameters[1].Value, Is.EqualTo(false));
+            Assert.That(compiledQuery.Parameters[2].Value, Is.EqualTo(true));
+            Assert.That(compiledQuery.Parameters[3].Value, Is.EqualTo(false));
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT _t0.* FROM [dbo].[Orders] AS _t0 WHERE (((_t0.[Shipped] IS NULL) OR ((_t0.[Shipped] IS NOT NULL) AND ((_t0.[Shipped] = @p0) OR (_t0.[Shipped] = @p1)))) AND ((_t0.[Prepared] = @p2) OR (_t0.[Prepared] = @p3)))"));
+        }
+
+        class ShippedOrders : dbo.Orders
+        {
+            public bool Prepared { get; set; }
+
+            public bool? Shipped { get; set; }
+        }
+
+        [Test]
         public void TestInExpression()
         {
             var query = new SQLQuery()
