@@ -158,12 +158,12 @@ namespace CSQLQueryExpress.Scaffolding
         /// <summary>
         /// Stored procedures sub-folder. (Default "StoredProcedures")
         /// </summary>
-        public string StoredProcedureFolder { get; set; } = "StoredProcedure";
+        public string StoredProceduresFolder { get; set; } = "StoredProcedure";
 
         /// <summary>
         /// Stored procedures data model classes sub-namespace. (Default NULL)
         /// </summary>
-        public string StoredProcedurNamespace { get; set; }
+        public string StoredProceduresNamespace { get; set; }
 
         /// <summary>
         /// Stored procedures data model classes Prefix. (Default "Proc_")

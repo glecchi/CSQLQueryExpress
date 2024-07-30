@@ -153,11 +153,11 @@ namespace CSQLQueryExpress.Scaffolding
         string GetFolderPath(string databaseName)
         {
             return _parameters.GenerateDatabaseFolder
-               ? !string.IsNullOrWhiteSpace(_parameters.StoredProcedureFolder)
-                   ? Path.Combine(_parameters.OutputRootFolder, databaseName, _parameters.StoredProcedureFolder)
+               ? !string.IsNullOrWhiteSpace(_parameters.StoredProceduresFolder)
+                   ? Path.Combine(_parameters.OutputRootFolder, databaseName, _parameters.StoredProceduresFolder)
                    : Path.Combine(_parameters.OutputRootFolder, databaseName)
-               : !string.IsNullOrWhiteSpace(_parameters.StoredProcedureFolder)
-                   ? Path.Combine(_parameters.OutputRootFolder, _parameters.StoredProcedureFolder)
+               : !string.IsNullOrWhiteSpace(_parameters.StoredProceduresFolder)
+                   ? Path.Combine(_parameters.OutputRootFolder, _parameters.StoredProceduresFolder)
                    : Path.Combine(_parameters.OutputRootFolder);
         }
 
@@ -294,11 +294,11 @@ namespace CSQLQueryExpress.Scaffolding
             public string GetNamespace(SQLDataModelCodeGeneratorParameters parameters)
             {
                 return parameters.UseDatabaseNameAsNamespace 
-                    ? !string.IsNullOrWhiteSpace(parameters.StoredProcedurNamespace)
-                        ? $"{parameters.RootNamespace}.{Database}.{parameters.StoredProcedurNamespace}"
+                    ? !string.IsNullOrWhiteSpace(parameters.StoredProceduresNamespace)
+                        ? $"{parameters.RootNamespace}.{Database}.{parameters.StoredProceduresNamespace}"
                         : $"{parameters.RootNamespace}.{Database}"
-                    : !string.IsNullOrWhiteSpace(parameters.StoredProcedurNamespace)
-                        ? $"{parameters.RootNamespace}.{parameters.StoredProcedurNamespace}"
+                    : !string.IsNullOrWhiteSpace(parameters.StoredProceduresNamespace)
+                        ? $"{parameters.RootNamespace}.{parameters.StoredProceduresNamespace}"
                         : $"{parameters.RootNamespace}";
             }
 
