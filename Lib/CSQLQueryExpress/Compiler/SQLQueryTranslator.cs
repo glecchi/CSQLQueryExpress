@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace CSQLQueryExpress
 {
@@ -710,6 +711,48 @@ namespace CSQLQueryExpress
             throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }
 
+        private Expression VisitStringNegationMethodCall(MethodCallExpression node)
+        {
+            if (node.Method.Name == nameof(string.StartsWith))
+            {
+                _queryBuilder.Append("(");
+                this.Visit(node.Object);
+                _queryBuilder.Append(" NOT LIKE ");
+                var valueExpression = (ConstantExpression)node.Arguments[0];
+                var parameterName = _parametersBuilder.AddParameter($"{valueExpression.Value}%");
+                _queryBuilder.Append(parameterName);
+                _queryBuilder.Append(")");
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(string.EndsWith))
+            {
+                _queryBuilder.Append("(");
+                this.Visit(node.Object);
+                _queryBuilder.Append(" NOT LIKE ");
+                var valueExpression = (ConstantExpression)node.Arguments[0];
+                var parameterName = _parametersBuilder.AddParameter($"%{valueExpression.Value}");
+                _queryBuilder.Append(parameterName);
+                _queryBuilder.Append(")");
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(string.Contains))
+            {
+                _queryBuilder.Append("(");
+                this.Visit(node.Object);
+                _queryBuilder.Append(" NOT LIKE ");
+                var valueExpression = (ConstantExpression)node.Arguments[0];
+                var parameterName = _parametersBuilder.AddParameter($"%{valueExpression.Value}%");
+                _queryBuilder.Append(parameterName);
+                _queryBuilder.Append(")");
+
+                return node;
+            }
+           
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
+        }
+
         public Expression VisitQueryPaginationMethodCall(MethodCallExpression node)
         {
             if (node.Method.Name == nameof(SQLQueryPaginationExtensions.Offset))
@@ -976,6 +1019,21 @@ namespace CSQLQueryExpress
                 
                 return node;
             }
+            else if (node.Method.Name == nameof(SQLQueryDefinitionExtensions.Precision))
+            {
+                this.Visit(node.Arguments[0]);
+
+                if (node.Arguments.Count == 1)
+                {
+                    _queryBuilder.Append($"({((ConstantExpression)node.Arguments[1]).Value})");
+                }
+                else
+                {
+                    _queryBuilder.Append($"({((ConstantExpression)node.Arguments[1]).Value}, {((ConstantExpression)node.Arguments[2]).Value})");
+                }
+
+                return node;
+            }
             if (node.Method.Name == nameof(SQLQueryDefinitionExtensions.Asc))
             {
                 Visit(node.Arguments[0]);
@@ -998,50 +1056,25 @@ namespace CSQLQueryExpress
         {
             if (node.Method.Name == nameof(SQLQueryConditionExtension.IsNull))
             {
-                if (node.Arguments.Count == 1)
-                {
-                    _queryBuilder.Append("(");
-                    this.Visit(node.Arguments[0]);
-                    _queryBuilder.Append(" IS NULL");
-                    _queryBuilder.Append(")");
-                }
-                else
-                {
-                    _queryBuilder.Append("ISNULL(");
-                    this.Visit(node.Arguments[0]);
-                    _queryBuilder.Append(", ");
-                    this.Visit(node.Arguments[1]);
-                    _queryBuilder.Append(")");
-                }
+                TranslateIsNullCondition(node);
 
                 return node;
             }
             else if (node.Method.Name == nameof(SQLQueryConditionExtension.IsNotNull))
             {
-                _queryBuilder.Append("(");
-                this.Visit(node.Arguments[0]);
-                _queryBuilder.Append(" IS NOT NULL");
-                _queryBuilder.Append(")");
+                TranslateIsNotNullCondition(node);
 
                 return node;
             }
             else if (node.Method.Name == nameof(SQLQueryConditionExtension.In))
             {
-                _queryBuilder.Append("(");
-                this.Visit(node.Arguments[0]);
-                _queryBuilder.Append(" IN (");
-                this.Visit(node.Arguments[1]);
-                _queryBuilder.Append("))");
+                TranslateInCondition(node);
 
                 return node;
             }
             else if (node.Method.Name == nameof(SQLQueryConditionExtension.NotIn))
             {
-                _queryBuilder.Append("(");
-                this.Visit(node.Arguments[0]);
-                _queryBuilder.Append(" NOT IN (");
-                this.Visit(node.Arguments[1]);
-                _queryBuilder.Append("))");
+                TranslateNotInCondition(node);
 
                 return node;
             }
@@ -1054,40 +1087,159 @@ namespace CSQLQueryExpress
             }
             else if (node.Method.Name == nameof(SQLQueryConditionExtension.Exists))
             {
-                _queryBuilder.Append("EXISTS ");
-                this.Visit(node.Arguments[1]);
+                TranslateExistsCondition(node);
                 
                 return node;
             }
             else if (node.Method.Name == nameof(SQLQueryConditionExtension.NotExists))
             {
-                _queryBuilder.Append("NOT EXISTS ");
-                this.Visit(node.Arguments[1]);
+                TranslateNotExistsCondition(node);
                 
                 return node;
             }
             else if (node.Method.Name == nameof(SQLQueryConditionExtension.Between))
             {
-                this.Visit(node.Arguments[0]);
-                _queryBuilder.Append(" BETWEEN ");
-                this.Visit(node.Arguments[1]);
-                _queryBuilder.Append(" AND ");
-                this.Visit(node.Arguments[2]);
+                TranslateBetweenCondition(node);
 
                 return node;
             }
             else if (node.Method.Name == nameof(SQLQueryConditionExtension.NotBetween))
             {
-                this.Visit(node.Arguments[0]);
-                _queryBuilder.Append(" NOT BETWEEN ");
-                this.Visit(node.Arguments[1]);
-                _queryBuilder.Append(" AND ");
-                this.Visit(node.Arguments[2]);
+                TranslateNotBetweenCondition(node);
 
                 return node;
             }
 
             throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
+        }
+
+        private Expression VisitQueryConditionNegationMethodCall(MethodCallExpression node)
+        {
+            if (node.Method.Name == nameof(SQLQueryConditionExtension.IsNull))
+            {
+                TranslateIsNotNullCondition(node);
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryConditionExtension.IsNotNull))
+            {
+                TranslateIsNullCondition(node);
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryConditionExtension.In))
+            {
+                TranslateNotInCondition(node);
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryConditionExtension.NotIn))
+            {
+                TranslateInCondition(node);
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryConditionExtension.Exists))
+            {
+                TranslateNotExistsCondition(node);
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryConditionExtension.NotExists))
+            {
+                TranslateExistsCondition(node);
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryConditionExtension.Between))
+            {
+                TranslateNotBetweenCondition(node);
+
+                return node;
+            }
+            else if (node.Method.Name == nameof(SQLQueryConditionExtension.NotBetween))
+            {
+                TranslateBetweenCondition(node);
+
+                return node;
+            }
+
+            throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
+        }
+
+        private void TranslateBetweenCondition(MethodCallExpression methodCallExp)
+        {
+            this.Visit(methodCallExp.Arguments[0]);
+            _queryBuilder.Append(" BETWEEN ");
+            this.Visit(methodCallExp.Arguments[1]);
+            _queryBuilder.Append(" AND ");
+            this.Visit(methodCallExp.Arguments[2]);
+        }
+
+        private void TranslateNotBetweenCondition(MethodCallExpression methodCallExp)
+        {
+            this.Visit(methodCallExp.Arguments[0]);
+            _queryBuilder.Append(" NOT BETWEEN ");
+            this.Visit(methodCallExp.Arguments[1]);
+            _queryBuilder.Append(" AND ");
+            this.Visit(methodCallExp.Arguments[2]);
+        }
+
+        private void TranslateExistsCondition(MethodCallExpression methodCallExp)
+        {
+            _queryBuilder.Append("EXISTS ");
+            this.Visit(methodCallExp.Arguments[1]);
+        }
+
+        private void TranslateNotExistsCondition(MethodCallExpression methodCallExp)
+        {
+            _queryBuilder.Append("NOT EXISTS ");
+            this.Visit(methodCallExp.Arguments[1]);
+        }
+
+        private void TranslateInCondition(MethodCallExpression methodCallExp)
+        {
+            _queryBuilder.Append("(");
+            this.Visit(methodCallExp.Arguments[0]);
+            _queryBuilder.Append(" IN (");
+            this.Visit(methodCallExp.Arguments[1]);
+            _queryBuilder.Append("))");
+        }
+
+        private void TranslateNotInCondition(MethodCallExpression methodCallExp)
+        {
+            _queryBuilder.Append("(");
+            this.Visit(methodCallExp.Arguments[0]);
+            _queryBuilder.Append(" NOT IN (");
+            this.Visit(methodCallExp.Arguments[1]);
+            _queryBuilder.Append("))");
+        }
+
+        private void TranslateIsNullCondition(MethodCallExpression methodCallExp)
+        {
+            if (methodCallExp.Arguments.Count == 1)
+            {
+                _queryBuilder.Append("(");
+                this.Visit(methodCallExp.Arguments[0]);
+                _queryBuilder.Append(" IS NULL");
+                _queryBuilder.Append(")");
+            }
+            else
+            {
+                _queryBuilder.Append("ISNULL(");
+                this.Visit(methodCallExp.Arguments[0]);
+                _queryBuilder.Append(", ");
+                this.Visit(methodCallExp.Arguments[1]);
+                _queryBuilder.Append(")");
+            }
+        }
+
+        private void TranslateIsNotNullCondition(MethodCallExpression methodCallExp)
+        {
+            _queryBuilder.Append("(");
+            this.Visit(methodCallExp.Arguments[0]);
+            _queryBuilder.Append(" IS NOT NULL");
+            _queryBuilder.Append(")");
         }
 
         private Expression VisitQueryOperationMethodCall(MethodCallExpression node)
@@ -1626,6 +1778,21 @@ namespace CSQLQueryExpress
                     valueExpression));
 
                 return node;
+            }
+            else if (_fragmentType == SQLQueryFragmentType.Where &&
+               node.NodeType == ExpressionType.Not &&
+               node.Operand.NodeType == ExpressionType.Call)
+            {
+                var methodCallExp = (MethodCallExpression)node.Operand;
+                var declaringType = methodCallExp.Method.DeclaringType;
+                if (declaringType == typeof(SQLQueryConditionExtension))
+                {
+                    return VisitQueryConditionNegationMethodCall(methodCallExp);
+                }
+                else if (declaringType == typeof(string))
+                {
+                    return VisitStringNegationMethodCall(methodCallExp);
+                }
             }
 
             return base.VisitUnary(node);

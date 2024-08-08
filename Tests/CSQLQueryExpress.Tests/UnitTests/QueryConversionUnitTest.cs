@@ -57,6 +57,22 @@ namespace CSQLQueryExpress.Tests.UnitTests
         }
 
         [Test]
+        public void TestPrecisionExpression()
+        {
+            var query = new SQLQuery()
+                 .From<dbo.Products>()
+                 .Where(c => c.UnitPrice != null)
+                 .Select(c => c.UnitPrice.Cast<decimal>(System.Data.SqlDbType.Decimal.Precision(18,2)));
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+            
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT CAST(_t0.[UnitPrice] AS DECIMAL(18, 2)) FROM [dbo].[Products] AS _t0 WHERE (_t0.[UnitPrice] IS NOT NULL)"));
+        }
+
+        [Test]
         public void TestConvertExpression()
         {
             var query = new SQLQuery()

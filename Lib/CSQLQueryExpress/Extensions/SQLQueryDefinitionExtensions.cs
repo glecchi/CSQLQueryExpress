@@ -9,6 +9,16 @@ namespace CSQLQueryExpress
             return default;
         }
 
+        public static SqlDbType Precision(this SqlDbType type, int precision)
+        {
+            return default;
+        }
+
+        public static SqlDbType Precision(this SqlDbType type, int precision, int scale)
+        {
+            return default;
+        }
+
         public static SqlDbType Max(this SqlDbType type)
         {
             return default;
