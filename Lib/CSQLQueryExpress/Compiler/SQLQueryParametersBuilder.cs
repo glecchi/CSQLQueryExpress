@@ -3,9 +3,9 @@ using System.Runtime;
 
 namespace CSQLQueryExpress
 {
-    internal class SQLQueryParametersBuilder : ISQLQueryParametersBuilder
+    public sealed class SQLQueryParametersBuilder : ISQLQueryParametersBuilder
     {
-        public IDictionary<string, SQLQueryParameter> Parameters { get; } = new Dictionary<string, SQLQueryParameter>();
+        IDictionary<string, SQLQueryParameter> ISQLQueryParametersBuilder.Parameters { get; } = new Dictionary<string, SQLQueryParameter>();
                 
         private readonly SQLQueryCompilerSettings _settings;
 
@@ -14,22 +14,22 @@ namespace CSQLQueryExpress
             _settings = settings;
         }
 
-        public void Initialize()
+        void ISQLQueryParametersBuilder.Initialize()
         {
-            Parameters.Clear();
+            ((ISQLQueryParametersBuilder)this).Parameters.Clear();
         }
 
-        public string AddParameter(object value)
+        string ISQLQueryParametersBuilder.AddParameter(object value)
         {
-            var parameterName = $"{_settings.QueryParameterPrefix}{Parameters.Count}";
-            Parameters.Add(parameterName, new SQLQueryParameter(parameterName, value));
+            var parameterName = $"{_settings.QueryParameterPrefix}{((ISQLQueryParametersBuilder)this).Parameters.Count}";
+            ((ISQLQueryParametersBuilder)this).Parameters.Add(parameterName, new SQLQueryParameter(parameterName, value));
             return parameterName;
         }
 
-        public string AddStoredProcedureParameter(string name, object value, SQLQueryParameterDirection direction)
+        string ISQLQueryParametersBuilder.AddStoredProcedureParameter(string name, object value, SQLQueryParameterDirection direction)
         {
             var parameterName = $"{_settings.StoredProcedureParameterPrefix}{name}";
-            Parameters.Add(parameterName, new SQLQueryParameter(parameterName, value, direction));
+            ((ISQLQueryParametersBuilder)this).Parameters.Add(parameterName, new SQLQueryParameter(parameterName, value, direction));
             return parameterName;
         }
     }

@@ -13,13 +13,14 @@ namespace CSQLQueryExpress
         /// <summary>
         /// Compile a <see cref="ISQLQuery"/> instance in a <see cref="SQLQueryCompiled"/>.
         /// </summary>
-        /// <param name="query">SQL query expression built with <see cref="SQLQuery"/>,</param>
+        /// <param name="query">SQL query expression built with <see cref="SQLQuery"/></param>
+        /// <param name="settings">[OPTIONAL] SQL query compiler setting <see cref="SQLQueryCompilerSettings"/></param>
         /// <returns>A compiled expression <see cref="SQLQueryCompiled"/>.</returns>
-        public static SQLQueryCompiled Compile(ISQLQuery query)
+        public static SQLQueryCompiled Compile(ISQLQuery query, SQLQueryCompilerSettings settings = null)
         {
-            var settings = new SQLQueryCompilerSettings();
-            var parameterBuilder = new SQLQueryParametersBuilder(settings);
-            var tableNameResolver = new SQLQueryTableNameResolver(settings);
+            var compilerSettings = settings ?? new SQLQueryCompilerSettings();
+            var parameterBuilder = new SQLQueryParametersBuilder(compilerSettings);
+            var tableNameResolver = new SQLQueryTableNameResolver(compilerSettings);
 
             return Compile(query, parameterBuilder, tableNameResolver);
         }

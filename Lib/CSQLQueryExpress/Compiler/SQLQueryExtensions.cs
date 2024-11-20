@@ -5,11 +5,12 @@
         /// <summary>
         /// Compile a <see cref="ISQLQuery"/> instance in a <see cref="SQLQueryCompiled"/>.
         /// </summary>
-        /// <param name="query">SQL query expression built with <see cref="SQLQuery"/>,</param>
+        /// <param name="query">SQL query expression built with <see cref="SQLQuery"/></param>
+        /// <param name="settings">[OPTIONAL] SQL query compiler setting <see cref="SQLQueryCompilerSettings"/></param>
         /// <returns>A compiled expression <see cref="SQLQueryCompiled"/>.</returns>
-        public static SQLQueryCompiled Compile(this ISQLQuery query)
+        public static SQLQueryCompiled Compile(this ISQLQuery query, SQLQueryCompilerSettings settings = null)
         {
-            return SQLQueryCompiler.Compile(query);
+            return SQLQueryCompiler.Compile(query, settings);
         }
 
         /// <summary>
