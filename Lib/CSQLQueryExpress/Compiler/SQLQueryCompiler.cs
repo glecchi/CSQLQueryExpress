@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
@@ -36,6 +37,9 @@ namespace CSQLQueryExpress
             ISQLQueryParametersBuilder parameterBuilder,
             ISQLQueryTableNameResolver tableNameResolver)
         {
+            parameterBuilder.Initialize();
+            tableNameResolver.Initialize();
+
             var translatedQuery = CompileQuery(query, parameterBuilder, tableNameResolver);
 
             return new SQLQueryCompiled(translatedQuery, new ReadOnlyCollection<SQLQueryParameter>(parameterBuilder.Parameters.Select(p => p.Value).ToList()));
@@ -46,10 +50,7 @@ namespace CSQLQueryExpress
             ISQLQueryParametersBuilder parameterBuilder,
             ISQLQueryTableNameResolver tableNameResolver)
         {
-            parameterBuilder.Initialize();
-            tableNameResolver.Initialize();
-
-            var cteList = query.Where(f => f.FragmentType == SQLQueryFragmentType.SelectCte).ToList();
+            var cteList = query.GetHierachicalSelectCte();
             if (cteList.Count > 1 && cteList.Select(t => t.GetType().GenericTypeArguments[0]).Distinct().Count() != cteList.Count)
             {
                 throw new NotSupportedException("Multiple declaration of CTE TABLEs for the same Entity is not supported.");
@@ -59,15 +60,22 @@ namespace CSQLQueryExpress
 
             var translatedQueryBuilder = new StringBuilder();
 
+            var cteFragmentsTranslated = new List<ISQLQueryFragment>();
+
             if (cteList.Count > 0)
             {
                 var idx = cteList.Count - 1;
                 foreach (var cte in cteList)
                 {
-                    var withTableFragments = (ISQLQuery)cte;
+                    var withTableFragments = cte;
 
                     foreach (var fragment in withTableFragments)
                     {
+                        if (cteFragmentsTranslated.Contains(fragment))
+                        {
+                            continue;
+                        }
+
                         if (translatedQueryBuilder.Length == 0)
                         {
                             translatedQueryBuilder.Append("WITH ");
@@ -78,6 +86,8 @@ namespace CSQLQueryExpress
                         }
 
                         translatedQueryBuilder.Append(fragment.Translate(queryExpressionTranslator));
+
+                        cteFragmentsTranslated.Add(fragment);
                     }
 
                     if (idx-- > 0)
@@ -91,7 +101,7 @@ namespace CSQLQueryExpress
                 }
             }
 
-            var allFragments = query.Where(f => cteList.Count == 0 || !cteList.Contains(f));
+            var allFragments = query.Where(f => cteFragmentsTranslated.Count == 0 || !cteFragmentsTranslated.Contains(f));
 
             foreach (var fragment in allFragments)
             {

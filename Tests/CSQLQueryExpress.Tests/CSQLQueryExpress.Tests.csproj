@@ -78,6 +78,9 @@
     <None Update="UnitTests\JoinStatements\TestInnerJoin.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="UnitTests\SelectStatements\TestStatement11.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="UnitTests\SelectStatements\TestStatement2.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

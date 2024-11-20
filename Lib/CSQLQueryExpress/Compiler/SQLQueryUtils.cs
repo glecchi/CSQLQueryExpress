@@ -31,6 +31,34 @@ namespace CSQLQueryExpress
             return false;
         }
 
+        public static IList<ISQLQuery> GetHierachicalSelectCte(this ISQLQuery query)
+        {
+            var selectCteList = new List<ISQLQuery>();
+
+            ExtractHierachicalSelectCte(query, selectCteList);
+
+            return selectCteList;
+        }
+
+        private static void ExtractHierachicalSelectCte(ISQLQuery query, IList<ISQLQuery> selectCteList)
+        {
+            foreach (var fragment in query)
+            {
+                if (fragment.FragmentType == SQLQueryFragmentType.FromBySelect ||
+                    fragment.FragmentType == SQLQueryFragmentType.JoinBySelect)
+                {
+                    var hSelect = ((ISQLQueryFragmentFromSelect)fragment).FromSelect;
+
+                    ExtractHierachicalSelectCte(hSelect, selectCteList);
+
+                    if (hSelect.FragmentType == SQLQueryFragmentType.SelectCte)
+                    {
+                        selectCteList.Add(hSelect);
+                    }
+                }
+            }
+        }
+
         public static T[] Merge<T>(this T first, T second, params T[] others)
         {
             var list = new List<T>

@@ -214,11 +214,6 @@ namespace CSQLQueryExpress.Fragments
 
         public SQLQuerySelect<T> ToCteTable()
         {
-            if (_fragments.Any(f => f.FragmentType == SQLQueryFragmentType.SelectCte))
-            {
-                throw new NotSupportedException("CTE TABLE declaration FROM CTE TABLE is not supported.");
-            }
-
             _useCte = true;
             return this;
         }

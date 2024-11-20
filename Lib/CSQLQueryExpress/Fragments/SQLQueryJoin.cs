@@ -41,11 +41,6 @@ namespace CSQLQueryExpress.Fragments
             _type = type;
             _select = select;
 
-            if (select != null && select.IsHierarchicalSelectFromCte())
-            {
-                throw new NotSupportedException("Hierachical select queries from CTE TABLE is not supported.");
-            }
-
             if ((_joinType == SQLQueryJoinType.CrossApply || _joinType == SQLQueryJoinType.OuterApply) && 
                 (_select == null || _select.FragmentType == SQLQueryFragmentType.SelectCte))
             {
