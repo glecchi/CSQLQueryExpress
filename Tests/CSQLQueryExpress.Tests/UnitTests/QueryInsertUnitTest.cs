@@ -1,4 +1,6 @@
-﻿using QueryExecution.Dal.NorthwindPubs;
+﻿using NUnit.Framework.Internal;
+using QueryExecution.Dal.NorthwindPubs;
+using System.Numerics;
 
 namespace CSQLQueryExpress.Tests.UnitTests
 {
@@ -69,6 +71,25 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"INSERT INTO [dbo].[Shippers] ([CompanyName], [Phone]) SELECT _t0.[CompanyName], _t0.[Phone] FROM [dbo].[Shippers] AS _t0 WHERE (_t0.[CompanyName] = @p0)"));
+        }
+
+        [Test]
+        public void TestInsertFromSelect()
+        {
+            var selectQuery = new SQLQuery()
+                .From<dbo.Customers>()
+                .Select(s => s.CompanyName, s => "Ciao");
+
+            var query = new SQLQuery()
+                .Insert<dbo.Shippers>(selectQuery, s => s.CompanyName, s => s.Phone);
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("Ciao"));
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"INSERT INTO [dbo].[Shippers] ([CompanyName], [Phone]) SELECT _t1.[CompanyName], @p0 FROM [dbo].[Customers] AS _t1"));
         }
 
         [Test]
