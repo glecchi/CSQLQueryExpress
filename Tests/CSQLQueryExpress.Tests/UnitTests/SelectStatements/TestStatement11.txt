@@ -1,0 +1,19 @@
+﻿WITH _t0 AS 
+(
+SELECT 
+_t0.* 
+FROM [dbo].[Categories] AS _t0
+), 
+_t1 AS 
+(
+SELECT 
+_t1.* 
+FROM [dbo].[Products] AS _t1 
+INNER JOIN _t0 ON (_t1.[CategoryID] = _t0.[CategoryID]) 
+WHERE (_t1.[SupplierID] IS NOT NULL)
+)
+ 
+SELECT 
+_t2.* 
+FROM [dbo].[Suppliers] AS _t2 
+INNER JOIN _t1 ON (_t2.[SupplierID] = _t1.[SupplierID])
