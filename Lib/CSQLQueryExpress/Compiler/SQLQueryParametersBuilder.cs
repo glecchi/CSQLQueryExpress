@@ -2,23 +2,29 @@
 
 namespace CSQLQueryExpress
 {
-    internal class SQLQueryParametersBuilder : ISQLQueryParametersBuilder
+    public sealed class SQLQueryParametersBuilder : ISQLQueryParametersBuilder
     {
-        public IDictionary<string, SQLQueryParameter> Parameters { get; } = new Dictionary<string, SQLQueryParameter>();
+        IDictionary<string, SQLQueryParameter> ISQLQueryParametersBuilder.Parameters { get; } = new Dictionary<string, SQLQueryParameter>();
 
-        public string AddParameter(object value)
+        private readonly string _parameterPrefix;
+
+        public SQLQueryParametersBuilder(string parameterPrefix = "@")
         {
-            var parameterName = $"@p{Parameters.Count}";
-            Parameters.Add(parameterName, new SQLQueryParameter(parameterName, value));
+            _parameterPrefix = parameterPrefix;
+        }
+
+        string ISQLQueryParametersBuilder.AddParameter(object value)
+        {
+            var parameterName = $"{_parameterPrefix}p{((ISQLQueryParametersBuilder)this).Parameters.Count}";
+            ((ISQLQueryParametersBuilder)this).Parameters.Add(parameterName, new SQLQueryParameter(parameterName, value));
             return parameterName;
         }
 
-        public string AddStoredProcedureParameter(string name, object value, SQLQueryParameterDirection direction)
+        string ISQLQueryParametersBuilder.AddStoredProcedureParameter(string name, object value, SQLQueryParameterDirection direction)
         {
-            var parameterName = $"@{name}";
-            Parameters.Add(parameterName, new SQLQueryParameter(parameterName, value, direction));
+            var parameterName = $"{_parameterPrefix}{name}";
+            ((ISQLQueryParametersBuilder)this).Parameters.Add(parameterName, new SQLQueryParameter(parameterName, value, direction));
             return parameterName;
-        }
-
+        }        
     }
 }

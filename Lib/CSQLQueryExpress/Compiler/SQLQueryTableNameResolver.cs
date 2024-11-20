@@ -6,13 +6,13 @@ using System.Reflection;
 
 namespace CSQLQueryExpress
 {
-    internal class SQLQueryTableNameResolver : ISQLQueryTableNameResolver
+    public sealed class SQLQueryTableNameResolver : ISQLQueryTableNameResolver
     {
         private IDictionary<Type, SQLQueryTableName> Alias { get; } = new Dictionary<Type, SQLQueryTableName>();
 
         private IDictionary<Type, IDictionary<MemberInfo, string>> MembersTypes { get; } = new Dictionary<Type, IDictionary<MemberInfo, string>>();
 
-        public SQLQueryTableName ResolveTableName(Type objType)
+        SQLQueryTableName ISQLQueryTableNameResolver.ResolveTableName(Type objType)
         {
             if (!Alias.TryGetValue(objType, out SQLQueryTableName alias))
             {
@@ -46,14 +46,14 @@ namespace CSQLQueryExpress
             return alias;
         }
 
-        public string ResolveTableNameAsAlias(Type objType)
+        string ISQLQueryTableNameResolver.ResolveTableNameAsAlias(Type objType)
         {
-            var tableAlias = ResolveTableName(objType);
+            var tableAlias = ((ISQLQueryTableNameResolver)this).ResolveTableName(objType);
 
             return $"{tableAlias.TableName} AS {tableAlias.TableAlias}";
         }
 
-        public string ResolveColumnName(Type objType, MemberInfo member)
+        string ISQLQueryTableNameResolver.ResolveColumnName(Type objType, MemberInfo member)
         {
             if (!MembersTypes.TryGetValue(member.DeclaringType, out IDictionary<MemberInfo, string> members))
             {

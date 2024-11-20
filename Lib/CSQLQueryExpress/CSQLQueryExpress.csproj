@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Title>CSQLQueryExpress</Title>
-    <Version>1.3.5</Version>
+    <Version>1.3.6</Version>
     <Description>A simple c# library to compile TSQL queries</Description>
     <PackageProjectUrl></PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
