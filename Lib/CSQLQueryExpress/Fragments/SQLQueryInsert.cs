@@ -14,6 +14,7 @@ namespace CSQLQueryExpress.Fragments
         private readonly List<string> _tableColumns;
         private readonly IDictionary<string, Expression> _insertParameters;
         private readonly IDictionary<string, object> _insertProperties;
+        private readonly Expression[] _insertColumns;
 
         internal SQLQueryInsert(IList<ISQLQueryFragment> fragments, SQLQuerySelect select)
         {
@@ -73,6 +74,21 @@ namespace CSQLQueryExpress.Fragments
             AddSqlQueryInsertParameters();
         }
 
+        internal SQLQueryInsert(IList<ISQLQueryFragment> fragments, SQLQuerySelect select, Expression<Func<T, object>>[] columns)
+        {
+            _fragments = fragments;
+
+            _select = select;
+
+            _insertColumns = columns;
+
+            _tableColumns = GetTableColumns();
+
+            _fragments.Add(this);
+
+            AddSqlQueryInsertSelect();
+        }
+
         public SQLQueryFragmentType FragmentType { get { return SQLQueryFragmentType.Insert; } }
 
         public SQLQueryOutput<TS> Output<TS>(Expression<Func<T, TS>> output)
@@ -119,6 +135,10 @@ namespace CSQLQueryExpress.Fragments
             {
                 insertBuilder.Append($"{Environment.NewLine}({string.Join(", ", _tableColumns.Where(c => _insertParameters.ContainsKey(c)).Select(c => $"[{c}]"))})");
             }
+            else if (_insertColumns != null)
+            {
+                insertBuilder.Append($"{Environment.NewLine}({string.Join(", ", _insertColumns.Select(u => expressionTranslator.GetColumnsWithoutTableAlias(expressionTranslator.Translate(u, FragmentType))))})");
+            }
             else
             {
                 insertBuilder.Append($"{Environment.NewLine}({string.Join(", ", _select.Select.Select(u => expressionTranslator.GetColumnsWithoutTableAlias(expressionTranslator.Translate(u, FragmentType))))})");
@@ -164,7 +184,7 @@ namespace CSQLQueryExpress.Fragments
         }
     }
 
-    public class SQLQueryInsertValues : ISQLQueryFragment
+    internal class SQLQueryInsertValues : ISQLQueryFragment
     {
         private readonly List<string> _tableColumns;
         private readonly IDictionary<string, object> _insertProperties;
@@ -192,7 +212,7 @@ namespace CSQLQueryExpress.Fragments
         }
     }
 
-    public class SQLQueryInsertValuesFromSelect<T> : ISQLQueryFragment
+    internal class SQLQueryInsertValuesFromSelect<T> : ISQLQueryFragment
     {
         private readonly SQLQuerySelect _select;
 
@@ -224,7 +244,7 @@ namespace CSQLQueryExpress.Fragments
         }
     }
 
-    public class SQLQueryInsertParameters<T> : ISQLQueryFragment
+    internal class SQLQueryInsertParameters<T> : ISQLQueryFragment
     {
         private readonly List<string> _tableColumns;
         private IDictionary<string, Expression> _insertParameters;

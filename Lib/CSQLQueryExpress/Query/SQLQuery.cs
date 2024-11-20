@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using CSQLQueryExpress.Fragments;
 
 namespace CSQLQueryExpress
@@ -36,6 +38,11 @@ namespace CSQLQueryExpress
         public SQLQueryInsert<T> Insert<T>(IDictionary<string, object> insert) where T : ISQLQueryEntity
         {
             return new SQLQueryInsert<T>(InitNewFragmentsList(), insert);
+        }
+
+        public SQLQueryInsert<T> Insert<T>(SQLQuerySelect select, params Expression<Func<T, object>>[] columns) where T : ISQLQueryEntity
+        {
+            return new SQLQueryInsert<T>(InitNewFragmentsList(), select, columns);
         }
 
         public SQLQueryUnion<T> Union<T>(SQLQuerySelect<T> firstSelect, SQLQuerySelect<T> secondSelect, params SQLQuerySelect<T>[] otherSelect)
