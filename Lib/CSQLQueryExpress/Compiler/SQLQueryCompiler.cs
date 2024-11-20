@@ -21,9 +21,6 @@ namespace CSQLQueryExpress
             var parameterBuilder = new SQLQueryParametersBuilder(settings);
             var tableNameResolver = new SQLQueryTableNameResolver(settings);
 
-            parameterBuilder.Initialize();
-            tableNameResolver.Initialize();
-
             return Compile(query, parameterBuilder, tableNameResolver);
         }
 
@@ -38,9 +35,6 @@ namespace CSQLQueryExpress
             ISQLQueryParametersBuilder parameterBuilder,
             ISQLQueryTableNameResolver tableNameResolver)
         {
-            parameterBuilder.Initialize();
-            tableNameResolver.Initialize();
-
             var translatedQuery = CompileQuery(query, parameterBuilder, tableNameResolver);
 
             return new SQLQueryCompiled(translatedQuery, new ReadOnlyCollection<SQLQueryParameter>(parameterBuilder.Parameters.Select(p => p.Value).ToList()));
@@ -51,6 +45,9 @@ namespace CSQLQueryExpress
             ISQLQueryParametersBuilder parameterBuilder,
             ISQLQueryTableNameResolver tableNameResolver)
         {
+            parameterBuilder.Initialize();
+            tableNameResolver.Initialize();
+
             var cteList = query.Where(f => f.FragmentType == SQLQueryFragmentType.SelectCte).ToList();
             if (cteList.Count > 1 && cteList.Select(t => t.GetType().GenericTypeArguments[0]).Distinct().Count() != cteList.Count)
             {
