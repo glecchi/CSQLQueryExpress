@@ -6,13 +6,26 @@ using System.Reflection;
 
 namespace CSQLQueryExpress
 {
-    public sealed class SQLQueryTableNameResolver : ISQLQueryTableNameResolver
+    internal class SQLQueryTableNameResolver : ISQLQueryTableNameResolver
     {
+        private readonly SQLQueryCompilerSettings _settings;
+
         private IDictionary<Type, SQLQueryTableName> Alias { get; } = new Dictionary<Type, SQLQueryTableName>();
 
         private IDictionary<Type, IDictionary<MemberInfo, string>> MembersTypes { get; } = new Dictionary<Type, IDictionary<MemberInfo, string>>();
 
-        SQLQueryTableName ISQLQueryTableNameResolver.ResolveTableName(Type objType)
+        public SQLQueryTableNameResolver(SQLQueryCompilerSettings settings)
+        {
+            _settings = settings;
+        }
+
+        public void Initialize()
+        {
+            Alias.Clear();
+            MembersTypes.Clear();
+        }
+
+        public SQLQueryTableName ResolveTableName(Type objType)
         {
             if (!Alias.TryGetValue(objType, out SQLQueryTableName alias))
             {
@@ -36,7 +49,7 @@ namespace CSQLQueryExpress
                     tableName = $"[dbo].[{objType.Name}]";
                 }
 
-                var tableAlias = $"_t{Alias.Count}";
+                var tableAlias = $"{_settings.TableAliasPrefix}{Alias.Count}";
 
                 alias = new SQLQueryTableName(tableName, tableAlias);
                 Alias.Add(objType, alias);
@@ -46,14 +59,14 @@ namespace CSQLQueryExpress
             return alias;
         }
 
-        string ISQLQueryTableNameResolver.ResolveTableNameAsAlias(Type objType)
+        public string ResolveTableNameAsAlias(Type objType)
         {
-            var tableAlias = ((ISQLQueryTableNameResolver)this).ResolveTableName(objType);
+            var tableAlias = ResolveTableName(objType);
 
             return $"{tableAlias.TableName} AS {tableAlias.TableAlias}";
         }
 
-        string ISQLQueryTableNameResolver.ResolveColumnName(Type objType, MemberInfo member)
+        public string ResolveColumnName(Type objType, MemberInfo member)
         {
             if (!MembersTypes.TryGetValue(member.DeclaringType, out IDictionary<MemberInfo, string> members))
             {

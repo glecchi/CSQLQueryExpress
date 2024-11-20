@@ -1,30 +1,36 @@
 ﻿using System.Collections.Generic;
+using System.Runtime;
 
 namespace CSQLQueryExpress
 {
-    public sealed class SQLQueryParametersBuilder : ISQLQueryParametersBuilder
+    internal class SQLQueryParametersBuilder : ISQLQueryParametersBuilder
     {
-        IDictionary<string, SQLQueryParameter> ISQLQueryParametersBuilder.Parameters { get; } = new Dictionary<string, SQLQueryParameter>();
+        public IDictionary<string, SQLQueryParameter> Parameters { get; } = new Dictionary<string, SQLQueryParameter>();
+                
+        private readonly SQLQueryCompilerSettings _settings;
 
-        private readonly string _parameterPrefix;
-
-        public SQLQueryParametersBuilder(string parameterPrefix = "@")
+        public SQLQueryParametersBuilder(SQLQueryCompilerSettings settings)
         {
-            _parameterPrefix = parameterPrefix;
+            _settings = settings;
         }
 
-        string ISQLQueryParametersBuilder.AddParameter(object value)
+        public void Initialize()
         {
-            var parameterName = $"{_parameterPrefix}p{((ISQLQueryParametersBuilder)this).Parameters.Count}";
-            ((ISQLQueryParametersBuilder)this).Parameters.Add(parameterName, new SQLQueryParameter(parameterName, value));
+            Parameters.Clear();
+        }
+
+        public string AddParameter(object value)
+        {
+            var parameterName = $"{_settings.QueryParameterPrefix}{Parameters.Count}";
+            Parameters.Add(parameterName, new SQLQueryParameter(parameterName, value));
             return parameterName;
         }
 
-        string ISQLQueryParametersBuilder.AddStoredProcedureParameter(string name, object value, SQLQueryParameterDirection direction)
+        public string AddStoredProcedureParameter(string name, object value, SQLQueryParameterDirection direction)
         {
-            var parameterName = $"{_parameterPrefix}{name}";
-            ((ISQLQueryParametersBuilder)this).Parameters.Add(parameterName, new SQLQueryParameter(parameterName, value, direction));
+            var parameterName = $"{_settings.StoredProcedureParameterPrefix}{name}";
+            Parameters.Add(parameterName, new SQLQueryParameter(parameterName, value, direction));
             return parameterName;
-        }        
+        }
     }
 }

@@ -9,5 +9,7 @@ namespace CSQLQueryExpress
         string AddParameter(object value);
 
         string AddStoredProcedureParameter(string name, object value, SQLQueryParameterDirection direction);
+
+        void Initialize();
     }
 }

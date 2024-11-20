@@ -16,10 +16,14 @@ namespace CSQLQueryExpress
         /// <param name="query">SQL query expression built with <see cref="SQLQuery"/>,</param>
         /// <returns>A compiled expression <see cref="SQLQueryCompiled"/>.</returns>
         public static SQLQueryCompiled Compile(ISQLQuery query)
-        {            
-            var parameterBuilder = new SQLQueryParametersBuilder();
-            var tableNameResolver = new SQLQueryTableNameResolver();
-            
+        {
+            var settings = new SQLQueryCompilerSettings();
+            var parameterBuilder = new SQLQueryParametersBuilder(settings);
+            var tableNameResolver = new SQLQueryTableNameResolver(settings);
+
+            parameterBuilder.Initialize();
+            tableNameResolver.Initialize();
+
             return Compile(query, parameterBuilder, tableNameResolver);
         }
 
@@ -34,6 +38,9 @@ namespace CSQLQueryExpress
             ISQLQueryParametersBuilder parameterBuilder,
             ISQLQueryTableNameResolver tableNameResolver)
         {
+            parameterBuilder.Initialize();
+            tableNameResolver.Initialize();
+
             var translatedQuery = CompileQuery(query, parameterBuilder, tableNameResolver);
 
             return new SQLQueryCompiled(translatedQuery, new ReadOnlyCollection<SQLQueryParameter>(parameterBuilder.Parameters.Select(p => p.Value).ToList()));
