@@ -63,8 +63,14 @@ namespace CSQLQueryExpress
         
         public string GetColumnsWithoutTableAlias(string column)
         {
-            var tableAlias = _matchColumnOnly.Match(column).Groups[0].Value;
-            return column.Replace(tableAlias, string.Empty);
+            var match = _matchColumnOnly.Match(column);
+            if (match.Success)
+            {
+                var tableAlias = match.Groups[0].Value;
+                return column.Replace(tableAlias, string.Empty);
+            }
+
+            return column;
         }
 
         private bool _memberExpressionFromBinaryExpression;
