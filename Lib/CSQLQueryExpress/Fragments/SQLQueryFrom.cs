@@ -168,7 +168,7 @@ namespace CSQLQueryExpress.Fragments
 
             if (_select != null)
             {
-                if (_fragments.All(f => f.FragmentType != SQLQueryFragmentType.Insert))
+                if (_fragments.All(f => f.FragmentType != SQLQueryFragmentType.Insert && f.FragmentType != SQLQueryFragmentType.InsertBySelect))
                 {
                     if (_select.FragmentType == SQLQueryFragmentType.SelectCte)
                     {
@@ -180,7 +180,7 @@ namespace CSQLQueryExpress.Fragments
                     }
                 }
             }
-            else if (_fragments.All(f => f.FragmentType != SQLQueryFragmentType.Insert && f.FragmentType != SQLQueryFragmentType.Update))
+            else if (_fragments.All(f => f.FragmentType != SQLQueryFragmentType.Insert && f.FragmentType != SQLQueryFragmentType.InsertBySelect && f.FragmentType != SQLQueryFragmentType.Update))
             {
                 if (_fragments.Any(f => f.FragmentType == SQLQueryFragmentType.Select || f.FragmentType == SQLQueryFragmentType.SelectCte))
                 {

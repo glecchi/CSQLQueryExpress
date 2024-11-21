@@ -38,6 +38,7 @@ namespace CSQLQueryExpress
         private static void AddFragmentOrders(IDictionary<SQLQueryFragmentType, IDictionary<SQLQueryFragmentType, int>> order)
         {
             order.Add(SQLQueryFragmentType.Insert, GetInsertOrder());
+            order.Add(SQLQueryFragmentType.InsertBySelect, GetDefaultOrder());
             order.Add(SQLQueryFragmentType.Delete, GetDeleteOrder());
             order.Add(SQLQueryFragmentType.Update, GetUpdateOrder());
             order.Add(SQLQueryFragmentType.Truncate, GetTruncateOrder());

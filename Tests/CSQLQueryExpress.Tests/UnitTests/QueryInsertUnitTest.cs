@@ -93,6 +93,26 @@ namespace CSQLQueryExpress.Tests.UnitTests
         }
 
         [Test]
+        public void TestInsertFromSelectCte()
+        {
+            var selectQuery = new SQLQuery()
+                .From<dbo.Customers>()
+                .Select(s => s.CompanyName, s => "Ciao".As(s.Phone))
+                .ToCteTable();
+
+            var query = new SQLQuery()
+                .Insert<dbo.Shippers>(selectQuery, s => s.CompanyName, s => s.Phone);
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("Ciao"));
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"WITH _t0 AS (SELECT _t0.[CompanyName], @p0 AS [Phone] FROM [dbo].[Customers] AS _t0) INSERT INTO [dbo].[Shippers] ([CompanyName], [Phone]) SELECT _t0.[CompanyName], _t0.[Phone] FROM _t1"));
+        }
+
+        [Test]
         public void TestInsertParameters()
         {
             var lastIDQuery = new SQLQuery()

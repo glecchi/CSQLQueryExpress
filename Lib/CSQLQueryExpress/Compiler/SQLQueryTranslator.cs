@@ -823,17 +823,25 @@ namespace CSQLQueryExpress
             }
             else if (node.Method.Name == nameof(SQLQuerySelectionExtension.As))
             {
-                this.Visit(node.Arguments[0]);
-                _queryBuilder.Append(" AS ");
-                if (node.Arguments[1] is MemberExpression memberExp)
+                if (_fragmentType == SQLQueryFragmentType.InsertValues &&
+                    node.Arguments.Count == 2)
                 {
-                    _queryBuilder.Append(_aliasBuilder.ResolveColumnName(memberExp.Type, memberExp.Member));
+                    this.Visit(node.Arguments[1]);
                 }
                 else
                 {
-                    var unaryExp = (UnaryExpression)node.Arguments[1];
-                    var opMemberExp = (MemberExpression)unaryExp.Operand;
-                    _queryBuilder.Append(_aliasBuilder.ResolveColumnName(opMemberExp.Type, opMemberExp.Member));
+                    this.Visit(node.Arguments[0]);
+                    _queryBuilder.Append(" AS ");
+                    if (node.Arguments[1] is MemberExpression memberExp)
+                    {
+                        _queryBuilder.Append(_aliasBuilder.ResolveColumnName(memberExp.Type, memberExp.Member));
+                    }
+                    else
+                    {
+                        var unaryExp = (UnaryExpression)node.Arguments[1];
+                        var opMemberExp = (MemberExpression)unaryExp.Operand;
+                        _queryBuilder.Append(_aliasBuilder.ResolveColumnName(opMemberExp.Type, opMemberExp.Member));
+                    }
                 }
 
                 return node;
