@@ -7,7 +7,7 @@ using System.Text;
 
 namespace CSQLQueryExpress.Fragments
 {
-    public class SQLQueryInsert<T> : ISQLQueryFragment, ISQLQuery, ISQLQueryWithOutput<T> where T : ISQLQueryEntity
+    public class SQLQueryInsert<T> : ISQLQueryFragment, ISQLQuery, ISQLQueryFragmentFromSelect, ISQLQueryWithOutput<T> where T : ISQLQueryEntity
     {
         private readonly IList<ISQLQueryFragment> _fragments;
         private readonly SQLQuerySelect _select;
@@ -89,7 +89,9 @@ namespace CSQLQueryExpress.Fragments
             AddSqlQueryInsertSelect();
         }
 
-        public SQLQueryFragmentType FragmentType { get { return SQLQueryFragmentType.Insert; } }
+        public SQLQuerySelect FromSelect { get { return _select; } }
+
+        public SQLQueryFragmentType FragmentType { get { return _select != null ? SQLQueryFragmentType.InsertBySelect : SQLQueryFragmentType.Insert; } }
 
         public SQLQueryOutput<TS> Output<TS>(Expression<Func<T, TS>> output)
         {

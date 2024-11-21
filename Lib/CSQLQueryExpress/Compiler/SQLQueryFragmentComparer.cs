@@ -58,6 +58,7 @@ namespace CSQLQueryExpress
             var fragmentsOrder = new Dictionary<SQLQueryFragmentType, int>
             {
                 { SQLQueryFragmentType.Insert, 0 },
+                { SQLQueryFragmentType.InsertBySelect, 0 },
                 { SQLQueryFragmentType.Output, 2 },
                 { SQLQueryFragmentType.InsertValues, 3 },
                 { SQLQueryFragmentType.Select, 3 },
@@ -170,6 +171,7 @@ namespace CSQLQueryExpress
             var fragmentOrder = new Dictionary<SQLQueryFragmentType, int>
             {
                 { SQLQueryFragmentType.Insert, 0 },
+                { SQLQueryFragmentType.InsertBySelect, 0 },
                 { SQLQueryFragmentType.InsertValues, 1 },
                 { SQLQueryFragmentType.Delete, 0 },
                 { SQLQueryFragmentType.Update, 0 },

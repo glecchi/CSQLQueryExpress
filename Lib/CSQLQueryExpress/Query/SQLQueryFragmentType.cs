@@ -4,6 +4,7 @@
     {
         Insert,
         InsertValues,
+        InsertBySelect,
         Delete,
         Update,
         Truncate,

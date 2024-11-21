@@ -14,7 +14,8 @@ namespace CSQLQueryExpress
             foreach (var fragment in query)
             {
                 if (fragment.FragmentType == SQLQueryFragmentType.FromBySelect ||
-                    fragment.FragmentType == SQLQueryFragmentType.JoinBySelect)
+                    fragment.FragmentType == SQLQueryFragmentType.JoinBySelect ||
+                    fragment.FragmentType == SQLQueryFragmentType.InsertBySelect)
                 {
                     var hSelect = ((ISQLQueryFragmentFromSelect)fragment).FromSelect;
                     if (hSelect.FragmentType == SQLQueryFragmentType.Select)
@@ -45,7 +46,8 @@ namespace CSQLQueryExpress
             foreach (var fragment in query)
             {
                 if (fragment.FragmentType == SQLQueryFragmentType.FromBySelect ||
-                    fragment.FragmentType == SQLQueryFragmentType.JoinBySelect)
+                    fragment.FragmentType == SQLQueryFragmentType.JoinBySelect ||
+                    fragment.FragmentType == SQLQueryFragmentType.InsertBySelect)
                 {
                     var hSelect = ((ISQLQueryFragmentFromSelect)fragment).FromSelect;
 
