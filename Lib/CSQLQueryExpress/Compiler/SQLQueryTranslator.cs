@@ -356,6 +356,12 @@ namespace CSQLQueryExpress
 
                 return node;
             }
+            else if (node.Method.Name == nameof(Sys.NewID))
+            {
+                _queryBuilder.Append($"NEWID()");
+
+                return node;
+            }
 
             throw new NotSupportedException(string.Format("The method '{0}' is not supported.", node.Method.Name));
         }

@@ -361,6 +361,25 @@ namespace CSQLQueryExpress.Tests.UnitTests
             Assert.DoesNotThrow(() => queryCommand.ToList());
         }
 
+        [Test]
+        public void TestStatement12()
+        {
+            var query = new SQLQuery()
+                .From<dbo.Products>()
+                .Select(p => Sys.NewID(), p => p.ProductID, p => p.ProductName);
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(0));
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"SELECT NEWID(), _t0.[ProductID], _t0.[ProductName] FROM [dbo].[Products] AS _t0"));
+
+            var queryCommand = new SQLQueryCommandReader(ConnectionString, compiledQuery);
+
+            Assert.DoesNotThrow(() => queryCommand.ToList());
+        }
+
         private string GetSQLStatement([CallerMemberName] string memeberName = null)
         {
             var statement = File.ReadAllText($@"UnitTests\SelectStatements\{memeberName}.txt");

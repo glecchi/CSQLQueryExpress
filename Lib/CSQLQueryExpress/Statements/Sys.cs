@@ -53,5 +53,10 @@ namespace CSQLQueryExpress
         {
             return default;
         }
+
+        public static Guid NewID()
+        {
+            return default;
+        }
     }
 }
