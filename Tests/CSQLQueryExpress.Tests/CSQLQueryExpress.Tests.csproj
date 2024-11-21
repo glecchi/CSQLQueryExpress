@@ -57,6 +57,9 @@
     <None Update="UnitTests\DatePartStatements\TestDatePartWithDateNullable.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="UnitTests\InsertStatements\TestInsertFromHyerarchicalSelectCte.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="UnitTests\MultipleResultSetsStatements\TestMultipleResultSets.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

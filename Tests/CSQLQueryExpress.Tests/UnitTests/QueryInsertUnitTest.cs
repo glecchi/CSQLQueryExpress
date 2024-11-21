@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework.Internal;
 using QueryExecution.Dal.NorthwindPubs;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace CSQLQueryExpress.Tests.UnitTests
 {
@@ -146,8 +147,9 @@ namespace CSQLQueryExpress.Tests.UnitTests
             Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
             Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("Ciao"));
 
-            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
-                Is.EqualTo(@"WITH _t0 AS (SELECT _t0.[CompanyName], @p0 AS [Phone] FROM [dbo].[Customers] AS _t0) INSERT INTO [dbo].[Shippers] ([CompanyName], [Phone]) SELECT _t0.[CompanyName], _t0.[Phone] FROM _t1"));
+            var statement = GetSQLStatement();
+
+            Assert.That(compiledQuery.Statement, Is.EqualTo(statement));
         }
 
         [Test]
@@ -171,6 +173,13 @@ namespace CSQLQueryExpress.Tests.UnitTests
 
             Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
                 Is.EqualTo(@"INSERT INTO [dbo].[Region] ([RegionID], [RegionDescription]) VALUES (((SELECT MAX(_t0.[RegionID]) FROM [dbo].[Region] AS _t0) + @p0), @p1)"));
+        }
+
+        private string GetSQLStatement([CallerMemberName] string memeberName = null)
+        {
+            var statement = File.ReadAllText($@"UnitTests\InsertStatements\{memeberName}.txt");
+
+            return statement;
         }
     }
 }
