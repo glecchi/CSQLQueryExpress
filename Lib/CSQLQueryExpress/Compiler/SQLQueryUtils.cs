@@ -53,7 +53,8 @@ namespace CSQLQueryExpress
 
                     ExtractHierachicalSelectCte(hSelect, selectCteList);
 
-                    if (hSelect.FragmentType == SQLQueryFragmentType.SelectCte)
+                    if (hSelect.FragmentType == SQLQueryFragmentType.SelectCte &&
+                        !selectCteList.Contains(hSelect))
                     {
                         selectCteList.Add(hSelect);
                     }

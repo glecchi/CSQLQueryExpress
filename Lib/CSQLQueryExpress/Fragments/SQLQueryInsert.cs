@@ -239,7 +239,9 @@ namespace CSQLQueryExpress.Fragments
             }
             else
             {
-                selectBuilder.Append(string.Join($"{Environment.NewLine} ", _select.Select(s => s.Translate(expressionTranslator))));
+                var cteFragments = _select.GetHierachicalSelectCte();
+
+                selectBuilder.Append(string.Join($"{Environment.NewLine} ", _select.Where(f => !(f is ISQLQuery fSQLQuery) || !cteFragments.Contains(fSQLQuery)).Select(s => s.Translate(expressionTranslator))));
             }
 
             return selectBuilder.ToString();

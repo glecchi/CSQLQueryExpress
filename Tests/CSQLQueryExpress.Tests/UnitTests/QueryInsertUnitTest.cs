@@ -113,6 +113,44 @@ namespace CSQLQueryExpress.Tests.UnitTests
         }
 
         [Test]
+        public void TestInsertFromHyerarchicalSelectCte()
+        {
+            var selectCustomersCte = new SQLQuery()
+                .From<dbo.Customers>()
+                .Select(s => s.CompanyName, s => "Ciao".As(s.Phone))
+                .ToCteTable();
+
+            var selectCompanyCte = new SQLQuery()
+                .From<dbo.Suppliers>()
+                .InnerJoin(selectCustomersCte, (s, c) => s.CompanyName == c.CompanyName)
+                .Select((s, c) => s.All())
+                .ToCteTable();
+
+            var selectShippersCte = new SQLQuery()
+                .From<dbo.Shippers>()
+                .InnerJoin(selectCustomersCte, (s, c) => s.CompanyName == c.CompanyName)
+                .Select((s, c) => s.All())
+                .ToCteTable();
+
+            var selectInsert = new SQLQuery()
+                .From(selectCustomersCte)
+                .InnerJoin(selectCompanyCte, (c, cm) => c.CompanyName == cm.CompanyName)
+                .InnerJoin(selectShippersCte, (c, cm, s) => s.CompanyName == cm.CompanyName)
+                .Select((c, cm, s) => s.All());
+
+            var query = new SQLQuery()
+                .Insert<dbo.Shippers>(selectInsert, s => s.CompanyName, s => s.Phone);
+
+            var compiledQuery = query.Compile();
+
+            Assert.That(compiledQuery.Parameters.Count, Is.EqualTo(1));
+            Assert.That(compiledQuery.Parameters[0].Value, Is.EqualTo("Ciao"));
+
+            Assert.That(compiledQuery.Statement.Replace(Environment.NewLine, string.Empty),
+                Is.EqualTo(@"WITH _t0 AS (SELECT _t0.[CompanyName], @p0 AS [Phone] FROM [dbo].[Customers] AS _t0) INSERT INTO [dbo].[Shippers] ([CompanyName], [Phone]) SELECT _t0.[CompanyName], _t0.[Phone] FROM _t1"));
+        }
+
+        [Test]
         public void TestInsertParameters()
         {
             var lastIDQuery = new SQLQuery()
